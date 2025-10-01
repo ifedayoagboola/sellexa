@@ -8,6 +8,7 @@ import Navigation from '@/components/Navigation';
 import SaveCount from '@/components/SaveCount';
 import SaveButton from '@/components/SaveButton';
 import SaveProvider from '@/components/SaveProvider';
+import { StartChatButton } from '@/components/StartChatButton';
 import { getServerSideSaveData } from '@/lib/saves-server';
 
 interface ProductDetailPageProps {
@@ -185,9 +186,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         {/* Action Buttons - Sticky Bottom */}
         <div className="fixed bottom-20 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-3 sm:p-4 z-30">
           <div className="max-w-7xl mx-auto flex space-x-2 sm:space-x-3">
-            <button className="flex-1 bg-muted text-foreground py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium hover:bg-muted/80 transition-colors text-sm sm:text-base">
-              💬 Chat
-            </button>
+            <StartChatButton
+              productId={product.id}
+              sellerId={product.user_id}
+              sellerName={product.profiles?.name || undefined}
+              className="flex-1"
+            />
             <button className="flex-1 bg-primary text-primary-foreground py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm sm:text-base">
               🛒 Buy
             </button>

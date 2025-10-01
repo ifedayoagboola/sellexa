@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   title: 'EthniqRootz - African Marketplace',
   description: 'Discover authentic African products from local sellers across the UK',
   keywords: 'African marketplace, African products, UK, fashion, food, culture',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'EthniqRootz - African Marketplace',
     description: 'Discover authentic African products from local sellers across the UK',

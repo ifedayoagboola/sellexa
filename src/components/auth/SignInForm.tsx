@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import { signIn } from '@/lib/auth-actions';
+import { useSearchParams } from 'next/navigation';
 
 export default function SignInForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirectTo');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,6 +29,9 @@ export default function SignInForm() {
 
   return (
     <form action={handleSubmit} className="space-y-4 sm:space-y-6">
+      {redirectTo && (
+        <input type="hidden" name="redirectTo" value={redirectTo} />
+      )}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
           {error}

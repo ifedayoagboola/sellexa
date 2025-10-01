@@ -1,4 +1,4 @@
-// File: /Users/ifedayoagboola/Desktop/myProjects/ethniqrootz-nextjs/src/app/post/page.tsx
+// File: /Users/ifedayoagboola/Desktop/myProjects/ethniqrootz/src/app/post/page.tsx
 import * as entry from '../../../../src/app/post/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

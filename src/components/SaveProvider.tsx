@@ -27,7 +27,7 @@ export default function SaveProvider({
     if (initialIsSaved) {
       setSavedProducts([productId]);
     }
-  }, [productId, initialSaveCount, initialIsSaved, setSaveCount, setSavedProducts]);
+  }, [productId, initialSaveCount, initialIsSaved]); // Remove store functions from dependencies
 
   return <>{children}</>;
 }

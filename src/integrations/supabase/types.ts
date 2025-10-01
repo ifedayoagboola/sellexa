@@ -191,6 +191,7 @@ export type Database = {
                     body: string
                     attachments: Json | null
                     created_at: string
+                    status: string
                 }
                 Insert: {
                     id?: string
@@ -199,6 +200,7 @@ export type Database = {
                     body: string
                     attachments?: Json | null
                     created_at?: string
+                    status?: string
                 }
                 Update: {
                     id?: string
@@ -207,6 +209,7 @@ export type Database = {
                     body?: string
                     attachments?: Json | null
                     created_at?: string
+                    status?: string
                 }
                 Relationships: [
                     {
@@ -221,6 +224,170 @@ export type Database = {
                         columns: ["thread_id"]
                         isOneToOne: false
                         referencedRelation: "threads"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            message_reactions: {
+                Row: {
+                    id: string
+                    message_id: string
+                    user_id: string
+                    emoji: string
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    message_id: string
+                    user_id: string
+                    emoji: string
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    message_id?: string
+                    user_id?: string
+                    emoji?: string
+                    created_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "message_reactions_message_id_fkey"
+                        columns: ["message_id"]
+                        isOneToOne: false
+                        referencedRelation: "messages"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "message_reactions_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "profiles"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            typing_indicators: {
+                Row: {
+                    id: string
+                    thread_id: string
+                    user_id: string
+                    is_typing: boolean
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    thread_id: string
+                    user_id: string
+                    is_typing?: boolean
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    thread_id?: string
+                    user_id?: string
+                    is_typing?: boolean
+                    updated_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "typing_indicators_thread_id_fkey"
+                        columns: ["thread_id"]
+                        isOneToOne: false
+                        referencedRelation: "threads"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "typing_indicators_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "profiles"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            conversation_metadata: {
+                Row: {
+                    id: string
+                    thread_id: string
+                    user_id: string
+                    is_archived: boolean
+                    is_muted: boolean
+                    last_read_at: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    thread_id: string
+                    user_id: string
+                    is_archived?: boolean
+                    is_muted?: boolean
+                    last_read_at?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    thread_id?: string
+                    user_id?: string
+                    is_archived?: boolean
+                    is_muted?: boolean
+                    last_read_at?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "conversation_metadata_thread_id_fkey"
+                        columns: ["thread_id"]
+                        isOneToOne: false
+                        referencedRelation: "threads"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "conversation_metadata_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "profiles"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            message_attachments: {
+                Row: {
+                    id: string
+                    message_id: string
+                    file_url: string
+                    file_name: string
+                    file_type: string
+                    file_size: number | null
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    message_id: string
+                    file_url: string
+                    file_name: string
+                    file_type: string
+                    file_size?: number | null
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    message_id?: string
+                    file_url?: string
+                    file_name?: string
+                    file_type?: string
+                    file_size?: number | null
+                    created_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "message_attachments_message_id_fkey"
+                        columns: ["message_id"]
+                        isOneToOne: false
+                        referencedRelation: "messages"
                         referencedColumns: ["id"]
                     }
                 ]
@@ -287,6 +454,66 @@ export type Database = {
                     user_uuid: string
                 }
                 Returns: boolean
+            }
+            get_user_conversations: {
+                Args: {
+                    user_uuid: string
+                }
+                Returns: {
+                    thread_id: string
+                    product_id: string
+                    product_title: string
+                    product_price_pence: number
+                    product_image: string
+                    other_user_id: string
+                    other_user_name: string
+                    other_user_handle: string
+                    other_user_avatar_url: string
+                    last_message_body: string
+                    last_message_created_at: string
+                    unread_count: number
+                    is_archived: boolean
+                    is_muted: boolean
+                    last_read_at: string
+                }[]
+            }
+            mark_messages_as_read: {
+                Args: {
+                    thread_uuid: string
+                    user_uuid: string
+                }
+                Returns: undefined
+            }
+            get_typing_indicators: {
+                Args: {
+                    thread_uuid: string
+                    user_uuid: string
+                }
+                Returns: {
+                    user_id: string
+                    user_name: string
+                    user_handle: string
+                    is_typing: boolean
+                    updated_at: string
+                }[]
+            }
+            set_typing_indicator: {
+                Args: {
+                    thread_uuid: string
+                    user_uuid: string
+                    typing: boolean
+                }
+                Returns: undefined
+            }
+            get_message_reactions: {
+                Args: {
+                    message_uuid: string
+                }
+                Returns: {
+                    emoji: string
+                    count: number
+                    user_reacted: boolean
+                }[]
             }
         }
         Enums: {

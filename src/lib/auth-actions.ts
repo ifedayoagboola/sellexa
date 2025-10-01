@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 export async function signIn(formData: FormData) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
+    const redirectTo = formData.get('redirectTo') as string;
 
     console.log('Sign in attempt:', { email, password: password ? '***' : 'empty' });
 
@@ -29,7 +30,7 @@ export async function signIn(formData: FormData) {
         }
 
         revalidatePath('/');
-        redirect('/feed');
+        redirect(redirectTo || '/feed');
     } catch (err) {
         console.error('Sign in error:', err);
         return { error: 'An unexpected error occurred during sign in' };
