@@ -28,6 +28,7 @@ import { useSaves } from '@/hooks/useSaves';
 import { useChat } from '@/hooks/useChat';
 import { supabase } from '@/integrations/supabase/client';
 import ProductImage from '@/components/ProductImage';
+import TopBar from '@/components/TopBar';
 
 // Helper function to construct image URL
 const getImageUrl = (imagePath: string) => {
@@ -85,17 +86,17 @@ interface SellerCatalogueClientProps {
   products: Product[];
   productCount: number;
   kycData?: KYCData | null;
+  user?: any;
 }
 
 export default function SellerCatalogueClient({ 
   seller, 
   products, 
   productCount,
-  kycData 
+  kycData,
+  user
 }: SellerCatalogueClientProps) {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'newest' | 'price_low' | 'price_high'>('newest');
   const [filterCategory, setFilterCategory] = useState<string>('all');
@@ -105,18 +106,6 @@ export default function SellerCatalogueClient({
 
   const { toggleSave, isProductSaved, getSaveCount } = useSaves();
   const { createNewThread } = useChat(user?.id);
-
-  // Get current user
-  useEffect(() => {
-    const getUser = async () => {
-      setIsLoadingUser(true);
-      // Use the imported supabase client
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setIsLoadingUser(false);
-    };
-    getUser();
-  }, []);
 
   // Get unique categories
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
@@ -209,278 +198,336 @@ export default function SellerCatalogueClient({
     }
   };
 
-  if (isLoadingUser) {
+  if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Redirecting to login...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Back
-              </Button>
-              <div className="h-6 w-px bg-gray-300" />
-              <h1 className="text-lg font-semibold text-gray-900">
-                {seller.name || seller.handle}'s Shop
-              </h1>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleShare}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Share2 className="h-4 w-4 mr-1" />
-                Share
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 opacity-90" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            {/* Seller Avatar */}
-            <div className="relative inline-block">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl">
-                {seller.avatar_url ? (
-                  <img
-                    src={seller.avatar_url}
-                    alt={seller.name || seller.handle}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-white">
-                      {(seller.name || seller.handle).charAt(0).toUpperCase()}
-                    </span>
+    <div className="min-h-screen bg-white">
+      {/* TopBar */}
+      <TopBar user={user} showSearch={false} showUserMenu={!!user} />
+      {/* Header - Fashion Nova Style */}
+      <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          {/* Mobile Layout */}
+          <div className="block lg:hidden">
+            {/* Brand Section - Mobile */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                {/* Logo */}
+                <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">
+                    {(kycData?.business_name || seller.name || seller.handle).substring(0, 2).toUpperCase()}
+                  </span>
+                </div>
+                
+                {/* Brand Info */}
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-lg font-bold text-gray-900 truncate">
+                    {kycData?.business_name || seller.name || seller.handle}
+                  </h1>
+                  <div className="flex items-center space-x-1">
+                    <div className="flex items-center">
+                      <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600 ml-1">4.8</span>
+                    </div>
+                    <span className="text-xs text-gray-500">({Math.floor(Math.random() * 1000) + 100})</span>
                   </div>
-                )}
+                </div>
               </div>
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full" />
-              </div>
-            </div>
-
-            {/* Seller Info */}
-            <div className="mt-8">
-              <h1 className="text-4xl font-bold text-white mb-2">
-                {kycData?.business_name || seller.name || seller.handle}
-              </h1>
-              <p className="text-xl text-purple-100 mb-4">@{seller.handle}</p>
               
-              {(kycData?.business_city || seller.city) && (
-                <div className="flex items-center justify-center text-purple-100 mb-6">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  <span>{kycData?.business_city || seller.city}</span>
-                  {kycData?.business_country && (
-                    <span>, {kycData.business_country}</span>
-                  )}
-                </div>
-              )}
-
-              {/* Stats */}
-              <div className="flex items-center justify-center space-x-8 mb-8">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{productCount}</div>
-                  <div className="text-purple-100 text-sm">Products</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">
-                    {Math.floor(Math.random() * 100) + 50}
-                  </div>
-                  <div className="text-purple-100 text-sm">Followers</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">
-                    {Math.floor(Math.random() * 50) + 20}
-                  </div>
-                  <div className="text-purple-100 text-sm">Sales</div>
-                </div>
-              </div>
-
-              {/* Social Media Links */}
-              {(kycData?.business_website || kycData?.business_instagram || kycData?.business_twitter || kycData?.business_facebook) && (
-                <div className="flex items-center justify-center space-x-4 mb-6">
-                  {kycData.business_website && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="border-white/30 text-white hover:bg-white/10"
-                    >
-                      <a href={kycData.business_website} target="_blank" rel="noopener noreferrer">
-                        <Globe className="h-4 w-4 mr-1" />
-                        Website
-                      </a>
-                    </Button>
-                  )}
-                  {kycData.business_instagram && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="border-white/30 text-white hover:bg-white/10"
-                    >
-                      <a href={`https://instagram.com/${kycData.business_instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
-                        <Instagram className="h-4 w-4 mr-1" />
-                        Instagram
-                      </a>
-                    </Button>
-                  )}
-                  {kycData.business_twitter && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="border-white/30 text-white hover:bg-white/10"
-                    >
-                      <a href={`https://twitter.com/${kycData.business_twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
-                        <Twitter className="h-4 w-4 mr-1" />
-                        Twitter
-                      </a>
-                    </Button>
-                  )}
-                  {kycData.business_facebook && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="border-white/30 text-white hover:bg-white/10"
-                    >
-                      <a href={kycData.business_facebook} target="_blank" rel="noopener noreferrer">
-                        <Facebook className="h-4 w-4 mr-1" />
-                        Facebook
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex items-center justify-center space-x-4">
-                <Button
-                  size="lg"
-                  className="bg-white text-purple-600 hover:bg-purple-50 font-semibold px-8"
-                >
-                  <Heart className="h-4 w-4 mr-2" />
+              {/* Action Buttons - Mobile */}
+              <div className="flex items-center space-x-2">
+                <Button size="sm" className="bg-black text-white hover:bg-gray-800 px-3 py-1.5 text-xs">
                   Follow
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-white text-white hover:bg-white hover:text-purple-600 font-semibold px-8"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Message
+                <Button variant="ghost" size="sm" className="p-2">
+                  <Share2 className="h-4 w-4" />
                 </Button>
+              </div>
+            </div>
+            
+            {/* Search Bar - Mobile */}
+            <div className="w-full">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder={`Search ${(kycData?.business_name || seller.name || seller.handle).substring(0, 15)}...`}
+                  className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden lg:block">
+            {/* Brand Section */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                {/* Logo */}
+                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">
+                    {(kycData?.business_name || seller.name || seller.handle).substring(0, 2).toUpperCase()}
+                  </span>
+                </div>
+                
+                {/* Brand Info */}
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    {kycData?.business_name || seller.name || seller.handle}
+                  </h1>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                      <span className="text-sm text-gray-600 ml-1">4.8</span>
+                    </div>
+                    <span className="text-sm text-gray-500">({Math.floor(Math.random() * 1000) + 100} reviews)</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-3">
+                <Button className="bg-black text-white hover:bg-gray-800 px-6 py-2">
+                  Follow
+                </Button>
+                <Button variant="outline" className="px-6 py-2">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit online store
+                </Button>
+                <Button variant="ghost" size="sm">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder={`Search ${kycData?.business_name || seller.name || seller.handle}...`}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filters and Sort */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            {/* Categories */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={filterCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilterCategory(category)}
-                  className={filterCategory === category 
-                    ? "bg-purple-600 text-white" 
-                    : "text-gray-600 hover:text-gray-900"
-                  }
-                >
-                  {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
-                </Button>
-              ))}
+      {/* Products Section - Fashion Nova Style */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          {/* Mobile Layout */}
+          <div className="block lg:hidden">
+            {/* Products Header - Mobile */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900">Products</h2>
+              <span className="text-sm text-gray-500">{productCount} items</span>
             </div>
-
-            {/* Sort */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Sort by:</span>
+            
+            {/* Filter Row - Mobile */}
+            <div className="flex items-center space-x-2 mb-4 overflow-x-auto pb-2">
+              {/* Filter Button */}
+              <Button variant="outline" size="sm" className="flex items-center whitespace-nowrap">
+                <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
+                </svg>
+                Filter
+              </Button>
+              
+              {/* Sort Dropdown */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="text-sm border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 whitespace-nowrap"
               >
-                <option value="newest">Newest</option>
+                <option value="newest">Sort by</option>
                 <option value="price_low">Price: Low to High</option>
                 <option value="price_high">Price: High to Low</option>
+                <option value="name">Name A-Z</option>
+              </select>
+              
+              {/* On Sale Button */}
+              <Button 
+                variant={filterCategory === 'sale' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setFilterCategory(filterCategory === 'sale' ? 'all' : 'sale')}
+                className={`whitespace-nowrap ${filterCategory === 'sale' ? 'bg-purple-600 text-white' : ''}`}
+              >
+                On sale
+              </Button>
+              
+              {/* Price Filter */}
+              <select className="border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 whitespace-nowrap">
+                <option>Price</option>
+                <option>Under £20</option>
+                <option>£20 - £50</option>
+                <option>£50 - £100</option>
+                <option>Over £100</option>
               </select>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Products Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-16">
-            <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500">
-              {filterCategory === 'all' 
-                ? 'This seller hasn\'t added any products yet.' 
-                : `No products found in the ${filterCategory} category.`
-              }
-            </p>
+          {/* Desktop Layout */}
+          <div className="hidden lg:block">
+            {/* Products Header with Filters */}
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Products</h2>
+              
+              {/* Filter and Sort Options */}
+              <div className="flex items-center space-x-4">
+                {/* Filter Button */}
+                <Button variant="outline" size="sm" className="flex items-center">
+                  <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
+                  </svg>
+                  Filter
+                </Button>
+                
+                {/* Sort Dropdown */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="newest">Sort by</option>
+                  <option value="price_low">Price: Low to High</option>
+                  <option value="price_high">Price: High to Low</option>
+                  <option value="name">Name A-Z</option>
+                </select>
+                
+                {/* On Sale Button */}
+                <Button 
+                  variant={filterCategory === 'sale' ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => setFilterCategory(filterCategory === 'sale' ? 'all' : 'sale')}
+                  className={filterCategory === 'sale' ? 'bg-purple-600 text-white' : ''}
+                >
+                  On sale
+                </Button>
+                
+                {/* Price Filter */}
+                <select className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option>Price</option>
+                  <option>Under £20</option>
+                  <option>£20 - £50</option>
+                  <option>£50 - £100</option>
+                  <option>Over £100</option>
+                </select>
+                
+                {/* In Stock Button */}
+                <Button variant="outline" size="sm">
+                  In-stock
+                </Button>
+                
+                {/* Product Count */}
+                <span className="text-sm text-gray-500">{productCount} products</span>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className={viewMode === 'grid' 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            : "space-y-4"
-          }>
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                viewMode={viewMode}
-                isSaved={isProductSaved(product.id)}
-                onSave={() => handleSave(product.id)}
-                onStartChat={() => handleStartChat(product.id)}
-                formatPrice={formatPrice}
-                formatDate={formatDate}
-              />
-            ))}
-          </div>
-        )}
+
+          {/* Products Grid - Fashion Nova Style */}
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-12 sm:py-16">
+              <ShoppingBag className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No products found</h3>
+              <p className="text-sm sm:text-base text-gray-500">
+                {filterCategory === 'all' 
+                  ? 'This seller hasn\'t added any products yet.' 
+                  : `No products found in the ${filterCategory} category.`
+                }
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {filteredProducts.map((product) => (
+                <div key={product.id} className="group relative">
+                  {/* Product Image */}
+                  <div className="aspect-square relative overflow-hidden bg-gray-100 rounded-lg mb-2 sm:mb-3">
+                    {product.images && product.images.length > 0 ? (
+                      <ProductImage
+                        imageUrl={getImageUrl(product.images[0])}
+                        title={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <ShoppingBag className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
+                      </div>
+                    )}
+                    
+                    {/* Discount Badge */}
+                    {Math.random() > 0.7 && (
+                      <div className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-pink-600 text-white text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
+                        {Math.floor(Math.random() * 50) + 20}% off
+                      </div>
+                    )}
+                    
+                    {/* Heart Icon */}
+                    <button
+                      onClick={() => handleSave(product.id)}
+                      className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 p-1.5 sm:p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 opacity-0 group-hover:opacity-100"
+                    >
+                      <Heart className={`h-3 w-3 sm:h-4 sm:w-4 ${user && isProductSaved(product.id) ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+                    </button>
+                  </div>
+                  
+                  {/* Product Info */}
+                  <div className="space-y-1">
+                    <h3 className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                      {product.title}
+                    </h3>
+                    
+                    {/* Rating - Hidden on mobile to save space */}
+                    {Math.random() > 0.5 && (
+                      <div className="hidden sm:flex items-center space-x-1">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-500">({Math.floor(Math.random() * 500) + 50})</span>
+                      </div>
+                    )}
+                    
+                    {/* Price */}
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <span className="text-xs sm:text-sm font-bold text-gray-900">
+                        {formatPrice(product.price_pence)}
+                      </span>
+                      {Math.random() > 0.7 && (
+                        <span className="text-xs text-gray-500 line-through">
+                          {formatPrice(product.price_pence * 1.5)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Share Modal */}

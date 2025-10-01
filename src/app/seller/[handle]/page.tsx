@@ -11,6 +11,9 @@ interface SellerCataloguePageProps {
 export default async function SellerCataloguePage({ params }: SellerCataloguePageProps) {
   const supabase = await createClient();
   
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser();
+  
   // Get seller profile by handle
   const { data: seller, error: sellerError } = await supabase
     .from('profiles')
@@ -87,6 +90,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
       products={products || []}
       productCount={productCount}
       kycData={kycData}
+      user={user}
     />
   );
 }

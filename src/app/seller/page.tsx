@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ShoppingBag, Users, Star, Share2 } from 'lucide-react';
+import { ShoppingBag, Users, Star, Share2, ArrowLeft } from 'lucide-react';
 
 export default function SellerDirectoryPage() {
   return (
@@ -9,11 +9,21 @@ export default function SellerDirectoryPage() {
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Back Button */}
+          <div className="mb-6">
+            <Link href="/feed">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Feed
+              </Button>
+            </Link>
+          </div>
+          
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Discover Amazing Sellers
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
               Browse through our community of talented sellers and discover unique products 
               from creators around the world.
             </p>
@@ -28,8 +38,8 @@ export default function SellerDirectoryPage() {
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingBag className="h-8 w-8 text-purple-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Unique Products</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Unique Products</h3>
+            <p className="text-sm sm:text-base text-gray-600">
               Discover handpicked items from talented creators and small businesses.
             </p>
           </Card>
@@ -38,8 +48,8 @@ export default function SellerDirectoryPage() {
             <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Users className="h-8 w-8 text-pink-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Direct Connection</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Direct Connection</h3>
+            <p className="text-sm sm:text-base text-gray-600">
               Chat directly with sellers to ask questions and negotiate prices.
             </p>
           </Card>
@@ -48,8 +58,8 @@ export default function SellerDirectoryPage() {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Share2 className="h-8 w-8 text-blue-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Easy Sharing</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Easy Sharing</h3>
+            <p className="text-sm sm:text-base text-gray-600">
               Share your favorite shops on social media with beautiful, branded pages.
             </p>
           </Card>
@@ -57,10 +67,10 @@ export default function SellerDirectoryPage() {
 
         {/* CTA */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
             Ready to start selling?
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
             Join our community of sellers and create your own beautiful shop page 
             that you can share on social media and with your customers.
           </p>

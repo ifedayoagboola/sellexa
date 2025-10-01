@@ -1,7 +1,7 @@
 {
-  "/profile/page": "app/profile/page.js",
   "/feed/page": "app/feed/page.js",
+  "/seller/page": "app/seller/page.js",
+  "/search/page": "app/search/page.js",
   "/product/[id]/page": "app/product/[id]/page.js",
-  "/seller/[handle]/page": "app/seller/[handle]/page.js",
-  "/seller/page": "app/seller/page.js"
+  "/seller/[handle]/page": "app/seller/[handle]/page.js"
 }

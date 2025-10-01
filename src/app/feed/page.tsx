@@ -57,10 +57,18 @@ export default async function FeedPage() {
       initialIsSaved={saveDataResults[0]?.isSaved || false}
     >
       <div className="min-h-screen bg-background pb-20">
-      <TopBar />
+      <TopBar user={user} />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        <div className="flex justify-between items-center mb-4 sm:mb-6">
+        {/* Mobile: Only show title */}
+        <div className="block md:hidden mb-4 sm:mb-6">
+          <h1 className="text-xl font-bold text-foreground">
+            Discover African Products
+          </h1>
+        </div>
+        
+        {/* Desktop: Show title with Discover Sellers button */}
+        <div className="hidden md:flex justify-between items-center mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">
             Discover African Products
           </h1>

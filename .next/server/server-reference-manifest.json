@@ -13,12 +13,27 @@
         "app/product/[id]/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
           "async": false
+        },
+        "app/search/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/seller/[handle]/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/auth/login/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
         }
       },
       "layer": {
         "app/feed/page": "action-browser",
         "app/inbox/page": "action-browser",
-        "app/product/[id]/page": "action-browser"
+        "app/product/[id]/page": "action-browser",
+        "app/search/page": "action-browser",
+        "app/seller/[handle]/page": "action-browser",
+        "app/auth/login/page": "action-browser"
       },
       "filename": "lib/auth-actions.ts",
       "exportedName": "signOut"
@@ -36,12 +51,27 @@
         "app/product/[id]/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
           "async": false
+        },
+        "app/search/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/seller/[handle]/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/auth/login/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
         }
       },
       "layer": {
         "app/feed/page": "action-browser",
         "app/inbox/page": "action-browser",
-        "app/product/[id]/page": "action-browser"
+        "app/product/[id]/page": "action-browser",
+        "app/search/page": "action-browser",
+        "app/seller/[handle]/page": "action-browser",
+        "app/auth/login/page": "action-browser"
       },
       "filename": "lib/auth-actions.ts",
       "exportedName": "signIn"
@@ -59,12 +89,27 @@
         "app/product/[id]/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
           "async": false
+        },
+        "app/search/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/seller/[handle]/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/auth/login/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fifedayoagboola%2FDesktop%2FmyProjects%2Fethniqrootz%2Fsrc%2Flib%2Fauth-actions.ts%22%2C%5B%7B%22id%22%3A%2200506666a1865dd175224df6fcce4af907e9d8c5d4%22%2C%22exportedName%22%3A%22signOut%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22400f60b9b1454672707f636a15c55b95a27eff6b36%22%2C%22exportedName%22%3A%22signIn%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%2C%7B%22id%22%3A%22408c1be1d46f9a6ad474224a03c75b2bdafa3c864e%22%2C%22exportedName%22%3A%22signUp%22%2C%22filename%22%3A%22lib%2Fauth-actions.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
         }
       },
       "layer": {
         "app/feed/page": "action-browser",
         "app/inbox/page": "action-browser",
-        "app/product/[id]/page": "action-browser"
+        "app/product/[id]/page": "action-browser",
+        "app/search/page": "action-browser",
+        "app/seller/[handle]/page": "action-browser",
+        "app/auth/login/page": "action-browser"
       },
       "filename": "lib/auth-actions.ts",
       "exportedName": "signUp"

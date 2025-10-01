@@ -47,7 +47,7 @@ export default function InboxPage() {
   useEffect(() => {
     const getUser = async () => {
       setIsLoadingUser(true);
-      const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setIsLoadingUser(false);
         return;
@@ -135,7 +135,7 @@ export default function InboxPage() {
       </div>
     );
   }
-
+  
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -155,7 +155,7 @@ export default function InboxPage() {
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-bold text-foreground">Inbox</h1>
+          <h1 className="text-xl font-bold text-foreground">Inbox</h1>
             {totalUnread > 0 && (
               <Badge variant="destructive" className="text-xs">
                 {totalUnread}
@@ -199,7 +199,7 @@ export default function InboxPage() {
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </Button>
-            <UserMenu user={user} />
+          <UserMenu user={user} />
           </div>
         </div>
       </div>
@@ -218,8 +218,8 @@ export default function InboxPage() {
                 className="pl-10 text-sm md:text-base"
               />
             </div>
-          </div>
-
+                  </div>
+                  
           {/* Stats */}
           <div className="p-3 md:p-4 border-b border-border">
             <div className="grid grid-cols-3 gap-2 md:gap-4 text-center">
@@ -230,14 +230,14 @@ export default function InboxPage() {
               <div>
                 <p className="text-lg md:text-2xl font-bold text-blue-600">{unreadConversations.length}</p>
                 <p className="text-xs text-muted-foreground">Unread</p>
-              </div>
+                    </div>
               <div>
                 <p className="text-lg md:text-2xl font-bold text-green-600">{filteredConversations.length}</p>
                 <p className="text-xs text-muted-foreground">Active</p>
-              </div>
-            </div>
-          </div>
-
+                      </div>
+                      </div>
+                    </div>
+                    
           {/* Conversations List */}
           <div className="flex-1 overflow-y-auto">
             <ConversationList
@@ -246,8 +246,8 @@ export default function InboxPage() {
               onSelectConversation={handleSelectConversation}
               isLoading={isLoading}
             />
-          </div>
-        </div>
+                    </div>
+                  </div>
 
         {/* Chat Area */}
         <div className={`flex-1 flex flex-col ${!currentThread ? 'hidden md:flex' : 'flex'}`}>
@@ -290,8 +290,8 @@ export default function InboxPage() {
                   <div className="text-center py-6 text-muted-foreground">
                     <MessageSquare className="h-10 w-10 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">No messages yet. Start the conversation!</p>
-                  </div>
-                ) : (
+          </div>
+        ) : (
                   messages.map((message) => (
                     <ChatBubble
                       key={message.id}
@@ -317,7 +317,7 @@ export default function InboxPage() {
                   disabled={isSending}
                   placeholder="Type a message..."
                 />
-              </div>
+            </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
@@ -330,8 +330,8 @@ export default function InboxPage() {
                   Choose a conversation from the sidebar to start chatting
                 </p>
               </div>
-            </div>
-          )}
+          </div>
+        )}
         </div>
       </div>
 
@@ -348,7 +348,7 @@ export default function InboxPage() {
           </Card>
         </div>
       )}
-
+      
       <Navigation />
     </div>
   );

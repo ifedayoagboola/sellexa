@@ -21,7 +21,10 @@
     "db:reset": "npx supabase db reset",
     "db:types": "npx supabase gen types typescript --project-id kdoeomzqurcggvywqvdn > src/types/database.ts",
     "db:start": "npx supabase start",
-    "db:stop": "npx supabase stop"
+    "db:stop": "npx supabase stop",
+    "db:check": "node scripts/check-migrations.js",
+    "db:migrate": "npx supabase db push",
+    "db:seed": "npx supabase db reset --with-seed"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

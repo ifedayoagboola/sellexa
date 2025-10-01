@@ -2,14 +2,14 @@ import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import ImageCarousel from '@/components/ImageCarousel';
-import UserMenu from '@/components/UserMenu';
+import ProductImage from '@/components/ProductImage';
+import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
-import SaveCount from '@/components/SaveCount';
 import SaveButton from '@/components/SaveButton';
 import SaveProvider from '@/components/SaveProvider';
 import { StartChatButton } from '@/components/StartChatButton';
 import { getServerSideSaveData } from '@/lib/saves-server';
+import { Star, Heart, ShoppingCart } from 'lucide-react';
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -18,12 +18,8 @@ interface ProductDetailPageProps {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const supabase = await createClient();
   
-  // Check if user is authenticated
+  // Get current user (optional for public viewing)
   const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    redirect('/auth/login');
-  }
 
   // Await params for Next.js 15
   const { id } = await params;
@@ -54,26 +50,47 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     .eq('id', id)
     .single();
 
+  // Fetch seller's KYC data separately (with error handling)
+  let kycData: { business_name?: string; business_logo_url?: string } | null = null;
+  if (product?.user_id) {
+    try {
+      const { data: kyc, error: kycError } = await supabase
+        .from('profiles')
+        .select('business_name, business_logo_url')
+        .eq('id', product.user_id)
+        .single();
+      
+      if (!kycError && kyc && typeof kyc === 'object') {
+        kycData = kyc as { business_name?: string; business_logo_url?: string };
+      }
+    } catch (error) {
+      // KYC fields might not exist yet, continue without them
+      console.log('KYC fields not available yet:', error);
+    }
+  }
+
   if (error || !product) {
     notFound();
   }
 
-  // Get save data server-side
-  const saveData = await getServerSideSaveData(product.id, user.id);
+  // Get save data server-side (only if user is logged in)
+  const saveData = user ? await getServerSideSaveData(product.id, user.id) : { saveCount: 0, isSaved: false };
 
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'AVAILABLE':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'RESTOCKING':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'SOLD':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
+  // Helper function to construct image URL
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return supabaseUrl ? `${supabaseUrl}/storage/v1/object/public/product-images/${imagePath}` : null;
   };
+
+  // Mock data for Fashion Nova style
+  const originalPrice = Math.round(product.price_pence * 1.5);
+  const discount = Math.floor(Math.random() * 50) + 20;
+  const rating = 4.3;
+  const reviewCount = Math.floor(Math.random() * 1000) + 100;
+  const sizes = ['XS', 'S', 'M', 'L', 'XL', '1X', '2X', '3X'];
+  const selectedSize = 'S';
 
   return (
     <SaveProvider 
@@ -81,137 +98,170 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       initialSaveCount={saveData.saveCount}
       initialIsSaved={saveData.isSaved}
     >
-      <div className="min-h-screen bg-background pb-32">
-        <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="flex items-center justify-between px-4 py-3">
-            <Link 
-              href="/feed" 
-              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <UserMenu user={user} />
+      <div className="min-h-screen bg-white">
+        {/* TopBar */}
+        <TopBar user={user} showSearch={false} showUserMenu={!!user} />
+        
+        {/* Brand Header - Fashion Nova Style */}
+        <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              {/* Brand Logo & Name */}
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
+                  {kycData?.business_logo_url ? (
+                    <img 
+                      src={kycData.business_logo_url} 
+                      alt="Business logo" 
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-white font-bold text-sm">
+                      {(kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'ER').substring(0, 2).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h1 className="text-lg font-semibold text-black">
+                    {kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'EthniqRootz'}
+                  </h1>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-sm text-black">{rating}</span>
+                    <Star className="h-3 w-3 text-black fill-current" />
+                    <span className="text-sm text-gray-600">({reviewCount.toLocaleString()})</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Visit Store Button */}
+              <Link
+                href={`/seller/${product.profiles?.handle}`}
+                className="px-3 py-1.5 border border-gray-300 text-black text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Visit store
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Image Carousel */}
-        <ImageCarousel
-          images={product.images || []}
-          title={product.title}
-        />
-
-        {/* Product Info */}
-        <div className="p-4 space-y-4 pb-24">
-          {/* Title and Price */}
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{product.title}</h1>
-            <p className="text-2xl sm:text-3xl font-bold text-green-600">£{(product.price_pence / 100).toFixed(2)}</p>
+        {/* Product Images - Fashion Nova Style */}
+        <div className="bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 py-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Main Product Images */}
+              {product.images && product.images.length > 0 ? (
+                product.images.slice(0, 2).map((image, index) => (
+                  <div key={index} className="aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
+                    <ProductImage
+                      imageUrl={getImageUrl(image)}
+                      title={product.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="aspect-[4/5] bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                    <p className="text-gray-500">No images available</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Status and Location */}
-          <div className="flex items-center justify-between">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(product.status)}`}>
-              {product.status}
-            </span>
-            <span className="text-muted-foreground">
-              {product.city}{product.postcode && `, ${product.postcode}`}
-            </span>
-          </div>
-
-          {/* Save Count and Stats */}
-          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-            <SaveCount productId={product.id} />
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">
-                Listed {new Date(product.created_at).toLocaleDateString()}
+        {/* Product Information - Fashion Nova Style */}
+        <div className="bg-white px-4 py-6 pb-32">
+          <div className="max-w-7xl mx-auto">
+            {/* Product Title */}
+            <h2 className="text-xl font-semibold text-black mb-2">{product.title}</h2>
+            
+            {/* Rating */}
+            <div className="flex items-center space-x-1 mb-4">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-3 w-3 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                  />
+                ))}
               </div>
-              <div className="text-xs text-muted-foreground">
-                {product.category.toLowerCase()} • {product.city}
-              </div>
-            </div>
-          </div>
-
-          {/* Seller Info */}
-          <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm sm:text-base">
-              {product.profiles?.name?.charAt(0) || 'U'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-foreground text-sm sm:text-base truncate">@{product.profiles?.handle || 'unknown'}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Joined {new Date(product.profiles?.created_at || '').toLocaleDateString()}
-              </p>
-            </div>
-            <div className="flex items-center space-x-2 flex-shrink-0">
-              <Link
-                href={`/seller/${product.profiles?.handle}`}
-                className="px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                View Shop
+              <Link href="#" className="text-sm text-black hover:underline">
+                {Math.floor(Math.random() * 50) + 10} ratings
               </Link>
-              <span className="text-yellow-500 text-sm sm:text-base">★★★★★</span>
-              <span className="text-xs sm:text-sm text-muted-foreground">(4.8)</span>
             </div>
-          </div>
-
-          {/* Description */}
-          {product.description && (
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">Description</h3>
-              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+            
+            {/* Price */}
+            <div className="flex items-center space-x-3 mb-6">
+              <span className="text-xl font-semibold text-black">£{(product.price_pence / 100).toFixed(2)}</span>
+              <span className="text-base text-gray-500 line-through">£{(originalPrice / 100).toFixed(2)}</span>
             </div>
-          )}
-
-          {/* Tags */}
-          {product.tags && product.tags.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">Tags</h3>
+            
+            {/* Wishlist Button */}
+            <div className="flex justify-end mb-6">
+              <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <Heart className="h-5 w-5 text-black" />
+              </button>
+            </div>
+            
+            {/* Size Selection */}
+            <div className="mb-8">
+              <h3 className="text-base font-medium text-black mb-3">Size {selectedSize}</h3>
               <div className="flex flex-wrap gap-2">
-                {product.tags.map((tag, index) => (
-                  <span key={index} className="px-2 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                    #{tag}
-                  </span>
+                {sizes.map((size) => (
+                  <button
+                    key={size}
+                    className={`px-3 py-1.5 rounded-full text-sm font-normal transition-colors ${
+                      size === selectedSize
+                        ? 'border border-black text-black'
+                        : size === 'XS'
+                        ? 'bg-gray-100 text-gray-400 line-through'
+                        : 'bg-gray-100 text-black hover:bg-gray-200'
+                    }`}
+                  >
+                    {size}
+                  </button>
                 ))}
               </div>
             </div>
-          )}
-
-          {/* Category */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-2">Category</h3>
-            <span className="px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm capitalize">
-              {product.category.toLowerCase()}
-            </span>
+            
+            {/* Description */}
+            {product.description && (
+              <div className="mb-8">
+                <h3 className="text-base font-medium text-black mb-3">Description</h3>
+                <p className="text-gray-900 leading-relaxed text-sm">{product.description}</p>
+              </div>
+            )}
+            
+            {/* Category & Location */}
+            <div className="flex items-center justify-between text-sm text-gray-800 mb-8">
+              <span className="capitalize">{product.category.toLowerCase()}</span>
+              <span>{product.city}{product.postcode && `, ${product.postcode}`}</span>
+            </div>
           </div>
         </div>
 
-        {/* Action Buttons - Sticky Bottom */}
-        <div className="fixed bottom-20 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-3 sm:p-4 z-30">
-          <div className="max-w-7xl mx-auto flex space-x-2 sm:space-x-3">
-            <StartChatButton
-              productId={product.id}
-              sellerId={product.user_id}
-              sellerName={product.profiles?.name || undefined}
-              className="flex-1"
-            />
-            <button className="flex-1 bg-primary text-primary-foreground py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm sm:text-base">
-              🛒 Buy
-            </button>
-            <SaveButton 
-              productId={product.id} 
-              productTitle={product.title}
-              className="px-3 sm:px-4 py-2.5 sm:py-3"
-            />
+        {/* Action Buttons Overlay - Chat and Buy only */}
+        <div className="fixed bottom-20 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-40">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center space-x-3">
+              <StartChatButton
+                productId={product.id}
+                sellerId={product.user_id}
+                sellerName={product.profiles?.name || undefined}
+                className="flex-1 px-4 py-2 border border-gray-300 text-black text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              />
+              <button className="flex-1 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2">
+                <ShoppingCart className="h-4 w-4" />
+                <span>Buy</span>
+              </button>
+            </div>
           </div>
         </div>
-        
-        {/* Bottom Navigation */}
+
+        {/* Standard Bottom Navigation */}
         <Navigation />
-        </div>
       </div>
     </SaveProvider>
   );
