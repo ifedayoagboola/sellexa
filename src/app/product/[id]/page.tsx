@@ -146,7 +146,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 Joined {new Date(product.profiles?.created_at || '').toLocaleDateString()}
               </p>
             </div>
-            <div className="flex items-center space-x-1 flex-shrink-0">
+            <div className="flex items-center space-x-2 flex-shrink-0">
+              <Link
+                href={`/seller/${product.profiles?.handle}`}
+                className="px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                View Shop
+              </Link>
               <span className="text-yellow-500 text-sm sm:text-base">★★★★★</span>
               <span className="text-xs sm:text-sm text-muted-foreground">(4.8)</span>
             </div>

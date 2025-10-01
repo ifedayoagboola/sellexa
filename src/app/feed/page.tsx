@@ -1,5 +1,6 @@
 import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import ProductCard from '@/components/ProductCard';
 import UserMenu from '@/components/UserMenu';
@@ -63,7 +64,15 @@ export default async function FeedPage() {
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">
             Discover African Products
           </h1>
-          <UserMenu user={user} />
+          <div className="flex items-center space-x-3">
+            <Link
+              href="/seller"
+              className="px-3 py-1.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Discover Sellers
+            </Link>
+            <UserMenu user={user} />
+          </div>
         </div>
         
         {products && products.length > 0 ? (

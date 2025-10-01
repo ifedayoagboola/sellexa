@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShareIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ShareIcon, MapPinIcon, UserIcon } from '@heroicons/react/24/outline';
 import ProductImage from './ProductImage';
 import SaveButton from './SaveButton';
 
@@ -170,15 +170,28 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           {/* Seller Info (if available) */}
           {product.profiles && (
-            <div className="flex items-center space-x-1.5 sm:space-x-2 pt-0.5 sm:pt-1">
-              <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium text-gray-600">
-                  {product.profiles.name?.charAt(0) || 'U'}
+            <div className="flex items-center justify-between pt-0.5 sm:pt-1">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-medium text-gray-600">
+                    {product.profiles.name?.charAt(0) || 'U'}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500 truncate">
+                  @{product.profiles.handle}
                 </span>
               </div>
-              <span className="text-xs text-gray-500 truncate">
-                @{product.profiles.handle}
-              </span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = `/seller/${product.profiles.handle}`;
+                }}
+                className="flex items-center space-x-1 text-xs text-purple-600 hover:text-purple-700 transition-colors"
+              >
+                <UserIcon className="h-3 w-3" />
+                <span className="hidden sm:inline">Shop</span>
+              </button>
             </div>
           )}
         </div>

@@ -10,7 +10,19 @@ export default async function PostPage() {
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
-    redirect('/auth/login');
+    redirect('/auth/login?redirectTo=/post');
+  }
+
+  // Check KYC status
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('kyc_status')
+    .eq('id', user.id)
+    .single();
+
+  // If KYC is not verified, redirect to KYC page
+  if (!profile || profile.kyc_status !== 'verified') {
+    redirect('/kyc?redirectTo=/post');
   }
 
   return <PostPageClient user={user} />;
