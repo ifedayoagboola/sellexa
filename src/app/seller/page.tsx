@@ -35,8 +35,8 @@ export default function SellerDirectoryPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ShoppingBag className="h-8 w-8 text-purple-600" />
+            <div className="w-16 h-16 bg-[#1aa1aa]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShoppingBag className="h-8 w-8 text-[#1aa1aa]" />
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Unique Products</h3>
             <p className="text-sm sm:text-base text-gray-600">
@@ -55,8 +55,8 @@ export default function SellerDirectoryPage() {
           </Card>
 
           <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Share2 className="h-8 w-8 text-blue-600" />
+            <div className="w-16 h-16 bg-[#1aa1aa]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Share2 className="h-8 w-8 text-[#1aa1aa]" />
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Easy Sharing</h3>
             <p className="text-sm sm:text-base text-gray-600">
@@ -75,7 +75,7 @@ export default function SellerDirectoryPage() {
             that you can share on social media and with your customers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white px-8">
+            <Button size="lg" className="bg-[#1aa1aa] hover:bg-[#158a8f] text-white px-8">
               Start Selling
             </Button>
             <Button variant="outline" size="lg" className="px-8">

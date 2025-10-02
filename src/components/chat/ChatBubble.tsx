@@ -40,9 +40,9 @@ export function ChatBubble({
       case 'sent':
         return 'text-muted-foreground';
       case 'delivered':
-        return 'text-blue-500';
+        return 'text-[#1aa1aa]';
       case 'read':
-        return 'text-blue-600';
+        return 'text-slate-600';
       case 'failed':
         return 'text-red-500';
       default:

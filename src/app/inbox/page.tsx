@@ -228,7 +228,7 @@ export default function InboxPage() {
                 <p className="text-xs text-muted-foreground">Total</p>
               </div>
               <div>
-                <p className="text-lg md:text-2xl font-bold text-blue-600">{unreadConversations.length}</p>
+                <p className="text-lg md:text-2xl font-bold text-[#1aa1aa]">{unreadConversations.length}</p>
                 <p className="text-xs text-muted-foreground">Unread</p>
                     </div>
               <div>

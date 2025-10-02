@@ -186,8 +186,8 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Building2 className="h-6 w-6 text-purple-600" />
+              <div className="p-2 bg-[#1aa1aa]/10 rounded-lg">
+                <Building2 className="h-6 w-6 text-[#1aa1aa]" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">Seller Verification</h2>

@@ -136,22 +136,22 @@ export default function SaveButton({
     switch (variant) {
       case 'icon-only':
         return `${baseClasses} p-2 rounded-full hover:bg-gray-100 ${
-          isSaved ? 'text-blue-600' : 'text-gray-600'
+          isSaved ? 'text-[#1aa1aa]' : 'text-slate-600'
         } ${className}`;
       case 'compact':
         return `${baseClasses} px-3 py-1.5 text-sm rounded-md border ${
           isSaved 
-            ? 'bg-blue-50 text-blue-700 border-blue-200' 
+            ? 'bg-[#1aa1aa]/10 text-[#1aa1aa] border-[#1aa1aa]/20' 
             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
         } ${className}`;
       case 'minimal':
         return `${baseClasses} text-sm ${
-          isSaved ? 'text-blue-600' : 'text-gray-600'
+          isSaved ? 'text-[#1aa1aa]' : 'text-slate-600'
         } ${className}`;
       default:
         return `${baseClasses} px-4 py-2 rounded-md border ${
           isSaved 
-            ? 'bg-blue-50 text-blue-700 border-blue-200' 
+            ? 'bg-[#1aa1aa]/10 text-[#1aa1aa] border-[#1aa1aa]/20' 
             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
         } ${className}`;
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { MagnifyingGlassIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
@@ -19,16 +20,21 @@ export default function TopBar({
   user
 }: TopBarProps) {
   return (
-    <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+    <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 py-3">
-        {/* Mobile Layout */}
-        <div className="block md:hidden">
+        {/* Mobile and Tablet Layout (up to and including 1024px) */}
+        <div className="block xl:hidden">
           {/* First Row: Logo + Icons */}
-          <div className="flex items-center justify-between mb-3">
-            {/* ER Logo */}
+          <div className="flex items-center justify-between">
+            {/* EthniqRootz Logo */}
             <Link href="/feed" className="flex items-center">
-              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">ER</span>
+              <div className="w-40 h-24 relative">
+                <Image
+                  src="/ethniqrootz.png"
+                  alt="EthniqRootz"
+                  fill
+                  className="object-contain"
+                />
               </div>
             </Link>
             
@@ -37,7 +43,7 @@ export default function TopBar({
               {/* Feeds Button */}
               <Link 
                 href="/feed"
-                className="px-2 py-1 border border-gray-300 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Feeds
               </Link>
@@ -76,15 +82,20 @@ export default function TopBar({
           )}
         </div>
 
-        {/* Desktop Layout */}
-        <div className="hidden md:block">
+        {/* Desktop Layout (1280px and above) */}
+        <div className="hidden xl:block">
           <div className="flex items-center justify-between">
             {/* Left Side: Logo */}
             <div className="flex items-center">
-              {/* ER Logo */}
+              {/* EthniqRootz Logo */}
               <Link href="/feed" className="flex items-center">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">ER</span>
+                <div className="w-48 h-32 relative">
+                  <Image
+                    src="/ethniqrootz.png"
+                    alt="EthniqRootz"
+                    fill
+                    className="object-contain"
+                  />
                 </div>
               </Link>
             </div>
@@ -105,7 +116,7 @@ export default function TopBar({
               {/* Feeds Button */}
               <Link 
                 href="/feed"
-                className="px-3 py-1.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Feeds
               </Link>

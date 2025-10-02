@@ -103,8 +103,8 @@ export default function KYCPage() {
           </Button>
           
           <div className="flex items-center space-x-3">
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <Building2 className="h-8 w-8 text-purple-600" />
+            <div className="p-3 bg-[#1aa1aa]/10 rounded-lg">
+              <Building2 className="h-8 w-8 text-[#1aa1aa]" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Seller Verification</h1>
@@ -149,7 +149,7 @@ export default function KYCPage() {
               {isKYCVerified && (
                 <Button
                   onClick={handleContinue}
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="bg-[#1aa1aa] hover:bg-[#158a8f]"
                 >
                   Continue to Create Post
                 </Button>
@@ -194,8 +194,8 @@ export default function KYCPage() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Building2 className="h-6 w-6 text-blue-600" />
+              <div className="w-12 h-12 bg-[#1aa1aa]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Building2 className="h-6 w-6 text-[#1aa1aa]" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Build Trust</h4>
               <p className="text-sm text-gray-600">
@@ -214,8 +214,8 @@ export default function KYCPage() {
             </Card>
 
             <Card className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="h-6 w-6 text-purple-600" />
+              <div className="w-12 h-12 bg-[#1aa1aa]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="h-6 w-6 text-[#1aa1aa]" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Priority Support</h4>
               <p className="text-sm text-gray-600">

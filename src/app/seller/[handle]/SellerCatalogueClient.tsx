@@ -214,7 +214,7 @@ export default function SellerCatalogueClient({
       {/* TopBar */}
       <TopBar user={user} showSearch={false} showUserMenu={!!user} />
       {/* Header - Fashion Nova Style */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+      <div className="bg-white border-b border-slate-200 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Mobile Layout */}
           <div className="block lg:hidden">
@@ -230,22 +230,22 @@ export default function SellerCatalogueClient({
                 
                 {/* Brand Info */}
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-lg font-bold text-gray-900 truncate">
+                  <h1 className="text-lg font-bold text-slate-900 truncate">
                     {kycData?.business_name || seller.name || seller.handle}
                   </h1>
                   <div className="flex items-center space-x-1">
                     <div className="flex items-center">
                       <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                      <span className="text-xs text-gray-600 ml-1">4.8</span>
+                      <span className="text-xs text-slate-600 ml-1">4.8</span>
                     </div>
-                    <span className="text-xs text-gray-500">({Math.floor(Math.random() * 1000) + 100})</span>
+                    <span className="text-xs text-slate-500">({Math.floor(Math.random() * 1000) + 100})</span>
                   </div>
                 </div>
               </div>
               
               {/* Action Buttons - Mobile */}
               <div className="flex items-center space-x-2">
-                <Button size="sm" className="bg-black text-white hover:bg-gray-800 px-3 py-1.5 text-xs">
+                <Button size="sm" className="bg-slate-700 text-white hover:bg-slate-800 px-3 py-1.5 text-xs">
                   Follow
                 </Button>
                 <Button variant="ghost" size="sm" className="p-2">
@@ -265,7 +265,7 @@ export default function SellerCatalogueClient({
                 <input
                   type="text"
                   placeholder={`Search ${(kycData?.business_name || seller.name || seller.handle).substring(0, 15)}...`}
-                  className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#1aa1aa] focus:border-transparent"
                 />
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function SellerCatalogueClient({
                 
                 {/* Brand Info */}
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-slate-900">
                     {kycData?.business_name || seller.name || seller.handle}
                   </h1>
                   <div className="flex items-center space-x-2">
