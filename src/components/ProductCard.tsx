@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Heart, Star } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import ProductImage from './ProductImage';
-import SaveButton from './SaveButton';
 
 interface ProductCardProps {
   product: {
@@ -53,40 +54,30 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.id}`} className="block group">
-      <div className="relative bg-white rounded-2xl overflow-hidden shadow-sm">
+      <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
         {/* Product Image */}
-        <div className="aspect-[5/5] relative overflow-hidden bg-slate-100 rounded-2xl">
+        <div className="aspect-[5/5] relative overflow-hidden bg-slate-100">
           <ProductImage
             imageUrl={getImageUrl(product.images[0])}
             title={product.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-2xl"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           
           {/* Discount Badge - Top Left */}
           {hasDiscount && (
             <div className="absolute top-2 left-2">
-              <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded-md">
+              <Badge variant="secondary" className="bg-black text-white hover:bg-black">
                 {discountPercent}% off
-              </span>
+              </Badge>
             </div>
           )}
           
-          {/* Heart Icon - Bottom Right */}
-          <div className="absolute bottom-2 right-2">
-            <SaveButton
-              productId={product.id}
-              productTitle={product.title}
-              variant="icon-only"
-              showToast={false}
-              className="p-2 bg-white rounded-full hover:bg-white transition-all duration-200"
-            />
-          </div>
         </div>
         
         {/* Product Info */}
-        <div className="p-2">
+        <CardContent className="p-3 space-y-2">
           {/* Title */}
-          <h3 className="font-medium text-slate-900 text-sm leading-tight line-clamp-2">
+          <h3 className="font-medium text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-slate-700 transition-colors">
             {product.title}
           </h3>
           
@@ -107,7 +98,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           {/* Price */}
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-semibold text-slate-900">
+            <span className="text-sm font-semibold text-slate-900">
               £{(product.price_pence / 100).toFixed(2)}
             </span>
             {hasDiscount && (
@@ -116,8 +107,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

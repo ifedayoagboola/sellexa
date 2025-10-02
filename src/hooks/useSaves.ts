@@ -6,9 +6,7 @@ import {
     unsaveProduct,
     getUserSavedProducts,
     getProductSaveCount,
-    isProductSaved,
-    batchGetProductsSaveData,
-    batchToggleSaves
+    isProductSaved
 } from '@/lib/saves';
 
 export function useSaves() {
@@ -52,19 +50,13 @@ export function useSaves() {
         }
     };
 
-    // Batch load save data for multiple products
+    // Load save data for multiple products (simplified)
     const loadProductsSaveData = useCallback(async (productIds: string[]) => {
-        try {
-            const result = await batchGetProductsSaveData(productIds);
-            if (result.success && result.data) {
-                batchUpdateSaveData(result.data);
-            } else if (result.error) {
-                console.error('Error loading products save data:', result.error);
-            }
-        } catch (error) {
-            console.error('Error loading products save data:', error);
+        // Load each product individually for now
+        for (const productId of productIds) {
+            await loadProductSaveCount(productId);
         }
-    }, [batchUpdateSaveData]);
+    }, []);
 
     const loadProductSaveCount = async (productId: string) => {
         try {
@@ -115,7 +107,7 @@ export function useSaves() {
         }
     };
 
-    // Batch toggle multiple saves
+    // Simplified batch toggle - process individually
     const batchToggleSavesAction = async (
         productIds: string[],
         action: 'save' | 'unsave'
@@ -124,22 +116,14 @@ export function useSaves() {
         setError(null);
 
         try {
-            const result = await batchToggleSaves(productIds, action);
-            if (result.success && result.results) {
-                // Update store with batch results
-                result.results.forEach(({ productId, isSaved, saveCount }) => {
-                    if (isSaved) {
-                        addSavedProduct(productId);
-                    } else {
-                        removeSavedProduct(productId);
-                    }
-                    setSaveCount(productId, saveCount);
-                });
-                return { success: true, results: result.results };
-            } else {
-                setError(result.error || 'Failed to batch toggle saves');
-                return { success: false, error: result.error };
+            const results = [];
+            for (const productId of productIds) {
+                const result = action === 'save'
+                    ? await toggleSave(productId)
+                    : await toggleSave(productId);
+                results.push({ productId, success: result.success });
             }
+            return { success: true, results };
         } catch (error) {
             const errorMessage = 'Failed to batch toggle saves';
             setError(errorMessage);

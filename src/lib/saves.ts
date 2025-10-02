@@ -1,96 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
 
-// Request throttling and caching
-const requestCache = new Map<string, { data: any; timestamp: number }>();
-const pendingRequests = new Map<string, Promise<any>>();
-const REQUEST_CACHE_DURATION = 30000; // 30 seconds
-const REQUEST_THROTTLE_DELAY = 1000; // 1 second between requests
-
-// Throttled request helper with retry logic
-async function throttledRequest<T>(
-    key: string,
-    requestFn: () => Promise<T>,
-    useCache: boolean = true,
-    maxRetries: number = 2
-): Promise<T> {
-    // Check cache first
-    if (useCache) {
-        const cached = requestCache.get(key);
-        if (cached && Date.now() - cached.timestamp < REQUEST_CACHE_DURATION) {
-            return cached.data;
-        }
-    }
-
-    // Check if request is already pending
-    if (pendingRequests.has(key)) {
-        return pendingRequests.get(key)!;
-    }
-
-    // Create new request with retry logic
-    const requestPromise = new Promise<T>(async (resolve, reject) => {
-        let attempts = 0;
-
-        const attemptRequest = async () => {
-            try {
-                attempts++;
-                const result = await requestFn();
-                if (useCache) {
-                    requestCache.set(key, { data: result, timestamp: Date.now() });
-                }
-                resolve(result);
-            } catch (error) {
-                if (attempts < maxRetries && shouldRetry(error)) {
-                    // Exponential backoff: 500ms, 1000ms, 2000ms
-                    const delay = 500 * Math.pow(2, attempts - 1);
-                    setTimeout(attemptRequest, delay);
-                } else {
-                    reject(error);
-                }
-            } finally {
-                if (attempts >= maxRetries) {
-                    pendingRequests.delete(key);
-                }
-            }
-        };
-
-        // Initial delay for throttling
-        setTimeout(attemptRequest, REQUEST_THROTTLE_DELAY);
-    });
-
-    pendingRequests.set(key, requestPromise);
-    return requestPromise;
-}
-
-// Helper to determine if an error should trigger a retry
-function shouldRetry(error: any): boolean {
-    if (!error) return false;
-
-    // Retry on network errors or connection issues
-    const message = error.message?.toLowerCase() || '';
-    return message.includes('network') ||
-        message.includes('connection') ||
-        message.includes('timeout') ||
-        message.includes('err_connection_closed') ||
-        message.includes('err_failed');
-}
-
-// Cache invalidation helper
-function invalidateCache(pattern: string) {
-    const keysToDelete: string[] = [];
-    requestCache.forEach((_, key) => {
-        if (key.includes(pattern)) {
-            keysToDelete.push(key);
-        }
-    });
-    keysToDelete.forEach(key => requestCache.delete(key));
-}
-
-// Clear all cache (useful for logout or major state changes)
-export function clearSaveCache() {
-    requestCache.clear();
-    pendingRequests.clear();
-}
-
 export interface SaveResult {
     success: boolean;
     error?: string;
@@ -103,17 +12,25 @@ export interface SaveData {
     saveCount: number;
 }
 
-export interface BatchSaveResult {
-    success: boolean;
-    error?: string;
-    results?: Array<{
-        productId: string;
-        isSaved: boolean;
-        saveCount: number;
-    }>;
-}
+// Simple cache for request deduplication
+const requestCache = new Map<string, Promise<any>>();
 
-// Enhanced client-side save operations with better error handling and performance
+// Helper to get cached request or create new one
+async function getCachedRequest<T>(key: string, requestFn: () => Promise<T>): Promise<T> {
+    if (requestCache.has(key)) {
+        return requestCache.get(key)!;
+    }
+
+    const promise = requestFn();
+    requestCache.set(key, promise);
+
+    // Clean up after 30 seconds
+    setTimeout(() => {
+        requestCache.delete(key);
+    }, 30000);
+
+    return promise;
+}
 
 export async function saveProduct(productId: string): Promise<SaveResult> {
     try {
@@ -127,23 +44,15 @@ export async function saveProduct(productId: string): Promise<SaveResult> {
             .insert({ user_id: user.id, product_id: productId });
 
         if (error) {
-            // Handle unique constraint violation gracefully
             if (error.code === '23505') {
                 return { success: true, saveCount: 0 }; // Already saved
             }
             return { success: false, error: error.message };
         }
 
-        // Invalidate cache for this product
-        invalidateCache(productId);
-
         // Get updated save count
-        const { data: countData, error: countError } = await supabase
+        const { data: countData } = await supabase
             .rpc('get_product_save_count', { product_uuid: productId });
-
-        if (countError) {
-            console.error('Error getting save count:', countError);
-        }
 
         return {
             success: true,
@@ -175,16 +84,9 @@ export async function unsaveProduct(productId: string): Promise<SaveResult> {
             return { success: false, error: error.message };
         }
 
-        // Invalidate cache for this product
-        invalidateCache(productId);
-
         // Get updated save count
-        const { data: countData, error: countError } = await supabase
+        const { data: countData } = await supabase
             .rpc('get_product_save_count', { product_uuid: productId });
-
-        if (countError) {
-            console.error('Error getting save count:', countError);
-        }
 
         return {
             success: true,
@@ -228,9 +130,7 @@ export async function getUserSavedProducts(): Promise<{ success: boolean; produc
 }
 
 export async function getProductSaveCount(productId: string): Promise<{ success: boolean; count?: number; error?: string }> {
-    const cacheKey = `save_count_${productId}`;
-
-    return throttledRequest(cacheKey, async () => {
+    return getCachedRequest(`save_count_${productId}`, async () => {
         try {
             const { data, error } = await supabase
                 .rpc('get_product_save_count', { product_uuid: productId });
@@ -256,9 +156,7 @@ export async function isProductSaved(productId: string): Promise<{ success: bool
         return { success: false, error: 'User not authenticated' };
     }
 
-    const cacheKey = `is_saved_${productId}_${user.id}`;
-
-    return throttledRequest(cacheKey, async () => {
+    return getCachedRequest(`is_saved_${productId}_${user.id}`, async () => {
         try {
             const { data, error } = await supabase
                 .rpc('is_product_saved_by_user', {
@@ -281,120 +179,7 @@ export async function isProductSaved(productId: string): Promise<{ success: bool
     });
 }
 
-// NEW: Batch operations for better performance
-
-export async function batchGetProductsSaveData(productIds: string[]): Promise<{ success: boolean; data?: SaveData[]; error?: string }> {
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            return { success: false, error: 'User not authenticated' };
-        }
-
-        const { data, error } = await supabase
-            .rpc('get_products_save_data' as any, {
-                product_uuids: productIds,
-                user_uuid: user.id
-            });
-
-        if (error) {
-            return { success: false, error: error.message };
-        }
-
-        const saveData: SaveData[] = (data as any[])?.map((item: any) => ({
-            productId: item.product_id,
-            isSaved: item.is_saved,
-            saveCount: item.save_count
-        })) || [];
-
-        return { success: true, data: saveData };
-    } catch (error) {
-        console.error('Error getting batch save data:', error);
-        return {
-            success: false,
-            error: 'Failed to get batch save data'
-        };
-    }
+// Clear cache helper
+export function clearSaveCache() {
+    requestCache.clear();
 }
-
-export async function batchToggleSaves(
-    productIds: string[],
-    action: 'save' | 'unsave'
-): Promise<BatchSaveResult> {
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            return { success: false, error: 'User not authenticated' };
-        }
-
-        const { data, error } = await supabase
-            .rpc('batch_toggle_saves' as any, {
-                product_uuids: productIds,
-                user_uuid: user.id,
-                action: action
-            });
-
-        if (error) {
-            return { success: false, error: error.message };
-        }
-
-        const results = (data as any[])?.map((item: any) => ({
-            productId: item.product_id,
-            isSaved: action === 'save',
-            saveCount: item.new_save_count
-        })) || [];
-
-        return { success: true, results };
-    } catch (error) {
-        console.error('Error batch toggling saves:', error);
-        return {
-            success: false,
-            error: 'Failed to batch toggle saves'
-        };
-    }
-}
-
-// NEW: Get saved products with metadata for a dedicated saved page
-export async function getUserSavedProductsWithMetadata(): Promise<{
-    success: boolean;
-    products?: Array<{
-        productId: string;
-        savedAt: string;
-        productTitle: string;
-        productPricePence: number;
-        productImages: string[];
-    }>;
-    error?: string
-}> {
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            return { success: false, error: 'User not authenticated' };
-        }
-
-        const { data, error } = await supabase
-            .rpc('get_user_saved_products_with_metadata' as any, {
-                user_uuid: user.id
-            });
-
-        if (error) {
-            return { success: false, error: error.message };
-        }
-
-        const products = (data as any[])?.map((item: any) => ({
-            productId: item.product_id,
-            savedAt: item.saved_at,
-            productTitle: item.product_title,
-            productPricePence: item.product_price_pence,
-            productImages: item.product_images || []
-        })) || [];
-
-        return { success: true, products };
-    } catch (error) {
-        console.error('Error getting saved products with metadata:', error);
-        return {
-            success: false,
-            error: 'Failed to get saved products with metadata'
-        };
-    }
-}
-
