@@ -45,12 +45,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     return a & a;
   }, 0);
   
-  const hasDiscount = Math.abs(productIdHash) % 10 > 3; // 70% chance of discount
-  const discountPercent = (Math.abs(productIdHash) % 50) + 20; // 20-70% off
-  const originalPrice = Math.round(product.price_pence * (1 + discountPercent / 100));
-  const hasRating = Math.abs(productIdHash) % 10 > 4; // 60% chance of rating
-  const rating = 3 + (Math.abs(productIdHash) % 20) / 10; // 3-5 stars
-  const reviewCount = (Math.abs(productIdHash) % 500) + 50; // 50-550 reviews
+  const hasDiscount = undefined
+  const discountPercent = undefined
+  const originalPrice = undefined
+  const hasRating = undefined
+  const rating = undefined
+  const reviewCount = undefined
 
   return (
     <Link href={`/product/${product.id}`} className="block group">
@@ -77,7 +77,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Product Info */}
         <CardContent className="p-3 space-y-2">
           {/* Title */}
-          <h3 className="font-medium text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-slate-700 transition-colors">
+          <h3 className="text-slate-900 text-xs leading-tight line-clamp-2 group-hover:text-slate-700 transition-colors">
             {product.title}
           </h3>
           
@@ -88,7 +88,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`h-3 w-3 ${i < Math.floor(rating) ? 'text-amber-500 fill-current' : 'text-slate-300'}`}
+                    className={`h-3 w-3 ${i < Math.floor(rating || 0) ? 'text-amber-500 fill-current' : 'text-slate-300'}`}
                   />
                 ))}
               </div>
@@ -98,12 +98,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           {/* Price */}
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold text-slate-900">
+            <span className="text-xs text-slate-900">
               £{(product.price_pence / 100).toFixed(2)}
             </span>
             {hasDiscount && (
               <span className="text-xs text-slate-500 line-through">
-                £{(originalPrice / 100).toFixed(2)}
+                £{(originalPrice || 0 / 100).toFixed(2)}
               </span>
             )}
           </div>
