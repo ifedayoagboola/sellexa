@@ -6,11 +6,11 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ products, variant = 'mobile' }: ProductGridProps) {
-  const isMobile = variant === 'mobile';
-  
-  const gridClasses = isMobile 
-    ? 'grid grid-cols-2 gap-3'
-    : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4';
+  // Responsive grid classes:
+  // Mobile (0-640px): 2 products per row
+  // Tablet (641-1023px): 4 products per row  
+  // Desktop (1024px+): 6 products per row
+  const gridClasses = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4';
 
   return (
     <div className={gridClasses}>

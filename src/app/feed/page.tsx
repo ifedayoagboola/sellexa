@@ -65,44 +65,23 @@ export default async function FeedPage() {
     <div className="min-h-screen bg-white pb-20">
         <TopBar user={user} />
         
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Mobile Layout */}
-          <div className="block xl:hidden">
-            <PageHeader variant="mobile" />
-            {sellerSections.length > 0 ? (
-              <div className="space-y-8">
-                {sellerSections.map((section, index) => (
-                  <SellerSection 
-                    key={section.seller?.user_id || index}
-                    section={section}
-                    index={index}
-                    variant="mobile"
-                  />
-                ))}
-              </div>
-            ) : (
-              <EmptyState />
-            )}
-          </div>
-          
-          {/* Desktop Layout */}
-          <div className="hidden xl:block">
-            <PageHeader variant="desktop" />
-            {sellerSections.length > 0 ? (
-              <div className="space-y-16">
-                {sellerSections.map((section, index) => (
-                  <SellerSection 
-                    key={section.seller?.user_id || index}
-                    section={section}
-                    index={index}
-                    variant="desktop"
-                  />
-                ))}
-              </div>
-            ) : (
-              <EmptyState />
-            )}
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
+          {/* Responsive Layout */}
+          <PageHeader variant="mobile" />
+          {sellerSections.length > 0 ? (
+            <div className="space-y-8 lg:space-y-16">
+              {sellerSections.map((section, index) => (
+                <SellerSection 
+                  key={section.seller?.user_id || index}
+                  section={section}
+                  index={index}
+                  variant="mobile"
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState />
+          )}
         </div>
         
         <Navigation />

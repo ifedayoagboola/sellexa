@@ -38,36 +38,34 @@ export default function BrandHeader({
     return null;
   }
 
-  const isMobile = variant === 'mobile';
-
   return (
-    <div className="bg-white p-2">
+    <div className="bg-white">
       <div className="flex items-center justify-between">
-        <div className={`flex items-center ${isMobile ? 'space-x-3' : 'space-x-2'}`}>
-          <Avatar className={isMobile ? 'w-12 h-12' : 'w-11 h-11'}>
+        <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+          <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
             <AvatarImage src={sellerLogo || ''} alt={sellerName} />
-            <AvatarFallback className="bg-gray-100 text-gray-700">
+            <AvatarFallback className="bg-gray-100 text-gray-700 text-xs sm:text-sm">
               {sellerName.split(' ').map((word: string) => word.charAt(0)).join('').toUpperCase()}
             </AvatarFallback>
           </Avatar>
           
-          <div>
-            <h2 className={`font-bold text-black ${isMobile ? 'text-base' : 'text-lg font-semibold'}`}>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-bold text-black text-sm sm:text-base lg:text-lg truncate">
               {sellerName}
             </h2>
-            <div className={`flex items-center ${isMobile ? 'space-x-1' : ''}`}>
-              <span className={`text-black ${isMobile ? 'text-sm' : 'text-xs text-gray-600'}`}>
+            <div className="flex items-center space-x-1">
+              <span className="text-black text-xs sm:text-sm">
                 {rating}
               </span>
-              <Star className={`text-black fill-current ${isMobile ? 'h-3 w-3' : 'h-2 w-2 ml-1 mr-1'}`} />
-              <span className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-xs'}`}>
+              <Star className="text-black fill-current h-3 w-3 sm:h-3 sm:w-3" />
+              <span className="text-gray-600 text-xs sm:text-sm">
                 ({reviewCount > 1000 ? `${(reviewCount/1000).toFixed(1)}K` : reviewCount.toLocaleString()})
               </span>
             </div>
           </div>
         </div>
         
-        <div className="flex items-center">
+        <div className="flex items-center flex-shrink-0 ml-2">
           <SellerDropdown 
             sellerHandle={sellerHandle} 
             sellerName={sellerName} 

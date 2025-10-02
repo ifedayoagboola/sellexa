@@ -214,7 +214,7 @@ export default function SellerCatalogueClient({
       {/* TopBar */}
       <TopBar user={user} showSearch={false} showUserMenu={!!user} />
       {/* Header - Fashion Nova Style */}
-      <div className="bg-white border-b border-slate-200 sticky top-16 z-40">
+      <div className="bg-white border-b border-slate-200 sticky top-16 z-40 pt-48">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Mobile Layout */}
           <div className="block lg:hidden">

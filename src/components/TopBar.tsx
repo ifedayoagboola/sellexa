@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MagnifyingGlassIcon, BellIcon, UserIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
@@ -21,13 +22,41 @@ export default function TopBar({
   showSupport = true,
   user
 }: TopBarProps) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Show TopBar when scrolling down, hide when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px
+        setIsVisible(false);
+      } else {
+        // Scrolling up or at the top
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
   const handleSupportContact = () => {
     // Open email client with support email
     window.location.href = 'mailto:support@ethniqrootz.com?subject=Support Request&body=Hi, I need help with...';
   };
 
   return (
-    <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+    <div className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200 transition-transform duration-300 ease-in-out ${
+      isVisible ? 'translate-y-0' : '-translate-y-full'
+    }`}>
       <div className="max-w-7xl mx-auto px-4">
         {/* Mobile and Tablet Layout (up to and including 1024px) */}
         <div className="block lg:hidden">

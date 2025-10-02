@@ -21,13 +21,9 @@ export default function SellerSection({ section, index, variant = 'mobile' }: Se
   // Mock rating data - deterministic to avoid hydration issues
   const rating = 4.0 + (index % 2) * 0.3;
   const reviewCount = 100 + (index * 50) % 900; // Deterministic based on index
-  
-  const isMobile = variant === 'mobile';
-  const spacingClass = isMobile ? 'space-y-4' : 'space-y-8';
-  const containerClass = isMobile ? 'space-y-8' : 'space-y-16';
 
   return (
-    <div key={seller?.user_id || index} className={spacingClass}>
+    <div key={seller?.user_id || index} className="space-y-4 lg:space-y-8">
       <BrandHeader 
         seller={seller}
         rating={rating}
@@ -36,7 +32,6 @@ export default function SellerSection({ section, index, variant = 'mobile' }: Se
       />
       <ProductGrid 
         products={section.products}
-        variant={variant}
       />
     </div>
   );
