@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+
+// Force dynamic rendering to prevent build-time prerendering
+export const dynamic = 'force-dynamic';
 import { useRouter } from 'next/navigation';
 import { useChat } from '@/hooks/useChat';
 import { 

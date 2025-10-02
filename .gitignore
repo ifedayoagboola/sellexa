@@ -2,6 +2,7 @@ node_modules
 .github/*
 .cursor/*
 .next/*
+.next*
 .vercel/*
 .vscode/*
 .env.example
