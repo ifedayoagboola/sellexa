@@ -1,2 +1,12 @@
 node_modules
+.github/*
+.cursor/*
+.next/*
+.vercel/*
+.vscode/*
+.env.example
+.env.staging
+.env.production
+.env.development
+.env.test
 .env.local
