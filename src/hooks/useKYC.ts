@@ -63,7 +63,7 @@ export function useKYC() {
                 return;
             }
 
-            setKycData(data);
+            setKycData(data as any);
         } catch (err: any) {
             console.error('Error fetching KYC data:', err);
             setError(err.message || 'Failed to fetch KYC data');

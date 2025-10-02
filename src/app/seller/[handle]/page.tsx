@@ -3,12 +3,13 @@ import { notFound } from 'next/navigation';
 import SellerCatalogueClient from './SellerCatalogueClient';
 
 interface SellerCataloguePageProps {
-  params: {
+  params: Promise<{
     handle: string;
-  };
+  }>;
 }
 
 export default async function SellerCataloguePage({ params }: SellerCataloguePageProps) {
+  const { handle } = await params;
   const supabase = await createClient();
   
   // Get current user
@@ -26,7 +27,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
       postcode,
       created_at
     `)
-    .eq('handle', params.handle)
+    .eq('handle', handle)
     .single();
 
   if (sellerError || !seller) {
@@ -89,7 +90,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
       seller={seller}
       products={products || []}
       productCount={productCount}
-      kycData={kycData}
+      kycData={kycData as any}
       user={user}
     />
   );
@@ -97,12 +98,13 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
 
 // Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }: SellerCataloguePageProps) {
+  const { handle } = await params;
   const supabase = await createClient();
   
   const { data: seller } = await supabase
     .from('profiles')
     .select('handle, name, avatar_url, city')
-    .eq('handle', params.handle)
+    .eq('handle', handle)
     .single();
 
   if (!seller) {

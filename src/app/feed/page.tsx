@@ -120,7 +120,7 @@ export default async function FeedPage() {
                                 />
                               ) : (
                                 <span className="text-xs font-bold text-gray-700">
-                                  {sellerName.split(' ').map(word => word.charAt(0)).join('').toUpperCase()}
+                                  {sellerName.split(' ').map((word: string) => word.charAt(0)).join('').toUpperCase()}
                                 </span>
                               )}
                             </div>
@@ -223,7 +223,7 @@ export default async function FeedPage() {
                                 />
                               ) : (
                                 <span className="text-sm font-semibold text-gray-700">
-                                  {sellerName.split(' ').map(word => word.charAt(0)).join('').toUpperCase()}
+                                  {sellerName.split(' ').map((word: string) => word.charAt(0)).join('').toUpperCase()}
                                 </span>
                               )}
                             </div>

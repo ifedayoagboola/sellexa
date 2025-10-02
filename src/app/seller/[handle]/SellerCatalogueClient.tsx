@@ -50,10 +50,10 @@ interface Product {
   price_pence: number;
   status: string;
   images: string[];
-  city: string;
+  city: string | null;
   category: string;
   created_at: string;
-  description?: string;
+  description?: string | null;
 }
 
 interface Seller {

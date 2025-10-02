@@ -156,7 +156,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
           kyc_status: 'verified', // Auto-verify upon submission
           kyc_submitted_at: now,
           kyc_verified_at: now, // Set verification timestamp immediately
-        })
+        } as any)
         .eq('id', user.id);
 
       if (updateError) {

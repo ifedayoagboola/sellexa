@@ -15,13 +15,13 @@ export interface SearchResult {
     price_pence: number;
     status: string;
     images: string[];
-    city: string;
+    city: string | null;
     category: string;
     user_id: string;
     profiles: {
         handle: string;
-        name: string;
-        avatar_url: string;
+        name: string | null;
+        avatar_url: string | null;
     };
 }
 
@@ -60,12 +60,12 @@ export async function searchProducts(filters: SearchFilters): Promise<SearchResp
 
         // Apply category filter
         if (filters.category) {
-            query = query.eq('category', filters.category.toUpperCase());
+            query = query.eq('category', filters.category.toUpperCase() as any);
         }
 
         // Apply status filter
         if (filters.status) {
-            query = query.eq('status', filters.status.toUpperCase());
+            query = query.eq('status', filters.status.toUpperCase() as any);
         }
 
         // Apply city filter

@@ -21,7 +21,7 @@ export default async function PostPage() {
     .single();
 
   // If KYC is not verified, redirect to KYC page
-  if (!profile || profile.kyc_status !== 'verified') {
+  if (!profile || (profile as any).kyc_status !== 'verified') {
     redirect('/kyc?redirectTo=/post');
   }
 

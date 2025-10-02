@@ -76,7 +76,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
         return;
       }
 
-      setKycData(data);
+      setKycData(data as any);
     } catch (error) {
       console.error('Error fetching KYC status:', error);
     } finally {

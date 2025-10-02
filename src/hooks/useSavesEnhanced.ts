@@ -9,7 +9,7 @@ import {
     isProductSaved,
     batchGetProductsSaveData,
     batchToggleSaves
-} from '@/lib/savesEnhanced';
+} from '@/lib/saves';
 
 export function useSavesEnhanced() {
     const {

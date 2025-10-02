@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/integrations/supabase/client';
 import Navigation from '@/components/Navigation';
@@ -16,7 +16,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-export default function KYCPage() {
+function KYCPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/feed';
@@ -235,5 +235,13 @@ export default function KYCPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function KYCPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KYCPageContent />
+    </Suspense>
   );
 }
