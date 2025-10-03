@@ -13,6 +13,12 @@ interface TopBarProps {
   showUserMenu?: boolean;
   showSupport?: boolean;
   user?: any;
+  sellerInfo?: {
+    business_name?: string;
+    business_logo_url?: string;
+    name?: string;
+    handle?: string;
+  };
 }
 
 export default function TopBar({ 
@@ -20,7 +26,8 @@ export default function TopBar({
   showNotifications = true, 
   showUserMenu = true,
   showSupport = true,
-  user
+  user,
+  sellerInfo
 }: TopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -53,6 +60,18 @@ export default function TopBar({
     window.location.href = 'mailto:support@ethniqrootz.com?subject=Support Request&body=Hi, I need help with...';
   };
 
+  // Get seller display info
+  const getSellerDisplayInfo = () => {
+    if (!sellerInfo) return null;
+    
+    const sellerName = sellerInfo.business_name || sellerInfo.name || sellerInfo.handle || 'Unknown Seller';
+    const sellerLogo = sellerInfo.business_logo_url;
+    
+    return { sellerName, sellerLogo };
+  };
+
+  const sellerDisplay = getSellerDisplayInfo();
+
   return (
     <div className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200 transition-transform duration-300 ease-in-out ${
       isVisible ? 'translate-y-0' : '-translate-y-full'
@@ -61,18 +80,44 @@ export default function TopBar({
         {/* Mobile and Tablet Layout (up to and including 1024px) */}
         <div className="block lg:hidden">
           {/* First Row: Logo + Icons */}
-          <div className="flex items-center justify-between py-3">
-            {/* EthniqRootz Logo */}
-            <Link href="/feed" className="flex items-center">
-              <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
-                <Image
-                  src="/ethniqrootz.png"
-                  alt="EthniqRootz"
-                  fill
-                  className="object-contain"
-                />
+          <div className="flex items-center justify-between py-4">
+            {/* Seller Logo or EthniqRootz Logo */}
+            {sellerDisplay ? (
+              <div className="flex items-center">
+                {sellerDisplay.sellerLogo ? (
+                  <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
+                    <Image
+                      src={sellerDisplay.sellerLogo}
+                      alt={sellerDisplay.sellerName}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-10 h-10 bg-[#1aa1aa] rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">
+                        {sellerDisplay.sellerName.substring(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-lg font-bold text-slate-900 truncate max-w-32">
+                      {sellerDisplay.sellerName}
+                    </span>
+                  </div>
+                )}
               </div>
-            </Link>
+            ) : (
+              <Link href="/feed" className="flex items-center">
+                <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
+                  <Image
+                    src="/ethniqrootz.png"
+                    alt="EthniqRootz"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </Link>
+            )}
             
             {/* Right Icons */}
             <div className="flex items-center space-x-1 sm:space-x-2">
@@ -110,7 +155,7 @@ export default function TopBar({
           
           {/* Second Row: Search Bar */}
           {showSearch && (
-            <div className="w-full pb-3">
+            <div className="w-full pb-4">
               <SearchBar 
                 placeholder="Search products..."
                 className="w-full"
@@ -122,20 +167,46 @@ export default function TopBar({
 
         {/* Desktop Layout (1025px and above) */}
         <div className="hidden lg:block">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-4">
             {/* Left Side: Logo */}
             <div className="flex items-center">
-              {/* EthniqRootz Logo */}
-              <Link href="/feed" className="flex items-center">
-                <div className="w-48 h-32 relative">
-                  <Image
-                    src="/ethniqrootz.png"
-                    alt="EthniqRootz"
-                    fill
-                    className="object-contain"
-                  />
+              {/* Seller Logo or EthniqRootz Logo */}
+              {sellerDisplay ? (
+                <div className="flex items-center">
+                  {sellerDisplay.sellerLogo ? (
+                    <div className="w-48 h-32 relative">
+                      <Image
+                        src={sellerDisplay.sellerLogo}
+                        alt={sellerDisplay.sellerName}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-[#1aa1aa] rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">
+                          {sellerDisplay.sellerName.substring(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="text-xl font-bold text-slate-900">
+                        {sellerDisplay.sellerName}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              </Link>
+              ) : (
+                <Link href="/feed" className="flex items-center">
+                  <div className="w-48 h-32 relative">
+                    <Image
+                      src="/ethniqrootz.png"
+                      alt="EthniqRootz"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </Link>
+              )}
             </div>
             
             {/* Center: Search Bar */}
