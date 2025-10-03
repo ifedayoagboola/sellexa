@@ -1,15 +1,14 @@
 import { createClient } from '@/integrations/supabase/server';
-import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ProductImage from '@/components/ProductImage';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
-import SaveButton from '@/components/SaveButton';
 import SaveProvider from '@/components/SaveProvider';
-import { StartChatButton } from '@/components/StartChatButton';
 import { getServerSideSaveData } from '@/lib/saves-server';
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Minus, Plus, ThumbsUp, ExternalLink, ArrowRight } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, Shield } from 'lucide-react';
+import ProductActions from '@/components/ProductActions';
+import BrandHeader from '@/components/feed/BrandHeader';
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -84,55 +83,132 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     return supabaseUrl ? `${supabaseUrl}/storage/v1/object/public/product-images/${imagePath}` : null;
   };
 
-  // Mock data for Fashion Nova style
-  const originalPrice = Math.round(product.price_pence * 1.5);
-  const discount = Math.floor(Math.random() * 50) + 20;
-  const rating = 4.7;
-  const reviewCount = Math.floor(Math.random() * 2000) + 100;
-  const sizes = ['XS', 'S', 'M', 'L', 'XL', '1X', '2X', '3X'];
-  const selectedSize = 'S';
-  const quantity = 1;
+  // Real data from database
+  const sellerName = kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'EthniqRootz';
+  const sellerHandle = product.profiles?.handle || 'unknown';
+  
+  // Seller phone number (would come from seller profile in real app)
+  const sellerPhone = '+2349012345678'; // This would be fetched from seller profile
+  
+  // WhatsApp chat URL
+  const whatsappMessage = `Hi! I'm interested in this product: ${product.title} - £${(product.price_pence / 100).toFixed(2)}. Can you tell me more about it?`;
+  const whatsappUrl = `https://wa.me/${sellerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+  
+  // Premium features (would come from seller subscription in real app)
+  const isPremiumSeller = false; // Default to false, would be fetched from seller profile
+  const hasPaymentIntegration = isPremiumSeller;
 
-  // Mock reviews data
-  const reviews = [
-    {
-      id: 1,
-      name: 'David',
-      date: 'September 24, 2025',
-      rating: 5,
-      title: 'Little Yellows',
-      body: 'Great product, works as expected. Would definitely recommend to others.',
-      helpful: 12
-    },
-    {
-      id: 2,
-      name: 'Sarah',
-      date: 'September 20, 2025',
-      rating: 4,
-      title: 'Good product',
-      body: 'Good quality and fast shipping. The product arrived in perfect condition...',
-      helpful: 8
-    },
-    {
-      id: 3,
-      name: 'Mike',
-      date: 'September 18, 2025',
-      rating: 2,
-      title: 'Not for me',
-      body: 'Didn\'t work as expected for my needs. Quality seems okay but...',
-      helpful: 3
+  // Real data - no mock data needed
+
+  // Common seller data object
+  const sellerData = {
+    user_id: product.user_id,
+    handle: product.profiles?.handle,
+    name: product.profiles?.name,
+    avatar_url: product.profiles?.avatar_url,
+    business_name: kycData?.business_name,
+    business_logo_url: kycData?.business_logo_url
+  };
+
+  // Common product status component
+  const ProductStatus = () => (
+    <div className="flex items-center space-x-2">
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+        product.status === 'AVAILABLE' 
+          ? 'bg-green-100 text-green-800' 
+          : 'bg-gray-100 text-gray-800'
+      }`}>
+        {product.status === 'AVAILABLE' ? 'Available' : 'Unavailable'}
+      </span>
+      {product.category && (
+        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+          {product.category}
+        </span>
+      )}
+    </div>
+  );
+
+  // Common product images component
+  const ProductImages = ({ isMobile = false, isTablet = false }) => {
+    if (isMobile || isTablet) {
+      return (
+        <div className="overflow-x-auto">
+          <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
+            {product.images && product.images.length > 0 ? (
+              product.images.map((image, index) => (
+                <div key={index} className={`flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden ${
+                  isMobile ? 'w-80 aspect-[5/5]' : 'w-96 aspect-[4/5]'
+                }`}>
+                  <ProductImage
+                    imageUrl={getImageUrl(image)}
+                    title={product.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))
+            ) : (
+              <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${
+                isMobile ? 'w-80 aspect-[5/5]' : 'w-96 aspect-[4/5]'
+              }`}>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                  <p className="text-gray-500">No images available</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
     }
-  ];
 
-  // Mock seller products for recommendations
-  const sellerProducts = [
-    { id: '1', title: 'Lion\'s Mane Focus+', price: 11.99, discount: 20, image: '/api/placeholder/150/200' },
-    { id: '2', title: 'Mg Glycinate 3-in-1', price: 9.99, discount: 29, image: '/api/placeholder/150/200' },
-    { id: '3', title: 'Vitamin D3 + K2', price: 6.99, discount: 22, image: '/api/placeholder/150/200' },
-    { id: '4', title: 'Collagen Glow Up', price: 16.99, discount: 12, image: '/api/placeholder/150/200' },
-    { id: '5', title: 'Vegan Immunity Bundle', price: 24.99, discount: 33, image: '/api/placeholder/150/200' },
-    { id: '6', title: 'The Glow Up Bundle', price: 19.99, discount: 15, image: '/api/placeholder/150/200' }
-  ];
+    // Desktop layout
+    return (
+      <div className="space-y-4">
+        {/* Main Product Image */}
+        <div className="aspect-[4/5] bg-gray-100 rounded-xl overflow-hidden">
+          {product.images && product.images.length > 0 ? (
+            <ProductImage
+              imageUrl={getImageUrl(product.images[0])}
+              title={product.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-500">No images available</p>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Image Thumbnails */}
+        {product.images && product.images.length > 1 && (
+          <div className="flex space-x-2">
+            {product.images.slice(0, 4).map((image, index) => (
+              <div key={index} className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                <ProductImage
+                  imageUrl={getImageUrl(image)}
+                  title={product.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Navigation Arrows */}
+        <div className="flex justify-center space-x-2">
+          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+            <ChevronLeft className="h-4 w-4 text-gray-600" />
+          </button>
+          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+            <ChevronRight className="h-4 w-4 text-gray-600" />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <SaveProvider 
@@ -144,235 +220,75 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         {/* TopBar */}
         <TopBar user={user} showSearch={false} showUserMenu={!!user} />
         
-        {/* Mobile Layout */}
-        <div className="block md:hidden pt-48">
-          {/* Brand Header - Mobile */}
-          <div className="bg-white border-b border-slate-200 sticky top-16 z-40">
+        {/* Mobile & Tablet Layout */}
+        <div className="block lg:hidden pt-28">
+          {/* Brand Header */}
+          <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
             <div className="max-w-7xl mx-auto px-4 py-4">
-              <div className="flex items-center justify-between">
-                {/* Brand Logo & Name */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
-                    {kycData?.business_logo_url ? (
-                      <img 
-                        src={kycData.business_logo_url} 
-                        alt="Business logo" 
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-white font-bold text-sm">
-                        {(kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'ER').substring(0, 2).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-semibold text-black">
-                      {kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'EthniqRootz'}
-                    </h1>
-                    <div className="flex items-center space-x-1">
-                      <span className="text-sm text-black">{rating}</span>
-                      <Star className="h-3 w-3 text-black fill-current" />
-                      <span className="text-sm text-gray-600">({reviewCount.toLocaleString()})</span>
-                    </div>
-          </div>
-        </div>
-
-                {/* Visit Store Button */}
-                <Link
-                  href={`/seller/${product.profiles?.handle}`}
-                  className="px-3 py-1.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
-                >
-                  Visit store
-                </Link>
-              </div>
+              <BrandHeader
+                seller={sellerData}
+                rating={4.0}
+                reviewCount={0}
+              />
             </div>
           </div>
 
-          {/* Product Images - Mobile */}
+          {/* Product Images */}
           <div className="bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 py-6">
-              <div className="grid grid-cols-1 gap-4">
-                {/* Main Product Images */}
-                {product.images && product.images.length > 0 ? (
-                  product.images.slice(0, 2).map((image, index) => (
-                    <div key={index} className="aspect-[4/5] bg-slate-100 rounded-lg overflow-hidden">
-                      <ProductImage
-                        imageUrl={getImageUrl(image)}
-                        title={product.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div className="aspect-[4/5] bg-gray-100 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                      <p className="text-gray-500">No images available</p>
-          </div>
-              </div>
-                )}
-              </div>
+              <ProductImages isMobile={true} />
             </div>
           </div>
 
-          {/* Product Information - Mobile */}
+          {/* Product Information */}
           <div className="bg-white px-4 py-6 pb-32">
             <div className="max-w-7xl mx-auto">
               {/* Product Title */}
-              <h2 className="text-xl font-semibold text-black mb-2">{product.title}</h2>
-              
-              {/* Rating */}
-              <div className="flex items-center space-x-1 mb-4">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-3 w-3 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                    />
-                  ))}
-                </div>
-                <Link href="#" className="text-sm text-black hover:underline">
-                  {reviewCount} ratings
-                </Link>
-              </div>
+              <h2 className="text-sm font-medium text-slate-900 mb-2">{product.title}</h2>
               
               {/* Price */}
               <div className="flex items-center space-x-3 mb-6">
-                <span className="text-xl font-semibold text-black">£{(product.price_pence / 100).toFixed(2)}</span>
-                <span className="text-base text-gray-500 line-through">£{(originalPrice / 100).toFixed(2)}</span>
-            </div>
+                <span className="text-sm font-semibold text-slate-900">£{(product.price_pence / 100).toFixed(2)}</span>
+              </div>
               
-              {/* Wishlist Button */}
-              <div className="flex justify-end mb-6">
-                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Heart className="h-5 w-5 text-black" />
-                </button>
-            </div>
-              
-              {/* Size Selection */}
-              <div className="mb-8">
-                <h3 className="text-base font-medium text-black mb-3">Size {selectedSize}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      className={`px-3 py-1.5 rounded-full text-sm font-normal transition-colors ${
-                        size === selectedSize
-                          ? 'border border-black text-black'
-                          : size === 'XS'
-                          ? 'bg-gray-100 text-gray-400 line-through'
-                          : 'bg-gray-100 text-black hover:bg-gray-200'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-            </div>
-          </div>
+              {/* Product Status */}
+              <div className="mb-6">
+                <ProductStatus />
+              </div>
 
-          {/* Description */}
-          {product.description && (
+              {/* Description */}
+              {product.description && (
                 <div className="mb-8">
-                  <h3 className="text-base font-medium text-black mb-3">Description</h3>
-                  <p className="text-gray-900 leading-relaxed text-sm">{product.description}</p>
-            </div>
-          )}
+                  <h3 className="text-xs font-medium text-slate-900 mb-3">Description</h3>
+                  <p className="text-slate-600 leading-relaxed text-xs">{product.description}</p>
+                </div>
+              )}
 
-              {/* Category & Location */}
-              <div className="flex items-center justify-between text-sm text-gray-800 mb-8">
-                <span className="capitalize">{product.category.toLowerCase()}</span>
+              {/* Location */}
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-8">
                 <span>{product.city}{product.postcode && `, ${product.postcode}`}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tablet and Desktop Layout - Two Column */}
-        <div className="hidden md:block pt-56">
+        {/* Desktop Layout - Ecommerce Style */}
+        <div className="hidden lg:block pt-28">
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column - Product Images */}
-              <div className="space-y-4">
-                {/* Main Product Image */}
-                <div className="aspect-[4/5] bg-gray-100 rounded-xl overflow-hidden">
-                  {product.images && product.images.length > 0 ? (
-                    <ProductImage
-                      imageUrl={getImageUrl(product.images[0])}
-                      title={product.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                        <p className="text-gray-500">No images available</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Image Thumbnails */}
-                {product.images && product.images.length > 1 && (
-                  <div className="flex space-x-2">
-                    {product.images.slice(0, 4).map((image, index) => (
-                      <div key={index} className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                        <ProductImage
-                          imageUrl={getImageUrl(image)}
-                          title={product.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
-            </div>
-          )}
-
-                {/* Navigation Arrows */}
-                <div className="flex justify-center space-x-2">
-                  <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
-                    <ChevronLeft className="h-4 w-4 text-gray-600" />
-                  </button>
-                  <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
-                    <ChevronRight className="h-4 w-4 text-gray-600" />
-                  </button>
-                </div>
-              </div>
+              <ProductImages />
 
               {/* Right Column - Product Information */}
               <div className="space-y-6">
                 {/* Brand & Product Title */}
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-                      {kycData?.business_logo_url ? (
-                        <img 
-                          src={kycData.business_logo_url} 
-                          alt="Business logo" 
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-xs font-bold text-gray-600">
-                          {(kycData?.business_name || product.profiles?.name || 'ER').substring(0, 2).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      {kycData?.business_name || product.profiles?.name || 'EthniqRootz'}
-            </span>
-                  </div>
-                  <h1 className="text-2xl font-bold text-black">{product.title}</h1>
-                </div>
-                
-                {/* Rating */}
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-600">{reviewCount} ratings</span>
+                  <BrandHeader
+                    seller={sellerData}
+                    rating={4.0}
+                    reviewCount={0}
+                  />
+                  <h1 className="text-2xl font-semibold text-slate-900">{product.title}</h1>
                 </div>
                 
                 {/* Wishlist Icon */}
@@ -384,60 +300,32 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 
                 {/* Pricing */}
                 <div className="flex items-center space-x-3">
-                  <span className="text-2xl font-bold text-black">£{(product.price_pence / 100).toFixed(2)}</span>
-                  <span className="text-lg text-gray-500 line-through">£{(originalPrice / 100).toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-slate-900">£{(product.price_pence / 100).toFixed(2)}</span>
                 </div>
                 
-                {/* Pack Options */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-gray-900">Pack</h3>
-                  <div className="flex space-x-2">
-                    <button className="px-4 py-2 border-2 border-black text-black text-sm font-medium rounded-lg">
-                      2 Months (1 pack)
-                    </button>
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50">
-                      6 Months (3 packs)
-                    </button>
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50">
-                      12 Months (6 packs)
-                    </button>
-                  </div>
-                </div>
+                {/* Product Status */}
+                <ProductStatus />
                 
-                {/* Quantity Selector */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
-                  <div className="flex items-center space-x-3">
-                    <button className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <input 
-                      type="number" 
-                      value={quantity} 
-                      className="w-16 h-8 border border-gray-300 rounded-lg text-center text-sm"
-                      readOnly
-                    />
-                    <button className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
-                      <Plus className="h-4 w-4" />
-                    </button>
+                {/* Product Location */}
+                {product.city && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>📍</span>
+                    <span>{product.city}</span>
+                    {product.postcode && <span>({product.postcode})</span>}
                   </div>
-                </div>
+                )}
                 
                 {/* Action Buttons */}
-                <div className="space-y-3">
-                  <button className="w-full py-3 bg-[#1aa1aa] text-white text-sm font-medium rounded-lg hover:bg-[#158a8f] transition-colors">
-                    Add to cart
-                  </button>
-                  <button className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                    Buy now
-                  </button>
-                </div>
+                <ProductActions 
+                  whatsappUrl={whatsappUrl}
+                  hasPaymentIntegration={hasPaymentIntegration}
+                />
                 
                 {/* Description */}
                 {product.description && (
                   <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-gray-900">Description</h3>
-                    <p className="text-sm text-gray-700 leading-relaxed">
+                    <h3 className="text-sm font-medium text-slate-900">Description</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {product.description}
                     </p>
                     <button className="text-sm text-[#1aa1aa] hover:underline">
@@ -446,15 +334,32 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   </div>
                 )}
                 
+                {/* Premium Features Info */}
+                {!isPremiumSeller && (
+                  <div className="space-y-3 pt-4 border-t border-gray-200">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start space-x-3">
+                        <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h4 className="text-sm font-medium text-blue-900">Upgrade to Premium</h4>
+                          <p className="text-sm text-blue-700 mt-1">
+                            This seller can upgrade to enable secure payments, customer reviews, and trusted badge.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Additional Links */}
                 <div className="space-y-2 pt-4 border-t border-gray-200">
-                  <Link href={`/seller/${product.profiles?.handle}`} className="text-sm text-gray-600 hover:underline block">
-                    More details at {kycData?.business_name || product.profiles?.name || 'EthniqRootz'}
+                  <Link href={`/seller/${product.profiles?.handle}`} className="text-sm text-slate-500 hover:underline block">
+                    More details at {sellerName}
                   </Link>
-                  <Link href="#" className="text-sm text-gray-600 hover:underline block">
+                  <Link href="#" className="text-sm text-slate-500 hover:underline block">
                     Shipping Policy
                   </Link>
-                  <Link href="#" className="text-sm text-gray-600 hover:underline block">
+                  <Link href="#" className="text-sm text-slate-500 hover:underline block">
                     Refund Policy
                   </Link>
                 </div>
@@ -463,197 +368,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
         </div>
 
-        {/* Reviews and Recommendations Section - Tablet and Desktop */}
-        <div className="hidden md:block bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Reviews Section */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-black">Ratings and reviews</h2>
-                </div>
-                
-                {/* Overall Rating */}
-                <div className="flex items-center space-x-4">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-black">{rating}</div>
-                    <div className="flex items-center">
-                      <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                    </div>
-                    <div className="text-sm text-gray-600">{reviewCount.toLocaleString()} ratings</div>
-                  </div>
-                  
-                  {/* Rating Distribution */}
-                  <div className="flex-1 space-y-2">
-                    {[5, 4, 3, 2, 1].map((stars) => {
-                      const count = stars === 5 ? Math.floor(reviewCount * 0.8) : 
-                                   stars === 4 ? Math.floor(reviewCount * 0.1) : 
-                                   stars === 3 ? Math.floor(reviewCount * 0.05) : 
-                                   stars === 2 ? Math.floor(reviewCount * 0.03) : 
-                                   Math.floor(reviewCount * 0.02);
-                      const percentage = (count / reviewCount) * 100;
-                      
-                      return (
-                        <div key={stars} className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600 w-8">{stars}</span>
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                          <div className="flex-1 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-yellow-400 h-2 rounded-full" 
-                              style={{ width: `${percentage}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-gray-600 w-8">{count}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                
-                {/* Individual Reviews */}
-                <div className="space-y-4">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="bg-white p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`h-3 w-3 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm font-medium text-black">{review.title}</span>
-                        </div>
-                        <button className="flex items-center space-x-1 text-gray-500 hover:text-gray-700 transition-colors">
-                          <ThumbsUp className="h-3 w-3" />
-                          <span className="text-xs">Helpful</span>
-                        </button>
-                      </div>
-                      <div className="text-sm text-gray-600 mb-2">
-                        {review.name} · {review.date}
-                      </div>
-                      <p className="text-sm text-gray-800 leading-relaxed">{review.body}</p>
-                    </div>
-                  ))}
-                  
-                  <div className="text-center">
-                    <button className="px-6 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                      Read more reviews
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Seller Information and More Products */}
-              <div className="space-y-6">
-                {/* Seller Info */}
-                <div className="bg-white p-6 rounded-lg border border-gray-200">
-                  <div className="space-y-4">
-                    <Link 
-                      href={`/seller/${product.profiles?.handle}`} 
-                      className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      <span className="text-sm">More details at {kycData?.business_name || product.profiles?.name || 'EthniqRootz'}</span>
-                    </Link>
-                    
-                    <div className="flex space-x-2">
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                        Shipping Policy
-                      </button>
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                        Refund Policy
-                      </button>
-                    </div>
-                    
-                    {/* Seller Products Preview */}
-                    <div className="flex -space-x-2">
-                      {sellerProducts.slice(0, 4).map((item, index) => (
-                        <div key={item.id} className="w-12 h-16 bg-gray-200 rounded-lg border-2 border-white overflow-hidden">
-                          <div className="w-full h-full bg-gradient-to-br from-[#1aa1aa]/20 to-[#1aa1aa]/40 flex items-center justify-center">
-                            <span className="text-white text-xs font-bold text-center px-1">
-                              {item.title.split(' ')[0]}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium text-black">{kycData?.business_name || product.profiles?.name || 'EthniqRootz'}</div>
-                        <div className="flex items-center space-x-1">
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                          <span className="text-sm text-gray-600">4.8 (17.4K)</span>
-                        </div>
-                      </div>
-                      <button className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                        Follow
-            </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* More from this seller */}
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-black">More from {kycData?.business_name || product.profiles?.name || 'EthniqRootz'}</h2>
-                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-800 transition-colors">
-                  <span className="text-sm">View all</span>
-                  <ArrowRight className="h-4 w-4" />
-            </button>
-              </div>
-              
-              <div className="overflow-x-auto">
-                <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
-                  {sellerProducts.map((item) => (
-                    <div key={item.id} className="flex-shrink-0 w-48 bg-white rounded-lg border border-gray-200 overflow-hidden">
-                      <div className="relative">
-                        <div className="aspect-[3/4] bg-gradient-to-br from-[#1aa1aa]/20 to-[#1aa1aa]/40 flex items-center justify-center">
-                          <span className="text-white text-sm font-bold text-center px-2">
-                            {item.title}
-                          </span>
-                        </div>
-                        <div className="absolute top-2 left-2">
-                          <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">
-                            {item.discount}% off
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-3">
-                        <h3 className="font-medium text-black text-sm mb-1 line-clamp-2">{item.title}</h3>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-semibold text-black">£{item.price.toFixed(2)}</span>
-                          <span className="text-xs text-gray-500 line-through">£{(item.price * 1.3).toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons Overlay - Mobile only */}
-        <div className="fixed bottom-20 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-40 md:hidden">
+        {/* Fixed Bottom Buy Button - Mobile & Tablet */}
+        <div className="fixed bottom-20 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-40 lg:hidden">
           <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex items-center space-x-3">
-              <StartChatButton
-              productId={product.id} 
-                sellerId={product.user_id}
-                sellerName={product.profiles?.name || undefined}
-                className="flex-1 px-4 py-2 border border-gray-300 text-black text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            <ProductActions 
+              whatsappUrl={whatsappUrl}
+              hasPaymentIntegration={hasPaymentIntegration}
+              isMobile={true}
             />
-              <button className="flex-1 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2">
-                <ShoppingCart className="h-4 w-4" />
-                <span>Buy</span>
-              </button>
-            </div>
           </div>
         </div>
         
