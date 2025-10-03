@@ -6,9 +6,11 @@ import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
 import SaveProvider from '@/components/SaveProvider';
 import { getServerSideSaveData } from '@/lib/saves-server';
-import { Heart, ChevronLeft, ChevronRight, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import ProductActions from '@/components/ProductActions';
 import BrandHeader from '@/components/feed/BrandHeader';
+import DesktopProductGallery from '@/components/DesktopProductGallery';
+import ExpandableDescription from '@/components/ExpandableDescription';
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -128,87 +130,31 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     </div>
   );
 
-  // Common product images component
-  const ProductImages = ({ isMobile = false, isTablet = false }) => {
-    if (isMobile || isTablet) {
-      return (
-        <div className="overflow-x-auto">
-          <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
-            {product.images && product.images.length > 0 ? (
-              product.images.map((image, index) => (
-                <div key={index} className={`flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden ${
-                  isMobile ? 'w-80 aspect-[5/5]' : 'w-96 aspect-[4/5]'
-                }`}>
-                  <ProductImage
-                    imageUrl={getImageUrl(image)}
-                    title={product.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${
-                isMobile ? 'w-80 aspect-[5/5]' : 'w-96 aspect-[4/5]'
-              }`}>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                  <p className="text-gray-500">No images available</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // Desktop layout
-    return (
-      <div className="space-y-4">
-        {/* Main Product Image */}
-        <div className="aspect-[4/5] bg-gray-100 rounded-xl overflow-hidden">
-          {product.images && product.images.length > 0 ? (
-            <ProductImage
-              imageUrl={getImageUrl(product.images[0])}
-              title={product.title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-500">No images available</p>
-              </div>
+  // Mobile/Tablet product images component
+  const MobileProductImages = () => (
+    <div className="overflow-x-auto">
+      <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
+        {product.images && product.images.length > 0 ? (
+          product.images.map((image, index) => (
+            <div key={index} className="flex-shrink-0 w-80 aspect-[5/5] bg-slate-100 rounded-lg overflow-hidden">
+              <ProductImage
+                imageUrl={getImageUrl(image)}
+                title={product.title}
+                className="w-full h-full object-cover"
+              />
             </div>
-          )}
-        </div>
-        
-        {/* Image Thumbnails */}
-        {product.images && product.images.length > 1 && (
-          <div className="flex space-x-2">
-            {product.images.slice(0, 4).map((image, index) => (
-              <div key={index} className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                <ProductImage
-                  imageUrl={getImageUrl(image)}
-                  title={product.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+          ))
+        ) : (
+          <div className="w-80 aspect-[5/5] bg-gray-100 rounded-lg flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+              <p className="text-gray-500">No images available</p>
+            </div>
           </div>
         )}
-
-        {/* Navigation Arrows */}
-        <div className="flex justify-center space-x-2">
-          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
-            <ChevronLeft className="h-4 w-4 text-gray-600" />
-          </button>
-          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
-            <ChevronRight className="h-4 w-4 text-gray-600" />
-          </button>
-        </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
     <SaveProvider 
@@ -236,7 +182,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           {/* Product Images */}
           <div className="bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 py-6">
-              <ProductImages isMobile={true} />
+              <MobileProductImages />
             </div>
           </div>
 
@@ -277,7 +223,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column - Product Images */}
-              <ProductImages />
+              <DesktopProductGallery 
+                images={product.images || []}
+                title={product.title}
+              />
 
               {/* Right Column - Product Information */}
               <div className="space-y-6">
@@ -289,13 +238,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     reviewCount={0}
                   />
                   <h1 className="text-2xl font-semibold text-slate-900">{product.title}</h1>
-                </div>
-                
-                {/* Wishlist Icon */}
-                <div className="flex justify-end">
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <Heart className="h-5 w-5 text-gray-600" />
-                  </button>
                 </div>
                 
                 {/* Pricing */}
@@ -323,15 +265,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 
                 {/* Description */}
                 {product.description && (
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-slate-900">Description</h3>
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      {product.description}
-                    </p>
-                    <button className="text-sm text-[#1aa1aa] hover:underline">
-                      View more
-                    </button>
-                  </div>
+                  <ExpandableDescription 
+                    description={product.description}
+                    characterLimit={150}
+                  />
                 )}
                 
                 {/* Premium Features Info */}

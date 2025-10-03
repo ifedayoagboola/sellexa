@@ -42,7 +42,7 @@ export default function ProductActions({
         className="w-full py-3 bg-[#1aa1aa] text-white text-sm font-medium rounded-lg hover:bg-[#158a8f] transition-colors flex items-center justify-center space-x-2"
       >
         <ShoppingCart className="h-4 w-4" />
-        <span>Buy via WhatsApp</span>
+        <span>Buy Now</span>
       </button>
     </div>
   );
