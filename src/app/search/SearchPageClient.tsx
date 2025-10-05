@@ -201,7 +201,7 @@ export default function SearchPageClient({ user }: SearchPageClientProps) {
                     {query ? `Results for "${query}"` : 'Search Results'} ({results.length})
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
                   {results.map((product) => (
                     <ProductCard
                       key={product.id}

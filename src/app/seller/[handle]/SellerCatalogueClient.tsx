@@ -514,7 +514,7 @@ export default function SellerCatalogueClient({
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
                   {filteredProducts.map((product) => (
                     <ProductCard
                       key={product.id}
