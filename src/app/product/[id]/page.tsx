@@ -182,7 +182,7 @@ Looking forward to hearing from you!
     >
       <div className="min-h-screen bg-white">
         {/* TopBar */}
-        <TopBar user={user} showSearch={false} showUserMenu={!!user} />
+        <TopBar showSearch={false} showUserMenu={!!user} />
         
         {/* Mobile & Tablet Layout */}
         <div className="block lg:hidden pt-28 md:pt-40">

@@ -2,7 +2,7 @@ import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
-import UserProvider from '@/components/UserProvider';
+import StoresProvider from '@/components/StoresProvider';
 import ProfilePageClient from './ProfilePageClient';
 
 export default async function ProfilePage() {
@@ -46,11 +46,11 @@ export default async function ProfilePage() {
   }
 
   return (
-    <UserProvider initialUser={user}>
+    <StoresProvider initialUser={user} initialProducts={products} initialProfile={profile}>
       <div className="min-h-screen bg-gray-50 pb-20">
         <TopBar />
         <ProfilePageClient user={user} profile={profile} products={products || []} />
       </div>
-    </UserProvider>
+    </StoresProvider>
   );
 }

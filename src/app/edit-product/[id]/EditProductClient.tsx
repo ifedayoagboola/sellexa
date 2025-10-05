@@ -224,7 +224,7 @@ export default function EditProductClient({ user, product }: EditProductClientPr
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <TopBar user={user} />
+      <TopBar />
       
       <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
         <div className="max-w-2xl mx-auto">

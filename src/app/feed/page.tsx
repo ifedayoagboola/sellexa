@@ -2,8 +2,9 @@ import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
-import UserProvider from '@/components/UserProvider';
-import { PageHeader, SellerSection, EmptyState } from '@/components/feed';
+import StoresProvider from '@/components/StoresProvider';
+import { PageHeader } from '@/components/feed';
+import FeedContent from '@/components/feed/FeedContent';
 
 export default async function FeedPage() {
   const supabase = await createClient();
@@ -15,7 +16,7 @@ export default async function FeedPage() {
     redirect('/auth/login');
   }
 
-  // Fetch products with seller KYC data
+  // Fetch initial products data for server-side rendering
   const { data: products, error } = await supabase
     .from('products')
     .select(`
@@ -42,52 +43,19 @@ export default async function FeedPage() {
     console.error('Error fetching products:', error);
   }
 
-  // Group products by seller
-  const productsBySeller = products?.reduce((acc, product) => {
-    const sellerId = product.user_id;
-    const sellerProfile = product.profiles as any; // Cast to handle type issues
-    
-    if (!acc[sellerId]) {
-      acc[sellerId] = {
-        seller: sellerProfile,
-        products: []
-      };
-    }
-    acc[sellerId].products.push(product);
-    return acc;
-  }, {} as Record<string, { seller: any; products: any[] }>) || {};
-
-  // Convert to array and sort by product count
-  const sellerSections = Object.values(productsBySeller)
-    .filter(section => section.products.length > 0)
-    .sort((a, b) => b.products.length - a.products.length);
-
   return (
-    <UserProvider initialUser={user}>
+    <StoresProvider initialUser={user} initialProducts={products || []}>
       <div className="min-h-screen bg-white pb-20">
         <TopBar />
         
         <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
           {/* Responsive Layout */}
           <PageHeader variant="mobile" />
-          {sellerSections.length > 0 ? (
-            <div className="space-y-8 lg:space-y-16">
-              {sellerSections.map((section, index) => (
-                <SellerSection 
-                  key={section.seller?.user_id || index}
-                  section={section}
-                  index={index}
-                  variant="mobile"
-                />
-              ))}
-            </div>
-          ) : (
-            <EmptyState />
-          )}
+          <FeedContent initialProducts={products || []} />
         </div>
         
         <Navigation />
       </div>
-    </UserProvider>
+    </StoresProvider>
   );
 }

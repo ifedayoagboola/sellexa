@@ -207,7 +207,6 @@ export default function SellerCatalogueClient({
     <div className="min-h-screen bg-white">
       {/* TopBar */}
       <TopBar 
-        user={user} 
         showSearch={false} 
         showUserMenu={!!user} 
         sellerInfo={sellerData}
