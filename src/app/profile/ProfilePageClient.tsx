@@ -129,6 +129,20 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
     }
   };
 
+  // Helper function to construct image URL
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return null;
+
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+
+    // Construct the full Supabase storage URL with correct bucket name
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return supabaseUrl ? `${supabaseUrl}/storage/v1/object/public/product-images/${imagePath}` : null;
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -506,21 +520,26 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
       <Dialog open={showProductManager} onOpenChange={setShowProductManager}>
         <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span className="flex items-center">
-                <ShoppingBagIcon className="h-5 w-5 mr-2 text-[#1aa1aa]" />
-                Manage Products
-              </span>
-              <Button
-                onClick={handleCreateProduct}
-                size="sm"
-                className="bg-[#1aa1aa] hover:bg-[#158a8f]"
-              >
-                <PlusIcon className="h-4 w-4 mr-1" />
-                Add Product
-              </Button>
+            <DialogTitle className="flex items-center">
+              <ShoppingBagIcon className="h-5 w-5 mr-2 text-[#1aa1aa]" />
+              Manage Products
             </DialogTitle>
+            <DialogDescription>
+              View, edit, and delete your products. Add new products to expand your catalog.
+            </DialogDescription>
           </DialogHeader>
+          
+          {/* Add Product Button */}
+          <div className="flex justify-end mb-4">
+            <Button
+              onClick={handleCreateProduct}
+              size="sm"
+              className="bg-[#1aa1aa] hover:bg-[#158a8f]"
+            >
+              <PlusIcon className="h-4 w-4 mr-1" />
+              Add Product
+            </Button>
+          </div>
           
           {products.length > 0 ? (
             <div className="space-y-4">
@@ -532,13 +551,24 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         {product.images && product.images.length > 0 ? (
                           <img
-                            src={product.images[0]}
+                            src={getImageUrl(product.images[0]) || ''}
                             alt={product.title}
                             className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (fallback) {
+                                fallback.style.display = 'flex';
+                              }
+                            }}
                           />
-                        ) : (
+                        ) : null}
+                        <div 
+                          className="w-full h-full flex items-center justify-center"
+                          style={{ display: (product.images && product.images.length > 0) ? 'none' : 'flex' }}
+                        >
                           <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
-                        )}
+                        </div>
                       </div>
                       
                       {/* Product Info */}
