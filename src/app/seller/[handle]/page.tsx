@@ -46,6 +46,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
       business_city,
       business_country,
       business_phone,
+      business_whatsapp,
       business_website,
       business_instagram,
       business_twitter,

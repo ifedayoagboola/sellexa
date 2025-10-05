@@ -1,49 +1,167 @@
 'use client';
 
-import { ShoppingCart } from 'lucide-react';
+import { useState } from 'react';
+import { ShoppingCart, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { X } from 'lucide-react';
 
 interface ProductActionsProps {
-  whatsappUrl: string;
+  whatsappUrl: string | null;
   hasPaymentIntegration: boolean;
   isMobile?: boolean;
   isTablet?: boolean;
+  productTitle?: string;
+  productPrice?: string;
 }
 
 export default function ProductActions({ 
   whatsappUrl, 
   hasPaymentIntegration, 
   isMobile = false,
-  isTablet = false
+  isTablet = false,
+  productTitle = '',
+  productPrice = ''
 }: ProductActionsProps) {
-  const handleBuyViaWhatsApp = () => {
-    window.open(whatsappUrl, '_blank');
+  const [showBuyModal, setShowBuyModal] = useState(false);
+
+  const handleChatViaWhatsApp = () => {
+    if (whatsappUrl) {
+      window.open(whatsappUrl, '_blank');
+    }
   };
+
+  const handleBuyClick = () => {
+    setShowBuyModal(true);
+  };
+
+  // Buy Modal Component
+  const BuyModal = () => (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-semibold">Coming Soon!</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowBuyModal(false)}
+              className="h-8 w-8 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4 text-center">
+          <div className="space-y-3">
+            <div className="w-16 h-16 mx-auto bg-[#1aa1aa]/10 rounded-full flex items-center justify-center">
+              <ShoppingCart className="h-8 w-8 text-[#1aa1aa]" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">In-App Payment Coming Soon!</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                We're working our butts off to bring you seamless in-app payments and other amazing features! 
+                In the meantime, use the <strong>Chat</strong> button to connect directly with the seller via WhatsApp.
+              </p>
+            </div>
+            <div className="pt-2">
+              <p className="text-xs text-gray-500">
+                Stay tuned for updates on our payment system and enhanced shopping experience! 🚀
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowBuyModal(false)}
+              className="flex-1"
+            >
+              Got it!
+            </Button>
+            {whatsappUrl && (
+              <Button
+                onClick={handleChatViaWhatsApp}
+                className="flex-1 bg-[#1aa1aa] hover:bg-[#158a8f]"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat Now
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // If no WhatsApp URL, show only Buy button (which will show the modal)
+  if (!whatsappUrl) {
+    return (
+      <>
+        {showBuyModal && <BuyModal />}
+        <div className="space-y-3">
+          <Button
+            onClick={handleBuyClick}
+            className="w-full py-3 bg-[#1aa1aa] hover:bg-[#158a8f] text-white"
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            <span>Buy Now</span>
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   if (isMobile || isTablet) {
     return (
-      <div className="flex items-center space-x-3">
-        {/* Buy Button - Always opens WhatsApp */}
-        <button 
-          onClick={handleBuyViaWhatsApp}
-          className="flex-1 px-4 py-2 bg-[#1aa1aa] text-white text-sm font-medium rounded-lg hover:bg-[#158a8f] transition-colors flex items-center justify-center space-x-2"
-        >
-          <ShoppingCart className="h-4 w-4" />
-          <span>Buy</span>
-        </button>
-      </div>
+      <>
+        {showBuyModal && <BuyModal />}
+        <div className="flex items-center space-x-3">
+          {/* Chat Button - Opens WhatsApp */}
+          <Button
+            onClick={handleChatViaWhatsApp}
+            variant="outline"
+            className="flex-1 border-[#1aa1aa] text-[#1aa1aa] hover:bg-[#1aa1aa] hover:text-white"
+          >
+            <MessageCircle className="h-4 w-4 mr-2" />
+            <span>Chat</span>
+          </Button>
+          
+          {/* Buy Button - Opens Modal */}
+          <Button
+            onClick={handleBuyClick}
+            className="flex-1 bg-[#1aa1aa] hover:bg-[#158a8f] text-white"
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            <span>Buy</span>
+          </Button>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="space-y-3">
-      {/* Buy Button - Always opens WhatsApp */}
-      <button 
-        onClick={handleBuyViaWhatsApp}
-        className="w-full py-3 bg-[#1aa1aa] text-white text-sm font-medium rounded-lg hover:bg-[#158a8f] transition-colors flex items-center justify-center space-x-2"
-      >
-        <ShoppingCart className="h-4 w-4" />
-        <span>Buy Now</span>
-      </button>
-    </div>
+    <>
+      {showBuyModal && <BuyModal />}
+      <div className="space-y-3">
+        {/* Chat Button - Opens WhatsApp */}
+        <Button
+          onClick={handleChatViaWhatsApp}
+          variant="outline"
+          className="w-full border-[#1aa1aa] text-[#1aa1aa] hover:bg-[#1aa1aa] hover:text-white"
+        >
+          <MessageCircle className="h-4 w-4 mr-2" />
+          <span>Chat with Seller</span>
+        </Button>
+        
+        {/* Buy Button - Opens Modal */}
+        <Button
+          onClick={handleBuyClick}
+          className="w-full py-3 bg-[#1aa1aa] hover:bg-[#158a8f] text-white"
+        >
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          <span>Buy Now</span>
+        </Button>
+      </div>
+    </>
   );
 }

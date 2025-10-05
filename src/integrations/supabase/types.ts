@@ -26,6 +26,7 @@ export type Database = {
                     business_city: string | null
                     business_country: string | null
                     business_phone: string | null
+                    business_whatsapp: string | null
                     business_website: string | null
                     business_instagram: string | null
                     business_twitter: string | null
@@ -51,6 +52,7 @@ export type Database = {
                     business_city?: string | null
                     business_country?: string | null
                     business_phone?: string | null
+                    business_whatsapp?: string | null
                     business_website?: string | null
                     business_instagram?: string | null
                     business_twitter?: string | null
@@ -76,6 +78,7 @@ export type Database = {
                     business_city?: string | null
                     business_country?: string | null
                     business_phone?: string | null
+                    business_whatsapp?: string | null
                     business_website?: string | null
                     business_instagram?: string | null
                     business_twitter?: string | null

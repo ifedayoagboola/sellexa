@@ -14,6 +14,7 @@ import {
   Copy,
   ExternalLink,
   MessageSquare,
+  MessageCircle,
   Globe,
   Phone,
   Mail,
@@ -81,6 +82,7 @@ interface KYCData {
   business_city: string;
   business_country: string;
   business_phone: string;
+  business_whatsapp: string;
   business_website: string;
   business_instagram: string;
   business_twitter: string;
@@ -225,6 +227,19 @@ export default function SellerCatalogueClient({
                   <span className="text-xs text-slate-600">{kycData.business_phone}</span>
                 </div>
               )}
+              {kycData?.business_whatsapp && (
+                <div className="flex items-center space-x-3">
+                  <MessageCircle className="h-4 w-4 text-[#1aa1aa]" />
+                  <a 
+                    href={`https://wa.me/${kycData.business_whatsapp.replace(/[^0-9]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-[#1aa1aa] hover:underline"
+                  >
+                    WhatsApp: {kycData.business_whatsapp}
+                  </a>
+                </div>
+              )}
               {kycData?.business_website && (
                 <div className="flex items-center space-x-3">
                   <Globe className="h-4 w-4 text-[#1aa1aa]" />
@@ -360,6 +375,19 @@ export default function SellerCatalogueClient({
                     <div className="flex items-center space-x-3">
                       <Phone className="h-4 w-4 text-[#1aa1aa]" />
                       <span className="text-sm text-slate-600">{kycData.business_phone}</span>
+                    </div>
+                  )}
+                  {kycData?.business_whatsapp && (
+                    <div className="flex items-center space-x-3">
+                      <MessageCircle className="h-4 w-4 text-[#1aa1aa]" />
+                      <a 
+                        href={`https://wa.me/${kycData.business_whatsapp.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[#1aa1aa] hover:underline"
+                      >
+                        WhatsApp: {kycData.business_whatsapp}
+                      </a>
                     </div>
                   )}
                   {kycData?.business_website && (

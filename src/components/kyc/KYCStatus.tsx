@@ -24,6 +24,7 @@ interface KYCStatusData {
   business_city: string;
   business_country: string;
   business_phone: string;
+  business_whatsapp: string;
   business_website: string;
   business_instagram: string;
   business_twitter: string;
@@ -61,6 +62,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
           business_city,
           business_country,
           business_phone,
+          business_whatsapp,
           business_website,
           business_instagram,
           business_twitter,

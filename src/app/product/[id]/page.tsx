@@ -52,17 +52,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     .single();
 
   // Fetch seller's KYC data separately (with error handling)
-  let kycData: { business_name?: string; business_logo_url?: string } | null = null;
+  let kycData: { business_name?: string; business_logo_url?: string; business_whatsapp?: string } | null = null;
   if (product?.user_id) {
     try {
       const { data: kyc, error: kycError } = await supabase
         .from('profiles')
-        .select('business_name, business_logo_url')
+        .select('business_name, business_logo_url, business_whatsapp')
         .eq('id', product.user_id)
         .single();
       
       if (!kycError && kyc && typeof kyc === 'object') {
-        kycData = kyc as { business_name?: string; business_logo_url?: string };
+        kycData = kyc as { business_name?: string; business_logo_url?: string; business_whatsapp?: string };
       }
     } catch (error) {
       // KYC fields might not exist yet, continue without them
@@ -89,12 +89,30 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const sellerName = kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'EthniqRootz';
   const sellerHandle = product.profiles?.handle || 'unknown';
   
-  // Seller phone number (would come from seller profile in real app)
-  const sellerPhone = '+2349012345678'; // This would be fetched from seller profile
+  // Seller WhatsApp number from business profile
+  const sellerPhone = kycData?.business_whatsapp;
   
-  // WhatsApp chat URL
-  const whatsappMessage = `Hi! I'm interested in this product: ${product.title} - £${(product.price_pence / 100).toFixed(2)}. Can you tell me more about it?`;
-  const whatsappUrl = `https://wa.me/${sellerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+  // WhatsApp chat URL - only create if we have a valid WhatsApp number
+  const productUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ethniqrootz.com'}/product/${product.id}`;
+  const whatsappMessage = `🏪 *EthniqRootz Customer Inquiry*
+
+Hi! I found your product on EthniqRootz and I'm interested in purchasing:
+
+📦 *Product:* ${product.title}
+💰 *Price:* £${(product.price_pence / 100).toFixed(2)}
+🔗 *Link:* ${productUrl}
+
+I'd like to know more about:
+• Availability & shipping
+• Product details & condition  
+• Payment & delivery options
+• Any additional information
+
+Looking forward to hearing from you!
+
+*Sent via EthniqRootz* 🛍️`;
+  
+  const whatsappUrl = sellerPhone ? `https://wa.me/${sellerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}` : null;
   
   // Premium features (would come from seller subscription in real app)
   const isPremiumSeller = false; // Default to false, would be fetched from seller profile
@@ -261,6 +279,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 <ProductActions 
                   whatsappUrl={whatsappUrl}
                   hasPaymentIntegration={hasPaymentIntegration}
+                  productTitle={product.title}
+                  productPrice={`£${(product.price_pence / 100).toFixed(2)}`}
                 />
                 
                 {/* Description */}
@@ -312,6 +332,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               whatsappUrl={whatsappUrl}
               hasPaymentIntegration={hasPaymentIntegration}
               isMobile={true}
+              productTitle={product.title}
+              productPrice={`£${(product.price_pence / 100).toFixed(2)}`}
             />
           </div>
         </div>

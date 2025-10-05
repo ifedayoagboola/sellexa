@@ -28,6 +28,7 @@ interface KYCData {
   business_city: string;
   business_country: string;
   business_phone: string;
+  business_whatsapp: string;
   business_website: string;
   business_instagram: string;
   business_twitter: string;
@@ -49,6 +50,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
     business_city: initialData?.business_city || '',
     business_country: initialData?.business_country || '',
     business_phone: initialData?.business_phone || '',
+    business_whatsapp: initialData?.business_whatsapp || '',
     business_website: initialData?.business_website || '',
     business_instagram: initialData?.business_instagram || '',
     business_twitter: initialData?.business_twitter || '',
@@ -150,6 +152,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
           business_city: formData.business_city,
           business_country: formData.business_country,
           business_phone: formData.business_phone,
+          business_whatsapp: formData.business_whatsapp,
           business_website: formData.business_website,
           business_instagram: formData.business_instagram,
           business_twitter: formData.business_twitter,
@@ -187,7 +190,8 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
   const isFormValid = formData.business_name.trim() && 
                      formData.business_description.trim() && 
                      formData.business_city.trim() && 
-                     formData.business_country.trim();
+                     formData.business_country.trim() &&
+                     formData.business_whatsapp.trim();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -260,10 +264,26 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   <Input
                     value={formData.business_phone}
                     onChange={(e) => handleInputChange('business_phone', e.target.value)}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+44 20 7946 0958"
                     type="tel"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  WhatsApp Business Number *
+                </label>
+                <Input
+                  value={formData.business_whatsapp}
+                  onChange={(e) => handleInputChange('business_whatsapp', e.target.value)}
+                  placeholder="+44 7700 900123"
+                  type="tel"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Required for customer communication and order processing
+                </p>
               </div>
 
               <div>
