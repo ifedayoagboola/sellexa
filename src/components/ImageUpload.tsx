@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Button } from '@/components/ui/button';
 
 interface ImageUploadProps {
   images: File[];
@@ -91,13 +92,13 @@ export default function ImageUpload({
         <p className="text-sm text-muted-foreground">
           Up to {maxImages} images, max 5MB each
         </p>
-        <button
+        <Button
           type="button"
           onClick={openFileDialog}
-          className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+          className="mt-4 bg-[#1aa1aa] hover:bg-[#158a8f]"
         >
           Choose Images
-        </button>
+        </Button>
         <input
           ref={fileInputRef}
           type="file"
@@ -120,13 +121,15 @@ export default function ImageUpload({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <button
+              <Button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                variant="destructive"
+                size="icon"
+                className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <XMarkIcon className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
