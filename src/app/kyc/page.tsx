@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import Navigation from '@/components/Navigation';
 import { KYCStatus, SellerKYCForm } from '@/components/kyc';
 import { useKYC } from '@/hooks/useKYC';
+import { useUserStore } from '@/stores/userStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -21,9 +22,8 @@ function KYCPageContent() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/feed';
   
-  const [user, setUser] = useState<any>(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [showKYCForm, setShowKYCForm] = useState(false);
+  const { user, isLoading, initializeUser } = useUserStore();
   
   const { 
     kycData, 
@@ -36,27 +36,17 @@ function KYCPageContent() {
     refreshKYCData 
   } = useKYC();
 
-  // Get current user
+  // Initialize user store
   useEffect(() => {
-    const getUser = async () => {
-      setIsLoadingUser(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/auth/login');
-        return;
-      }
-      setUser(user);
-      setIsLoadingUser(false);
-    };
-    getUser();
-  }, [router]);
+    initializeUser();
+  }, [initializeUser]);
 
   // Auto-redirect if already verified
   useEffect(() => {
-    if (!kycLoading && !isLoadingUser && isKYCVerified && redirectTo === '/post') {
+    if (!kycLoading && !isLoading && isKYCVerified && redirectTo === '/post') {
       router.push('/post');
     }
-  }, [isKYCVerified, kycLoading, isLoadingUser, redirectTo, router]);
+  }, [isKYCVerified, kycLoading, isLoading, redirectTo, router]);
 
   const handleKYCComplete = (success: boolean) => {
     if (success) {
@@ -78,7 +68,7 @@ function KYCPageContent() {
     }
   };
 
-  if (isLoadingUser || kycLoading) {
+  if (isLoading || kycLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />

@@ -28,11 +28,11 @@ import { Search, RefreshCw, Archive, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import UserMenu from '@/components/UserMenu';
 import Navigation from '@/components/Navigation';
+import { useUserStore } from '@/stores/userStore';
 
 export default function InboxPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const { user, isLoading: userLoading, initializeUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const [showComingSoonModal, setShowComingSoonModal] = useState(true);
@@ -54,20 +54,10 @@ export default function InboxPage() {
     getConversationStats,
   } = useChat(user?.id);
 
-  // Get current user
+  // Initialize user store
   useEffect(() => {
-    const getUser = async () => {
-      setIsLoadingUser(true);
-  const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsLoadingUser(false);
-        return;
-      }
-      setUser(user);
-      setIsLoadingUser(false);
-    };
-    getUser();
-  }, [router]);
+    initializeUser();
+  }, [initializeUser]);
 
   // Load conversations on mount
   useEffect(() => {
@@ -136,7 +126,7 @@ export default function InboxPage() {
     [conversations, currentThread]
   );
 
-  if (isLoadingUser) {
+  if (userLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -169,7 +159,7 @@ export default function InboxPage() {
             <h1 className="text-xl font-bold text-gray-900">Inbox</h1>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2">
-            <UserMenu user={user} />
+            {user && <UserMenu user={user} />}
           </div>
         </div>
       </div>

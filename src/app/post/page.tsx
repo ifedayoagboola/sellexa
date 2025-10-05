@@ -1,6 +1,7 @@
 import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import Navigation from '@/components/Navigation';
+import UserProvider from '@/components/UserProvider';
 import PostPageClient from './PostPageClient';
 
 export default async function PostPage() {
@@ -25,5 +26,9 @@ export default async function PostPage() {
     redirect('/kyc?redirectTo=/post');
   }
 
-  return <PostPageClient user={user} />;
+  return (
+    <UserProvider initialUser={user}>
+      <PostPageClient user={user} />
+    </UserProvider>
+  );
 }

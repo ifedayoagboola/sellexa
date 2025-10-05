@@ -6,13 +6,13 @@ import Image from 'next/image';
 import { MagnifyingGlassIcon, BellIcon, UserIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
+import { useUserStore } from '@/stores/userStore';
 
 interface TopBarProps {
   showSearch?: boolean;
   showNotifications?: boolean;
   showUserMenu?: boolean;
   showSupport?: boolean;
-  user?: any;
   sellerInfo?: {
     business_name?: string;
     business_logo_url?: string;
@@ -26,9 +26,9 @@ export default function TopBar({
   showNotifications = true, 
   showUserMenu = true,
   showSupport = true,
-  user,
   sellerInfo
 }: TopBarProps) {
+  const { user } = useUserStore();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 

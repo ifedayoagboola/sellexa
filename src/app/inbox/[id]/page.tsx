@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { useUserStore } from '@/stores/userStore';
 
 interface Message {
   id: string;
@@ -69,17 +70,8 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const { user } = useUserStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Get current user
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    getUser();
-  }, [supabase.auth]);
 
   // Scroll to bottom when new messages arrive
   const scrollToBottom = () => {

@@ -2,6 +2,7 @@ import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
+import UserProvider from '@/components/UserProvider';
 import { PageHeader, SellerSection, EmptyState } from '@/components/feed';
 
 export default async function FeedPage() {
@@ -62,8 +63,9 @@ export default async function FeedPage() {
     .sort((a, b) => b.products.length - a.products.length);
 
   return (
-    <div className="min-h-screen bg-white pb-20">
-        <TopBar user={user} />
+    <UserProvider initialUser={user}>
+      <div className="min-h-screen bg-white pb-20">
+        <TopBar />
         
         <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
           {/* Responsive Layout */}
@@ -86,5 +88,6 @@ export default async function FeedPage() {
         
         <Navigation />
       </div>
+    </UserProvider>
   );
 }
