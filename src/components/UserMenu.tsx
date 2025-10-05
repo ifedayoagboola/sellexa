@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { signOut } from '@/lib/auth-actions';
+import { useUser } from '@/stores/userStore';
 
 interface UserMenuProps {
   user: {
@@ -14,9 +15,10 @@ interface UserMenuProps {
 
 export default function UserMenu({ user }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { displayName, actions } = useUser();
 
   const handleSignOut = async () => {
-    await signOut();
+    await actions.signOut();
   };
 
   return (
@@ -26,10 +28,10 @@ export default function UserMenu({ user }: UserMenuProps) {
         className="flex items-center space-x-2 text-sm text-foreground hover:text-muted-foreground"
       >
         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
-          {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+          {displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
         </div>
         <span className="hidden md:block">
-          {user.user_metadata?.full_name || user.email}
+          {displayName || user.email}
         </span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}

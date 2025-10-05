@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { MagnifyingGlassIcon, BellIcon, UserIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
-import { useUserStore } from '@/stores/userStore';
+import { useUser } from '@/stores/userStore';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface TopBarProps {
@@ -29,7 +29,7 @@ export default function TopBar({
   showSupport = true,
   sellerInfo
 }: TopBarProps) {
-  const { user } = useUserStore();
+  const { user, isAuthenticated } = useUser();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
@@ -147,7 +147,7 @@ export default function TopBar({
                 </button>
               )}
               
-              {showUserMenu && user ? (
+              {showUserMenu && isAuthenticated && user ? (
                 <UserMenu user={user} />
               ) : (
                 <Link 
@@ -236,7 +236,7 @@ export default function TopBar({
                 </button>
               )}
               
-              {showUserMenu && user ? (
+              {showUserMenu && isAuthenticated && user ? (
                 <UserMenu user={user} />
               ) : (
                 <Link 

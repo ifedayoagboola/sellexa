@@ -57,7 +57,7 @@ export async function signUp(formData: FormData) {
 
     const supabase = await createClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -68,8 +68,19 @@ export async function signUp(formData: FormData) {
     });
 
     if (error) {
+        // Handle specific error cases for existing users
+        if (error.message.includes('already registered') ||
+            error.message.includes('already been registered') ||
+            error.message.includes('User already registered') ||
+            error.message.includes('email address is already in use')) {
+            return { error: 'An account with this email already exists. Please sign in instead.' };
+        }
         return { error: error.message };
     }
+
+    // Sign out the user immediately after signup to prevent automatic login
+    // This ensures the user must confirm their email before accessing the app
+    await supabase.auth.signOut();
 
     revalidatePath('/');
     redirect('/auth/login?message=Check your email to confirm your account');
