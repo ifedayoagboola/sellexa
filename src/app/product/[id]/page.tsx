@@ -167,7 +167,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <TopBar user={user} showSearch={false} showUserMenu={!!user} />
         
         {/* Mobile & Tablet Layout */}
-        <div className="block lg:hidden pt-28">
+        <div className="block lg:hidden pt-28 md:pt-40">
           {/* Brand Header */}
           <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
             <div className="max-w-7xl mx-auto px-4 py-4">
@@ -219,7 +219,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </div>
 
         {/* Desktop Layout - Ecommerce Style */}
-        <div className="hidden lg:block pt-28">
+        <div className="hidden lg:block pt-40 xl:pt-48">
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column - Product Images */}

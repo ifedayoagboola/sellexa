@@ -167,68 +167,55 @@ export default function TopBar({
 
         {/* Desktop Layout (1025px and above) */}
         <div className="hidden lg:block">
+          {/* First Row: Logo + Icons */}
           <div className="flex items-center justify-between py-4">
-            {/* Left Side: Logo */}
-            <div className="flex items-center">
-              {/* Seller Logo or EthniqRootz Logo */}
-              {sellerDisplay ? (
-                <div className="flex items-center">
-                  {sellerDisplay.sellerLogo ? (
-                    <div className="w-48 h-32 relative">
-                      <Image
-                        src={sellerDisplay.sellerLogo}
-                        alt={sellerDisplay.sellerName}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-[#1aa1aa] rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">
-                          {sellerDisplay.sellerName.substring(0, 2).toUpperCase()}
-                        </span>
-                      </div>
-                      <span className="text-xl font-bold text-slate-900">
-                        {sellerDisplay.sellerName}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link href="/feed" className="flex items-center">
-                  <div className="w-48 h-32 relative">
+            {/* Seller Logo or EthniqRootz Logo */}
+            {sellerDisplay ? (
+              <div className="flex items-center">
+                {sellerDisplay.sellerLogo ? (
+                  <div className="w-40 h-24 xl:w-48 xl:h-32 relative">
                     <Image
-                      src="/ethniqrootz.png"
-                      alt="EthniqRootz"
+                      src={sellerDisplay.sellerLogo}
+                      alt={sellerDisplay.sellerName}
                       fill
                       className="object-contain"
                     />
                   </div>
-                </Link>
-              )}
-            </div>
-            
-            {/* Center: Search Bar */}
-            {showSearch && (
-              <div className="flex-1 max-w-md mx-4">
-                <SearchBar 
-                  placeholder="Search products..."
-                  className="w-full"
-                  showSuggestions={false}
-                />
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-10 h-10 bg-[#1aa1aa] rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">
+                        {sellerDisplay.sellerName.substring(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-lg font-bold text-slate-900 truncate max-w-32">
+                      {sellerDisplay.sellerName}
+                    </span>
+                  </div>
+                )}
               </div>
+            ) : (
+              <Link href="/feed" className="flex items-center">
+                <div className="w-40 h-24 xl:w-48 xl:h-32 relative">
+                  <Image
+                    src="/ethniqrootz.png"
+                    alt="EthniqRootz"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </Link>
             )}
             
-            {/* Right Actions */}
-            <div className="flex items-center space-x-3">
+            {/* Right Icons */}
+            <div className="flex items-center space-x-2">
               {showSupport && (
                 <button
                   onClick={handleSupportContact}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                   title="Contact Support"
                 >
-                  <QuestionMarkCircleIcon className="h-6 w-6" />
+                  <QuestionMarkCircleIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
               )}
               
@@ -237,7 +224,7 @@ export default function TopBar({
                   href="/notifications"
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <BellIcon className="h-6 w-6" />
+                  <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               )}
               
@@ -248,11 +235,22 @@ export default function TopBar({
                   href="/auth/login"
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <UserIcon className="h-6 w-6" />
+                  <UserIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               )}
             </div>
           </div>
+          
+          {/* Second Row: Search Bar */}
+          {showSearch && (
+            <div className="w-full pb-4">
+              <SearchBar 
+                placeholder="Search products..."
+                className="w-full max-w-md mx-auto"
+                showSuggestions={false}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -212,7 +212,7 @@ export default function SellerCatalogueClient({
       />
       
       {/* Mobile & Tablet Layout */}
-      <div className="block lg:hidden pt-28">
+      <div className="block lg:hidden pt-28 md:pt-40">
 
         {/* Contact Section - Mobile */}
         <div className="bg-slate-50 px-4 py-6">
@@ -346,7 +346,7 @@ export default function SellerCatalogueClient({
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:block pt-28">
+      <div className="hidden lg:block pt-40 xl:pt-48">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Contact & Info */}
