@@ -14,14 +14,14 @@ export default async function PostPage() {
   }
 
   // Check KYC status
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('kyc_status')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   // If KYC is not verified, redirect to KYC page
-  if (!profile || (profile as any).kyc_status !== 'verified') {
+  if (!profile || profile.kyc_status !== 'verified') {
     redirect('/kyc?redirectTo=/post');
   }
 

@@ -55,17 +55,20 @@ export function useKYC() {
           kyc_verified_at
         `)
                 .eq('id', user.id)
-                .single();
+                .maybeSingle();
 
             if (fetchError) {
-                console.error('Error fetching KYC data:', fetchError);
                 setError(fetchError.message);
+                return;
+            }
+
+            if (!data) {
+                setKycData(null);
                 return;
             }
 
             setKycData(data as any);
         } catch (err: any) {
-            console.error('Error fetching KYC data:', err);
             setError(err.message || 'Failed to fetch KYC data');
         } finally {
             setLoading(false);

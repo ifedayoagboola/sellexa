@@ -18,6 +18,22 @@ export type Database = {
                     postcode: string | null
                     avatar_url: string | null
                     created_at: string
+                    kyc_status: string | null
+                    business_name: string | null
+                    business_description: string | null
+                    business_logo_url: string | null
+                    business_address: string | null
+                    business_city: string | null
+                    business_country: string | null
+                    business_phone: string | null
+                    business_website: string | null
+                    business_instagram: string | null
+                    business_twitter: string | null
+                    business_facebook: string | null
+                    kyc_submitted_at: string | null
+                    kyc_verified_at: string | null
+                    kyc_rejected_at: string | null
+                    kyc_rejection_reason: string | null
                 }
                 Insert: {
                     id: string
@@ -27,6 +43,22 @@ export type Database = {
                     postcode?: string | null
                     avatar_url?: string | null
                     created_at?: string
+                    kyc_status?: string | null
+                    business_name?: string | null
+                    business_description?: string | null
+                    business_logo_url?: string | null
+                    business_address?: string | null
+                    business_city?: string | null
+                    business_country?: string | null
+                    business_phone?: string | null
+                    business_website?: string | null
+                    business_instagram?: string | null
+                    business_twitter?: string | null
+                    business_facebook?: string | null
+                    kyc_submitted_at?: string | null
+                    kyc_verified_at?: string | null
+                    kyc_rejected_at?: string | null
+                    kyc_rejection_reason?: string | null
                 }
                 Update: {
                     id?: string
@@ -36,6 +68,22 @@ export type Database = {
                     postcode?: string | null
                     avatar_url?: string | null
                     created_at?: string
+                    kyc_status?: string | null
+                    business_name?: string | null
+                    business_description?: string | null
+                    business_logo_url?: string | null
+                    business_address?: string | null
+                    business_city?: string | null
+                    business_country?: string | null
+                    business_phone?: string | null
+                    business_website?: string | null
+                    business_instagram?: string | null
+                    business_twitter?: string | null
+                    business_facebook?: string | null
+                    kyc_submitted_at?: string | null
+                    kyc_verified_at?: string | null
+                    kyc_rejected_at?: string | null
+                    kyc_rejection_reason?: string | null
                 }
                 Relationships: []
             }

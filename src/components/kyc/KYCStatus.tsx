@@ -69,16 +69,19 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
           kyc_verified_at
         `)
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        console.error('Error fetching KYC status:', error);
+        return;
+      }
+
+      if (!data) {
+        setKycData(null);
         return;
       }
 
       setKycData(data as any);
     } catch (error) {
-      console.error('Error fetching KYC status:', error);
     } finally {
       setLoading(false);
     }
@@ -140,7 +143,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
           <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No KYC Information</h3>
           <p className="text-gray-600 mb-4">
-            Complete your seller verification to start creating product listings.
+            Complete your seller verification to start selling.
           </p>
           <Button onClick={onEdit} className="bg-purple-600 hover:bg-purple-700">
             Start Verification
@@ -180,7 +183,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
             <div>
               <h4 className="text-sm font-medium text-green-900">Verification Complete</h4>
               <p className="text-sm text-green-700">
-                You can now create product listings and access all seller features.
+                You can now create product listings and start selling.
               </p>
             </div>
           </div>
@@ -194,7 +197,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
             <div>
               <h4 className="text-sm font-medium text-yellow-900">Under Review</h4>
               <p className="text-sm text-yellow-700">
-                Your verification is being reviewed. This should complete automatically.
+                Your verification is being reviewed.
               </p>
             </div>
           </div>

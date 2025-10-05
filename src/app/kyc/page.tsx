@@ -51,10 +51,20 @@ function KYCPageContent() {
     getUser();
   }, [router]);
 
+  // Auto-redirect if already verified
+  useEffect(() => {
+    if (!kycLoading && !isLoadingUser && isKYCVerified && redirectTo === '/post') {
+      router.push('/post');
+    }
+  }, [isKYCVerified, kycLoading, isLoadingUser, redirectTo, router]);
+
   const handleKYCComplete = (success: boolean) => {
     if (success) {
-      setShowKYCForm(false);
       refreshKYCData();
+      
+      setTimeout(() => {
+        router.push(redirectTo);
+      }, 2000);
     }
   };
 
@@ -174,8 +184,8 @@ function KYCPageContent() {
               Start Your Seller Journey
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Complete your business verification to instantly unlock the ability to create product listings, 
-              manage your seller profile, and reach customers worldwide.
+              Complete your business verification to instantly unlock the ability to create product listings 
+              and reach customers worldwide.
             </p>
             <Button
               onClick={() => setShowKYCForm(true)}
@@ -209,7 +219,7 @@ function KYCPageContent() {
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Access Features</h4>
               <p className="text-sm text-gray-600">
-                Create product listings, manage your seller profile, and access analytics.
+                Create product listings and manage your seller profile.
               </p>
             </Card>
 
@@ -219,7 +229,7 @@ function KYCPageContent() {
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Priority Support</h4>
               <p className="text-sm text-gray-600">
-                Get priority customer support and faster resolution of any issues.
+                Get priority customer support for any issues.
               </p>
             </Card>
           </div>

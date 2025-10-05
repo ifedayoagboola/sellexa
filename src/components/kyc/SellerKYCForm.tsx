@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/use-toast';
 import { 
   Building2, 
   MapPin, 
@@ -40,6 +41,7 @@ interface SellerKYCFormProps {
 }
 
 export default function SellerKYCForm({ onComplete, onCancel, initialData }: SellerKYCFormProps) {
+  const { toast } = useToast();
   const [formData, setFormData] = useState<KYCData>({
     business_name: initialData?.business_name || '',
     business_description: initialData?.business_description || '',
@@ -57,6 +59,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = (field: keyof KYCData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -90,25 +93,22 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
   const uploadLogo = async (file: File): Promise<string | null> => {
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `business-logos/${fileName}`;
+      const fileName = `business-logos/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('business-assets')
-        .upload(filePath, file);
+        .from('product-images')
+        .upload(fileName, file);
 
       if (uploadError) {
-        console.error('Error uploading logo:', uploadError);
         return null;
       }
 
       const { data } = supabase.storage
-        .from('business-assets')
-        .getPublicUrl(filePath);
+        .from('product-images')
+        .getPublicUrl(fileName);
 
       return data.publicUrl;
     } catch (error) {
-      console.error('Error uploading logo:', error);
       return null;
     }
   };
@@ -141,7 +141,9 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
       const now = new Date().toISOString();
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: user.id,
+          handle: user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`,
           business_name: formData.business_name,
           business_description: formData.business_description,
           business_address: formData.business_address,
@@ -153,22 +155,30 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
           business_twitter: formData.business_twitter,
           business_facebook: formData.business_facebook,
           business_logo_url: logoUrl,
-          kyc_status: 'verified', // Auto-verify upon submission
+          kyc_status: 'verified',
           kyc_submitted_at: now,
-          kyc_verified_at: now, // Set verification timestamp immediately
-        } as any)
-        .eq('id', user.id);
+          kyc_verified_at: now
+        } as any);
 
       if (updateError) {
-        console.error('Error updating profile:', updateError);
-        setError('Failed to submit KYC information. Please try again.');
+        setError(`Failed to submit KYC information: ${updateError.message || 'Please try again.'}`);
         setIsSubmitting(false);
         return;
       }
 
-      onComplete(true);
+      setIsSuccess(true);
+      setIsSubmitting(false);
+      
+      toast({
+        title: "Verification Successful!",
+        description: "Your business has been verified. You can now start selling!",
+      });
+      
+      setTimeout(() => {
+        onCancel();
+        onComplete(true);
+      }, 1500);
     } catch (error) {
-      console.error('Error submitting KYC:', error);
       setError('An unexpected error occurred. Please try again.');
       setIsSubmitting(false);
     }
@@ -204,7 +214,18 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
             </Button>
           </div>
 
-          {error && (
+          {/* Success Message */}
+          {isSuccess && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-sm text-green-700">
+                Verification successful! Redirecting to create your first post...
+              </span>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && !isSuccess && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
               <AlertCircle className="h-4 w-4 text-red-600" />
               <span className="text-sm text-red-700">{error}</span>
@@ -417,7 +438,6 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   <h4 className="text-sm font-medium text-green-900">Instant Verification</h4>
                   <p className="text-sm text-green-700 mt-1">
                     Your account will be verified immediately upon submission. You'll be able to create product listings right away!
-                    You can browse and chat without verification, but you'll need to be verified to create product listings.
                   </p>
                 </div>
               </div>
