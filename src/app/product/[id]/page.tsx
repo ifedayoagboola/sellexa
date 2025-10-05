@@ -219,7 +219,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </div>
 
         {/* Desktop Layout - Ecommerce Style */}
-        <div className="hidden lg:block pt-40 xl:pt-48">
+        <div className="hidden lg:block pt-32 pb-8">
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column - Product Images */}
@@ -317,7 +317,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </div>
         
         {/* Standard Bottom Navigation */}
-        <Navigation />
+        <div className="lg:hidden">
+          <Navigation />
+        </div>
       </div>
     </SaveProvider>
   );
