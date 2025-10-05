@@ -9,7 +9,7 @@
     "lint": "next lint",
     "migrate": "node scripts/simple-tracker.js",
     "migrate:dev": "NODE_ENV=development node scripts/simple-tracker.js",
-    "migrate:prod": "NODE_ENV=production node scripts/simple-tracker.js",
+    "migrate:prod": "NODE_ENV=production node scripts/run-migrations.js",
     "migrate:status": "node scripts/migration-status.js",
     "db:setup": "npm run migrate:dev",
     "db:deploy": "npm run migrate:prod",
