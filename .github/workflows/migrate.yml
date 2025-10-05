@@ -96,8 +96,8 @@ jobs:
     name: Run Staging Migrations
     runs-on: ubuntu-latest
 
-    # Run on develop branch or before production
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    # Only run if staging secrets are configured
+    if: github.ref == 'refs/heads/develop' && secrets.SUPABASE_STAGING_URL != ''
 
     steps:
       - name: Checkout code
