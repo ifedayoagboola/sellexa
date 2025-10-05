@@ -3,6 +3,12 @@
 import { useState } from 'react';
 import { signIn } from '@/lib/auth-actions';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Mail, Lock, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SignInForm() {
   const searchParams = useSearchParams();
@@ -28,62 +34,70 @@ export default function SignInForm() {
   };
 
   return (
-    <form action={handleSubmit} className="space-y-4 sm:space-y-6">
+    <form action={handleSubmit} className="space-y-6">
       {redirectTo && (
         <input type="hidden" name="redirectTo" value={redirectTo} />
       )}
+      
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
       
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-          Email address
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="w-full px-4 py-3 text-base border border-border rounded-lg shadow-sm placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-          placeholder="Enter your email"
-        />
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+            Email address
+          </Label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Enter your email"
+              className="pl-10 h-12"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+            Password
+          </Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="Enter your password"
+              className="pl-10 h-12"
+            />
+          </div>
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="w-full px-4 py-3 text-base border border-border rounded-lg shadow-sm placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-          placeholder="Enter your password"
-        />
-      </div>
-
-      <div>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {isLoading ? 'Signing in...' : 'Sign in'}
-        </button>
-      </div>
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-[#1aa1aa] hover:bg-[#158a8f] h-12 text-base font-medium"
+      >
+        {isLoading ? 'Signing in...' : 'Sign in'}
+      </Button>
 
       <div className="text-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-gray-600">
           Don't have an account?{' '}
-          <a href="/auth/signup" className="font-medium text-primary hover:text-primary/80 transition-colors">
+          <Link href="/auth/signup" className="font-medium text-[#1aa1aa] hover:text-[#158a8f] transition-colors">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </form>

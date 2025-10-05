@@ -7,17 +7,17 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'EthniqRootz - African Marketplace',
-  description: 'Discover authentic African products from local sellers across the UK',
-  keywords: 'African marketplace, African products, UK, fashion, food, culture',
+  title: 'EthniqRootz - Curated Authentic Commerce',
+  description: 'Where niche communities connect through authentic commerce - discover handpicked products from verified merchants worldwide',
+  keywords: 'authentic commerce, niche marketplace, curated products, verified merchants, exclusive network, authentic products, premium marketplace',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'EthniqRootz - African Marketplace',
-    description: 'Discover authentic African products from local sellers across the UK',
+    title: 'EthniqRootz - Curated Authentic Commerce',
+    description: 'Where niche communities connect through authentic commerce - discover handpicked products from verified merchants worldwide',
     type: 'website',
   },
 };

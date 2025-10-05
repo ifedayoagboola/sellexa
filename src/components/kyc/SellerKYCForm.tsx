@@ -437,7 +437,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                 <div>
                   <h4 className="text-sm font-medium text-green-900">Instant Verification</h4>
                   <p className="text-sm text-green-700 mt-1">
-                    Your account will be verified immediately upon submission. You'll be able to create product listings right away!
+                    Your account will be verified immediately upon submission. You'll be able to create product listings and connect with a global network of discerning customers right away!
                   </p>
                 </div>
               </div>

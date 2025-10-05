@@ -24,18 +24,20 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   const categoryName = categoryLower.charAt(0).toUpperCase() + categoryLower.slice(1);
-  const title = `${categoryName} Products | African ${categoryName} | EthniqRootz`;
-  const description = `Discover authentic African ${categoryName.toLowerCase()} products from local sellers across the UK. Shop ${categoryName.toLowerCase()} items on EthniqRootz marketplace.`;
+  const title = `${categoryName} Products | Curated ${categoryName} | EthniqRootz`;
+  const description = `Discover authentic ${categoryName.toLowerCase()} products from our exclusive network of verified merchants. Shop curated ${categoryName.toLowerCase()} items on EthniqRootz - where niche communities connect through authentic commerce.`;
 
   return {
     title,
     description,
     keywords: [
-      `African ${categoryName.toLowerCase()}`,
+      `curated ${categoryName.toLowerCase()}`,
       `${categoryName.toLowerCase()} products`,
-      'African marketplace',
+      'authentic marketplace',
       'EthniqRootz',
-      'UK African products',
+      'verified merchants',
+      'niche commerce',
+      'premium products',
       categoryName.toLowerCase()
     ],
     openGraph: {

@@ -143,7 +143,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
           <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No KYC Information</h3>
           <p className="text-gray-600 mb-4">
-            Complete your seller verification to start selling.
+            Complete your seller verification to join our exclusive network of authentic merchants.
           </p>
           <Button onClick={onEdit} className="bg-purple-600 hover:bg-purple-700">
             Start Verification
@@ -183,7 +183,7 @@ export default function KYCStatus({ onEdit, onComplete }: KYCStatusProps) {
             <div>
               <h4 className="text-sm font-medium text-green-900">Verification Complete</h4>
               <p className="text-sm text-green-700">
-                You can now create product listings and start selling.
+                You can now create product listings and connect with a global network of discerning customers.
               </p>
             </div>
           </div>

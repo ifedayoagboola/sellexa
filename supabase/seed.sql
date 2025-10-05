@@ -53,15 +53,15 @@ ON CONFLICT DO NOTHING;
 
 -- Update profiles with sample KYC data (for testing)
 UPDATE profiles SET
-  business_name = 'African Heritage Store',
-  business_description = 'Your one-stop shop for authentic African products',
+  business_name = 'Heritage Curators',
+  business_description = 'Curated authentic products for discerning customers',
   business_city = 'London',
   business_country = 'United Kingdom',
   business_phone = '+44 20 1234 5678',
-  business_website = 'https://africanheritage.example.com',
-  business_instagram = '@africanheritage',
-  business_twitter = '@africanheritage',
-  business_facebook = 'African Heritage Store',
+  business_website = 'https://heritagecurators.example.com',
+  business_instagram = '@heritagecurators',
+  business_twitter = '@heritagecurators',
+  business_facebook = 'Heritage Curators',
   kyc_status = 'verified',
   kyc_submitted_at = NOW(),
   kyc_verified_at = NOW()

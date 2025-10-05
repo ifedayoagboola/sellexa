@@ -1,6 +1,10 @@
 import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ArrowLeft } from 'lucide-react';
 import SignUpForm from '@/components/auth/SignUpForm';
 
 export default async function SignUpPage() {
@@ -14,32 +18,49 @@ export default async function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full space-y-6 sm:space-y-8">
-        {/* Back Button */}
-        <div className="flex items-center">
-          <Link 
-            href="/splash" 
-            className="flex items-center text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="text-sm font-medium">Back</span>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-4 py-6">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Button variant="ghost" asChild className="text-gray-600 hover:text-gray-900">
+            <Link href="/splash" className="flex items-center space-x-2">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back</span>
+            </Link>
+          </Button>
+          
+          <Link href="/feed" className="flex items-center">
+            <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
+              <Image
+                src="/ethniqrootz.png"
+                alt="EthniqRootz"
+                fill
+                className="object-contain"
+              />
+            </div>
           </Link>
+          
+          <div className="w-20"></div> {/* Spacer for centering */}
         </div>
+      </div>
 
-        <div>
-          <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-foreground">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-muted-foreground">
-            Join EthniqRootz and start selling authentic African products
-          </p>
-        </div>
-        
-        <div className="mt-6 sm:mt-8">
-          <SignUpForm />
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div className="max-w-md w-full space-y-6">
+          {/* Signup Card */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="text-center space-y-2 pb-4">
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Create your account
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                Join an exclusive community of authentic commerce and start your entrepreneurial journey
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SignUpForm />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

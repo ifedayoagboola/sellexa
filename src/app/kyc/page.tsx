@@ -119,7 +119,7 @@ function KYCPageContent() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Seller Verification</h1>
               <p className="text-gray-600 mt-1">
-                Complete your business profile to start selling on our platform
+                Complete your business profile to join our exclusive network of authentic merchants
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ function KYCPageContent() {
                     {isKYCVerified ? 'You can now create product listings and access all seller features.' :
                      isKYCPending ? 'Your information is being processed. Verification should complete automatically.' :
                      isKYCRejected ? 'Please review your information and resubmit for verification.' :
-                     'Complete your business profile to start selling on our platform.'}
+                     'Complete your business profile to join our exclusive network of authentic merchants.'}
                   </p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ function KYCPageContent() {
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
               Complete your business verification to instantly unlock the ability to create product listings 
-              and reach customers worldwide.
+              and connect with a global network of discerning customers.
             </p>
             <Button
               onClick={() => setShowKYCForm(true)}
