@@ -107,18 +107,30 @@ export default function SellerCatalogueClient({
   const router = useRouter();
   const [sortBy, setSortBy] = useState<'newest' | 'price_low' | 'price_high'>('newest');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterAvailability, setFilterAvailability] = useState<string>('all');
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const { toggleSave, isProductSaved } = useSaves();
   const { createNewThread } = useChat(user?.id);
 
-  // Get unique categories
+  // Get unique categories and availability statuses
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
+  const availabilityOptions = [
+    { value: 'all', label: 'All Products' },
+    { value: 'AVAILABLE', label: 'Available' },
+    { value: 'SOLD_OUT', label: 'Sold Out' },
+    { value: 'DRAFT', label: 'Draft' },
+    { value: 'INACTIVE', label: 'Inactive' }
+  ];
 
   // Filter and sort products
   const filteredProducts = products
-    .filter(product => filterCategory === 'all' || product.category === filterCategory)
+    .filter(product => {
+      const categoryMatch = filterCategory === 'all' || product.category === filterCategory;
+      const availabilityMatch = filterAvailability === 'all' || product.status === filterAvailability;
+      return categoryMatch && availabilityMatch;
+    })
     .sort((a, b) => {
       switch (sortBy) {
         case 'price_low':
@@ -285,7 +297,7 @@ export default function SellerCatalogueClient({
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-medium text-slate-900">Products</h2>
-              <span className="text-xs text-slate-500">{productCount} items</span>
+              <span className="text-xs text-slate-500">{filteredProducts.length} items</span>
             </div>
             
             {/* Filter Row */}
@@ -311,6 +323,18 @@ export default function SellerCatalogueClient({
                   </option>
                 ))}
               </select>
+              
+              <select
+                value={filterAvailability}
+                onChange={(e) => setFilterAvailability(e.target.value)}
+                className="border border-slate-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#1aa1aa] whitespace-nowrap"
+              >
+                {availabilityOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Products Grid */}
@@ -319,9 +343,9 @@ export default function SellerCatalogueClient({
                 <ShoppingBag className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-sm font-medium text-slate-900 mb-2">No products found</h3>
                 <p className="text-xs text-slate-500">
-                  {filterCategory === 'all' 
+                  {filterCategory === 'all' && filterAvailability === 'all'
                     ? 'This seller hasn\'t added any products yet.' 
-                    : `No products found in the ${filterCategory} category.`
+                    : `No products found matching the current filters.`
                   }
                 </p>
               </div>
@@ -362,9 +386,9 @@ export default function SellerCatalogueClient({
       {/* Desktop Layout */}
       <div className="hidden lg:block pt-40 xl:pt-48">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left Column - Contact & Info */}
-            <div className="space-y-6">
+            <div className="lg:col-span-1 space-y-6">
 
               {/* Contact Section */}
               <Card className="p-6">
@@ -470,7 +494,7 @@ export default function SellerCatalogueClient({
             </div>
 
             {/* Right Column - Products */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               {/* Products Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-medium text-slate-900">Products</h2>
@@ -497,7 +521,19 @@ export default function SellerCatalogueClient({
                     ))}
                   </select>
                   
-                  <span className="text-sm text-slate-500">{productCount} products</span>
+                  <select
+                    value={filterAvailability}
+                    onChange={(e) => setFilterAvailability(e.target.value)}
+                    className="border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1aa1aa]"
+                  >
+                    {availabilityOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  <span className="text-sm text-slate-500">{filteredProducts.length} products</span>
                 </div>
               </div>
 
@@ -507,9 +543,9 @@ export default function SellerCatalogueClient({
                   <ShoppingBag className="h-16 w-16 text-slate-300 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-slate-900 mb-2">No products found</h3>
                   <p className="text-sm text-slate-500">
-                    {filterCategory === 'all' 
+                    {filterCategory === 'all' && filterAvailability === 'all'
                       ? 'This seller hasn\'t added any products yet.' 
-                      : `No products found in the ${filterCategory} category.`
+                      : `No products found matching the current filters.`
                     }
                   </p>
                 </div>

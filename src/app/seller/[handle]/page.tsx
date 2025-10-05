@@ -55,7 +55,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
     .eq('id', seller.id)
     .single();
 
-  // Get seller's products
+  // Get seller's products (all products regardless of status)
   const { data: products, error: productsError } = await supabase
     .from('products')
     .select(`
@@ -70,19 +70,18 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
       description
     `)
     .eq('user_id', seller.id)
-    .eq('status', 'AVAILABLE')
     .order('created_at', { ascending: false });
+
 
   if (productsError) {
     console.error('Error fetching products:', productsError);
   }
 
-  // Get seller stats
+  // Get seller stats (all products, not just available)
   const { data: stats } = await supabase
     .from('products')
     .select('id')
-    .eq('user_id', seller.id)
-    .eq('status', 'AVAILABLE');
+    .eq('user_id', seller.id);
 
   const productCount = stats?.length || 0;
 

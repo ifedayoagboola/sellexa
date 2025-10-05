@@ -7,6 +7,7 @@ import { MagnifyingGlassIcon, BellIcon, UserIcon, QuestionMarkCircleIcon } from 
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
 import { useUserStore } from '@/stores/userStore';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface TopBarProps {
   showSearch?: boolean;
@@ -31,6 +32,7 @@ export default function TopBar({
   const { user } = useUserStore();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +60,10 @@ export default function TopBar({
   const handleSupportContact = () => {
     // Open email client with support email
     window.location.href = 'mailto:support@ethniqrootz.com?subject=Support Request&body=Hi, I need help with...';
+  };
+
+  const handleNotificationsClick = () => {
+    setShowComingSoonModal(true);
   };
 
   // Get seller display info
@@ -132,12 +138,13 @@ export default function TopBar({
               )}
               
               {showNotifications && (
-                <Link 
-                  href="/notifications"
+                <button
+                  onClick={handleNotificationsClick}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  title="Notifications"
                 >
                   <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Link>
+                </button>
               )}
               
               {showUserMenu && user ? (
@@ -220,12 +227,13 @@ export default function TopBar({
               )}
               
               {showNotifications && (
-                <Link 
-                  href="/notifications"
+                <button
+                  onClick={handleNotificationsClick}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  title="Notifications"
                 >
                   <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Link>
+                </button>
               )}
               
               {showUserMenu && user ? (
@@ -253,6 +261,29 @@ export default function TopBar({
           )}
         </div>
       </div>
+
+      {/* Coming Soon Modal */}
+      <Dialog open={showComingSoonModal} onOpenChange={setShowComingSoonModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <BellIcon className="h-5 w-5 mr-2 text-[#1aa1aa]" />
+              Notifications Coming Soon
+            </DialogTitle>
+            <DialogDescription>
+              We're working on bringing you real-time notifications for your saved products, messages, and updates. Stay tuned!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end pt-4">
+            <button
+              onClick={() => setShowComingSoonModal(false)}
+              className="px-4 py-2 bg-[#1aa1aa] text-white rounded-md hover:bg-[#158a8f] transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
