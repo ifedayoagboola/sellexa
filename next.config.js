@@ -2,10 +2,10 @@
 const nextConfig = {
   images: {
     remotePatterns: [
+      // Allow images from all Supabase storage buckets
       {
         protocol: 'https',
-        hostname: 'kdoeomzqurcggvywqvdn.supabase.co',
-        port: '',
+        hostname: '*.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
     ],

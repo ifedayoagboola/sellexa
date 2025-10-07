@@ -90,34 +90,3 @@ jobs:
               console.error('❌ Failed to create issue:', error.message);
               console.log('Migration failed but issue creation also failed. Check workflow logs manually.');
             }
-
-  # Optional: Staging environment migrations
-  migrate-staging:
-    name: Run Staging Migrations
-    runs-on: ubuntu-latest
-
-    # Only run if staging secrets are configured
-    if: github.ref == 'refs/heads/develop' && secrets.SUPABASE_STAGING_URL != ''
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run staging migrations
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_STAGING_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_STAGING_SERVICE_ROLE_KEY }}
-          NODE_ENV: staging
-        run: |
-          echo "🧪 Running staging migrations..."
-          npm run migrate
-          npm run db:status
