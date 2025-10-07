@@ -15,6 +15,7 @@
     "db:deploy": "npm run migrate:prod",
     "db:status": "npm run migrate:status",
     "db:check": "node scripts/check-migrations.js",
+    "test:rls": "node scripts/test-rls.js",
     "db:cli": "npx supabase",
     "db:link:dev": "npx supabase link --project-ref kdoeomzqurcggvywqvdn",
     "db:link:prod": "npx supabase link --project-ref sxveqitmcfrhmagycahx",
