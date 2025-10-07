@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { useUserStore } from '@/stores/userStore';
 
@@ -95,6 +94,8 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
       }
       
       try {
+        // Import Supabase client dynamically
+        const { supabase } = await import('@/integrations/supabase/client');
         const { data, error } = await supabase
           .from('threads')
           .select(`
@@ -133,7 +134,7 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
     };
 
     fetchThread();
-  }, [threadId, router, supabase]);
+  }, [threadId, router]);
 
   // Fetch initial messages
   useEffect(() => {
@@ -141,6 +142,8 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
       if (!threadId || !isValidUUID(threadId)) return;
       
       try {
+        // Import Supabase client dynamically
+        const { supabase } = await import('@/integrations/supabase/client');
         const { data, error } = await supabase
           .from('messages')
           .select(`
@@ -164,13 +167,17 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
     };
 
     fetchMessages();
-  }, [threadId, supabase]);
+  }, [threadId]);
 
   // Subscribe to realtime messages
   useEffect(() => {
     if (!threadId || !isValidUUID(threadId)) return;
 
-    const channel = supabase
+    const setupRealtime = async () => {
+      // Import Supabase client dynamically
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      const channel = supabase
       .channel(`messages-${threadId}`)
       .on(
         'postgres_changes',
@@ -205,10 +212,13 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
+      return () => {
+        supabase.removeChannel(channel);
+      };
     };
-  }, [threadId, supabase]);
+
+    setupRealtime();
+  }, [threadId]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -216,6 +226,8 @@ const ThreadPage = ({ params }: ThreadPageProps) => {
 
     setSending(true);
     try {
+      // Import Supabase client dynamically
+      const { supabase } = await import('@/integrations/supabase/client');
       const { error } = await supabase
         .from('messages')
         .insert({

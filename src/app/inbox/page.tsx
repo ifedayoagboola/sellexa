@@ -25,7 +25,6 @@ import {
   DialogDescription 
 } from '@/components/ui/dialog';
 import { Search, RefreshCw, Archive, MessageSquare } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import UserMenu from '@/components/UserMenu';
 import Navigation from '@/components/Navigation';
 import { useUserStore } from '@/stores/userStore';
