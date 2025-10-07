@@ -9,7 +9,6 @@ import { useCreatePost, PostFormData } from '@/hooks/useCreatePost';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 import { parseTags } from '@/lib/posts';
 
 interface EditProductClientProps {
@@ -106,6 +105,8 @@ export default function EditProductClient({ user, product }: EditProductClientPr
     setError(null);
 
     try {
+      // Import Supabase client dynamically
+      const { supabase } = await import('@/integrations/supabase/client');
       // Convert price to pence
       const pricePence = Math.round(parseFloat(formData.price) * 100);
 

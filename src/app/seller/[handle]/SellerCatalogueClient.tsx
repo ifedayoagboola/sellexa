@@ -32,7 +32,6 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useSaves } from '@/hooks/useSaves';
 import { useChat } from '@/hooks/useChat';
-import { supabase } from '@/integrations/supabase/client';
 import ProductImage from '@/components/ProductImage';
 import TopBar from '@/components/TopBar';
 import ProductCard from '@/components/ProductCard';
