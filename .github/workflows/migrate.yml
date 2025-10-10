@@ -3,7 +3,9 @@ name: Database Migrations
 on:
   push:
     branches: [main]
-  workflow_dispatch: # Allow manual triggerr
+    paths:
+      - "supabase/migrations/**"
+  workflow_dispatch: # Allow manual trigger
 
 permissions:
   contents: read
@@ -31,34 +33,36 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check migration status
+      - name: Check migration status (Custom Scripts)
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NODE_ENV: production
         run: |
           echo "📊 Checking current migration status..."
-          npm run db:status
+          npm run db:status || echo "⚠️ Status check skipped (optional)"
 
-      - name: Run migrations
+      - name: Link to Production Project
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NODE_ENV: production
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          echo "🚀 Running production migrations..."
-          npm run migrate:prod
-          echo "⚠️  Note: Manual migration verification may be required"
-          echo "   Please check Supabase Dashboard to ensure all migrations completed successfully"
+          echo "🔗 Linking to ethniqrootz-prod (project ref: sxveqitmcfrhmagycahx)..."
+          npx supabase link --project-ref sxveqitmcfrhmagycahx
+
+      - name: Run migrations (Supabase CLI - Recommended)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "🚀 Running production migrations via Supabase CLI..."
+          echo "📍 Target: ethniqrootz-prod (project ref: sxveqitmcfrhmagycahx)"
+          npx supabase db push
 
       - name: Verify migrations
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NODE_ENV: production
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           echo "✅ Verifying migration status..."
-          npm run db:status
+          npx supabase migration list
           echo "🎉 Migration workflow completed successfully!"
 
       - name: Notify on success

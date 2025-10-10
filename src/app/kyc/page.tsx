@@ -1,15 +1,11 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState } from 'react';
 
 // Force dynamic rendering to prevent build-time errors
 export const dynamic = 'force-dynamic';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/integrations/supabase/client';
+import { useRouter } from 'next/navigation';
 import Navigation from '@/components/Navigation';
-import { KYCStatus, SellerKYCForm } from '@/components/kyc';
-import { useKYC } from '@/hooks/useKYC';
-import { useUserStore } from '@/stores/userStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -20,74 +16,9 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-function KYCPageContent() {
+export default function KYCPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/feed';
-  
   const [showKYCForm, setShowKYCForm] = useState(false);
-  const { user, isLoading, initializeUser } = useUserStore();
-  
-  const { 
-    kycData, 
-    loading: kycLoading, 
-    canCreatePosts, 
-    isKYCSubmitted, 
-    isKYCVerified, 
-    isKYCPending, 
-    isKYCRejected,
-    refreshKYCData 
-  } = useKYC();
-
-  // Initialize user store
-  useEffect(() => {
-    initializeUser();
-  }, [initializeUser]);
-
-  // Auto-redirect if already verified
-  useEffect(() => {
-    if (!kycLoading && !isLoading && isKYCVerified && redirectTo === '/post') {
-      router.push('/post');
-    }
-  }, [isKYCVerified, kycLoading, isLoading, redirectTo, router]);
-
-  const handleKYCComplete = (success: boolean) => {
-    if (success) {
-      refreshKYCData();
-      
-      setTimeout(() => {
-        router.push(redirectTo);
-      }, 2000);
-    }
-  };
-
-  const handleEditKYC = () => {
-    setShowKYCForm(true);
-  };
-
-  const handleContinue = () => {
-    if (canCreatePosts) {
-      router.push(redirectTo);
-    }
-  };
-
-  if (isLoading || kycLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 pb-20">
-        <Navigation />
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-            <div className="h-64 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -123,72 +54,39 @@ function KYCPageContent() {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                {isKYCVerified ? (
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                ) : isKYCPending ? (
-                  <Clock className="h-8 w-8 text-yellow-600" />
-                ) : isKYCRejected ? (
-                  <AlertCircle className="h-8 w-8 text-red-600" />
-                ) : (
-                  <Building2 className="h-8 w-8 text-gray-600" />
-                )}
+                <Building2 className="h-8 w-8 text-gray-600" />
                 
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
-                    {isKYCVerified ? 'Verification Complete' : 
-                     isKYCPending ? 'Under Review' : 
-                     isKYCRejected ? 'Verification Rejected' : 
-                     'Verification Required'}
+                    Verification Required
                   </h2>
                   <p className="text-gray-600">
-                    {isKYCVerified ? 'You can now create product listings and access all seller features.' :
-                     isKYCPending ? 'Your information is being processed. Verification should complete automatically.' :
-                     isKYCRejected ? 'Please review your information and resubmit for verification.' :
-                     'Complete your business profile to join our exclusive network of authentic merchants.'}
+                    Complete your business profile to join our exclusive network of authentic merchants.
                   </p>
                 </div>
               </div>
-
-              {isKYCVerified && (
-                <Button
-                  onClick={handleContinue}
-                  className="bg-[#1aa1aa] hover:bg-[#158a8f]"
-                >
-                  Continue to Create Post
-                </Button>
-              )}
             </div>
           </Card>
         </div>
 
-        {/* KYC Status Component */}
-        {isKYCSubmitted && (
-          <KYCStatus
-            onEdit={handleEditKYC}
-            onComplete={handleContinue}
-          />
-        )}
-
-        {/* Start KYC Button for new users */}
-        {!isKYCSubmitted && (
-          <Card className="p-8 text-center">
-            <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Start Your Seller Journey
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Complete your business verification to instantly unlock the ability to create product listings 
-              and connect with a global network of discerning customers.
-            </p>
-            <Button
-              onClick={() => setShowKYCForm(true)}
-              className="bg-purple-600 hover:bg-purple-700"
-              size="lg"
-            >
-              Begin Verification
-            </Button>
-          </Card>
-        )}
+        {/* Start KYC Button */}
+        <Card className="p-8 text-center">
+          <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Start Your Seller Journey
+          </h3>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            Complete your business verification to instantly unlock the ability to create product listings 
+            and connect with a global network of discerning customers.
+          </p>
+          <Button
+            onClick={() => setShowKYCForm(true)}
+            className="bg-purple-600 hover:bg-purple-700"
+            size="lg"
+          >
+            Begin Verification
+          </Button>
+        </Card>
 
         {/* Benefits Section */}
         <div className="mt-12">
@@ -229,22 +127,24 @@ function KYCPageContent() {
         </div>
       </div>
 
-      {/* KYC Form Modal */}
+      {/* Coming Soon Modal */}
       {showKYCForm && (
-        <SellerKYCForm
-          onComplete={handleKYCComplete}
-          onCancel={() => setShowKYCForm(false)}
-          initialData={kycData || undefined}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">KYC Form Coming Soon!</h3>
+            <p className="text-gray-600 mb-6">
+              We're working on implementing the seller verification form. 
+              Please check back later or contact support for assistance.
+            </p>
+            <Button
+              onClick={() => setShowKYCForm(false)}
+              className="w-full"
+            >
+              Got it!
+            </Button>
+          </div>
+        </div>
       )}
     </div>
-  );
-}
-
-export default function KYCPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <KYCPageContent />
-    </Suspense>
   );
 }
