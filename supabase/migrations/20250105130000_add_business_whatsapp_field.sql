@@ -2,7 +2,7 @@
 -- This field will store the WhatsApp business number for customer communication
 
 ALTER TABLE profiles 
-ADD COLUMN business_whatsapp TEXT;
+ADD COLUMN IF NOT EXISTS business_whatsapp TEXT;
 
 -- Add comment for documentation
 COMMENT ON COLUMN profiles.business_whatsapp IS 'WhatsApp business number for customer communication and order processing';

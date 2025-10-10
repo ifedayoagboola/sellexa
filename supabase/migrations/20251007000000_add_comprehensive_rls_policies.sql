@@ -10,14 +10,17 @@
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Anyone can view public profile information
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON profiles
   FOR SELECT USING (true);
 
 -- Policy: Users can insert their own profile
+DROP POLICY IF EXISTS "Users can create their own profile" ON profiles;
 CREATE POLICY "Users can create their own profile" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Policy: Users can update their own profile
+DROP POLICY IF EXISTS "Users can update their own profile" ON profiles;
 CREATE POLICY "Users can update their own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id);
 
@@ -32,6 +35,7 @@ CREATE POLICY "Users can update their own profile" ON profiles
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Anyone can view available products
+DROP POLICY IF EXISTS "Anyone can view available products" ON products;
 CREATE POLICY "Anyone can view available products" ON products
   FOR SELECT USING (
     status = 'AVAILABLE' OR 
@@ -40,6 +44,7 @@ CREATE POLICY "Anyone can view available products" ON products
   );
 
 -- Policy: Verified sellers can create products
+DROP POLICY IF EXISTS "Verified sellers can create products" ON products;
 CREATE POLICY "Verified sellers can create products" ON products
   FOR INSERT WITH CHECK (
     auth.uid() = user_id AND
@@ -51,10 +56,12 @@ CREATE POLICY "Verified sellers can create products" ON products
   );
 
 -- Policy: Users can update their own products
+DROP POLICY IF EXISTS "Users can update their own products" ON products;
 CREATE POLICY "Users can update their own products" ON products
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- Policy: Users can delete their own products
+DROP POLICY IF EXISTS "Users can delete their own products" ON products;
 CREATE POLICY "Users can delete their own products" ON products
   FOR DELETE USING (auth.uid() = user_id);
 
@@ -66,6 +73,7 @@ CREATE POLICY "Users can delete their own products" ON products
 ALTER TABLE threads ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can view threads they're part of
+DROP POLICY IF EXISTS "Users can view their own threads" ON threads;
 CREATE POLICY "Users can view their own threads" ON threads
   FOR SELECT USING (
     auth.uid() = buyer_id OR 
@@ -73,10 +81,12 @@ CREATE POLICY "Users can view their own threads" ON threads
   );
 
 -- Policy: Users can create threads where they're the buyer
+DROP POLICY IF EXISTS "Users can create threads as buyer" ON threads;
 CREATE POLICY "Users can create threads as buyer" ON threads
   FOR INSERT WITH CHECK (auth.uid() = buyer_id);
 
 -- Policy: Users can update threads they're part of
+DROP POLICY IF EXISTS "Users can update their own threads" ON threads;
 CREATE POLICY "Users can update their own threads" ON threads
   FOR UPDATE USING (
     auth.uid() = buyer_id OR 
@@ -94,6 +104,7 @@ CREATE POLICY "Users can update their own threads" ON threads
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can view messages in their threads
+DROP POLICY IF EXISTS "Users can view messages in their threads" ON messages;
 CREATE POLICY "Users can view messages in their threads" ON messages
   FOR SELECT USING (
     thread_id IN (
@@ -103,6 +114,7 @@ CREATE POLICY "Users can view messages in their threads" ON messages
   );
 
 -- Policy: Users can send messages to their threads
+DROP POLICY IF EXISTS "Users can send messages to their threads" ON messages;
 CREATE POLICY "Users can send messages to their threads" ON messages
   FOR INSERT WITH CHECK (
     auth.uid() = sender_id AND
@@ -113,10 +125,12 @@ CREATE POLICY "Users can send messages to their threads" ON messages
   );
 
 -- Policy: Users can update their own messages (edit functionality)
+DROP POLICY IF EXISTS "Users can update their own messages" ON messages;
 CREATE POLICY "Users can update their own messages" ON messages
   FOR UPDATE USING (auth.uid() = sender_id);
 
 -- Policy: Users can delete their own messages
+DROP POLICY IF EXISTS "Users can delete their own messages" ON messages;
 CREATE POLICY "Users can delete their own messages" ON messages
   FOR DELETE USING (auth.uid() = sender_id);
 
@@ -128,6 +142,7 @@ CREATE POLICY "Users can delete their own messages" ON messages
 ALTER TABLE IF EXISTS categories ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Anyone can view categories
+DROP POLICY IF EXISTS "Anyone can view categories" ON categories;
 CREATE POLICY "Anyone can view categories" ON categories
   FOR SELECT USING (true);
 

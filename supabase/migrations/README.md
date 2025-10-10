@@ -46,20 +46,42 @@ This directory contains all database migrations for the EthniqRootz project. Mig
 
 ## Running Migrations
 
-To apply all migrations:
+### Development Environment
 
 ```bash
-npx supabase db push
+npm run db:push:dev
 ```
 
-To reset the database and apply all migrations:
+### Production Environment
 
 ```bash
-npx supabase db reset
+npm run db:push:prod
 ```
 
-To check migration status:
+### Check Migration Status
 
 ```bash
-npx supabase migration list
+npm run migrate:status
 ```
+
+### Reset Local Database (Development Only)
+
+```bash
+npm run db:reset
+```
+
+## Important Workflow
+
+⚠️ **Before merging to `main`, always:**
+
+1. Test migrations in dev: `npm run db:push:dev`
+2. Test your application thoroughly
+3. Review the [Pre-Merge Checklist](../docs/PRE_MERGE_CHECKLIST.md)
+4. After merge, apply to production: `npm run db:push:prod`
+
+📚 **For detailed workflow, see:**
+
+- [Supabase Environment Setup](../docs/SUPABASE_ENVIRONMENT_SETUP.md) - Two-project architecture
+- [Database Workflow Guide](../docs/DATABASE_WORKFLOW.md) - Complete workflow
+- [Pre-Merge Checklist](../docs/PRE_MERGE_CHECKLIST.md) - Before merging
+- [Migration Strategy](../docs/MIGRATION_STRATEGY.md) - Overall strategy
