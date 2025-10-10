@@ -69,7 +69,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 Sign in to EthniqRootz
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Join your niche community and discover curated authentic products
+                Join your niche community and discover curated authentic products...
               </CardDescription>
             </CardHeader>
             <CardContent>
