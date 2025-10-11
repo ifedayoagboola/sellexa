@@ -61,6 +61,7 @@ export async function signUp(formData: FormData) {
         email,
         password,
         options: {
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ethniqrootz.com'}/auth/callback`,
             data: {
                 full_name: fullName,
             },
@@ -76,6 +77,12 @@ export async function signUp(formData: FormData) {
             return { error: 'An account with this email already exists. Please sign in instead.' };
         }
         return { error: error.message };
+    }
+
+    // Check if this is a duplicate email (user exists but identities are empty)
+    // This happens when email confirmations are required and user tries to signup again
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+        return { error: 'An account with this email already exists. Please sign in instead.' };
     }
 
     // Sign out the user immediately after signup to prevent automatic login
