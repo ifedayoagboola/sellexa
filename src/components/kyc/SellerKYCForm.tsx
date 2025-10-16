@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -20,6 +23,50 @@ import {
   X
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+
+// Validation schema
+const kycSchema = z.object({
+  business_name: z.string().min(2, 'Business name must be at least 2 characters'),
+  business_description: z.string().min(10, 'Business description must be at least 10 characters'),
+  business_address: z.string().optional(),
+  business_city: z.string().min(2, 'City is required'),
+  business_country: z.string().min(2, 'Country is required'),
+  business_phone: z.string().optional(),
+  business_whatsapp: z.string()
+    .min(1, 'WhatsApp number is required')
+    .refine((val) => {
+      // Remove all non-digit characters except + at the beginning
+      const cleanNumber = val.replace(/[^\d+]/g, '');
+      
+      // Must start with + followed by digits
+      if (!cleanNumber.startsWith('+') || cleanNumber.length < 8) {
+        return false;
+      }
+      
+      // Extract digits after +
+      const digitsOnly = cleanNumber.substring(1);
+      
+      // Must be 7-15 digits after the + (international format)
+      return digitsOnly.length >= 7 && digitsOnly.length <= 15 && /^\d+$/.test(digitsOnly);
+    }, 'Please enter a valid WhatsApp number starting with + (e.g., +447762474016)')
+    .transform((val) => {
+      // Transform to the exact format needed for WhatsApp chat: + followed by digits only
+      const cleanNumber = val.replace(/[^\d+]/g, '');
+      
+      // If it doesn't start with +, add it
+      if (!cleanNumber.startsWith('+')) {
+        return '+' + cleanNumber;
+      }
+      
+      return cleanNumber;
+    }),
+  business_website: z.string().url('Please enter a valid website URL').optional().or(z.literal('')),
+  business_instagram: z.string().optional(),
+  business_twitter: z.string().optional(),
+  business_facebook: z.string().optional(),
+});
+
+type KYCFormData = z.infer<typeof kycSchema>;
 
 interface KYCData {
   business_name: string;
@@ -44,32 +91,36 @@ interface SellerKYCFormProps {
 export default function SellerKYCForm({ onComplete, onCancel, initialData }: SellerKYCFormProps) {
   const { toast } = useToast();
   
-  // Debug log to verify initial data
-  console.log('SellerKYCForm initialData:', initialData);
-  
-  const [formData, setFormData] = useState<KYCData>({
-    business_name: initialData?.business_name || '',
-    business_description: initialData?.business_description || '',
-    business_address: initialData?.business_address || '',
-    business_city: initialData?.business_city || '',
-    business_country: initialData?.business_country || '',
-    business_phone: initialData?.business_phone || '',
-    business_whatsapp: initialData?.business_whatsapp || '',
-    business_website: initialData?.business_website || '',
-    business_instagram: initialData?.business_instagram || '',
-    business_twitter: initialData?.business_twitter || '',
-    business_facebook: initialData?.business_facebook || '',
-  });
-
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleInputChange = (field: keyof KYCData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting: isFormSubmitting },
+    setValue,
+    watch
+  } = useForm<KYCFormData>({
+    resolver: zodResolver(kycSchema),
+    defaultValues: {
+      business_name: initialData?.business_name || '',
+      business_description: initialData?.business_description || '',
+      business_address: initialData?.business_address || '',
+      business_city: initialData?.business_city || '',
+      business_country: initialData?.business_country || '',
+      business_phone: initialData?.business_phone || '',
+      business_whatsapp: initialData?.business_whatsapp || '',
+      business_website: initialData?.business_website || '',
+      business_instagram: initialData?.business_instagram || '',
+      business_twitter: initialData?.business_twitter || '',
+      business_facebook: initialData?.business_facebook || '',
+    }
+  });
+
+  const formData = watch();
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -119,8 +170,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: KYCFormData) => {
     setIsSubmitting(true);
     setError(null);
 
@@ -150,17 +200,17 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
         .upsert({
           id: user.id,
           handle: user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`,
-          business_name: formData.business_name,
-          business_description: formData.business_description,
-          business_address: formData.business_address,
-          business_city: formData.business_city,
-          business_country: formData.business_country,
-          business_phone: formData.business_phone,
-          business_whatsapp: formData.business_whatsapp,
-          business_website: formData.business_website,
-          business_instagram: formData.business_instagram,
-          business_twitter: formData.business_twitter,
-          business_facebook: formData.business_facebook,
+          business_name: data.business_name,
+          business_description: data.business_description,
+          business_address: data.business_address,
+          business_city: data.business_city,
+          business_country: data.business_country,
+          business_phone: data.business_phone,
+          business_whatsapp: data.business_whatsapp,
+          business_website: data.business_website,
+          business_instagram: data.business_instagram,
+          business_twitter: data.business_twitter,
+          business_facebook: data.business_facebook,
           business_logo_url: logoUrl,
           kyc_status: 'verified',
           kyc_submitted_at: now,
@@ -191,11 +241,6 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
     }
   };
 
-  const isFormValid = formData.business_name.trim() && 
-                     formData.business_description.trim() && 
-                     formData.business_city.trim() && 
-                     formData.business_country.trim() &&
-                     formData.business_whatsapp.trim();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -240,7 +285,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Business Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
@@ -254,11 +299,13 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                     Business Name *
                   </label>
                   <Input
-                    value={formData.business_name}
-                    onChange={(e) => handleInputChange('business_name', e.target.value)}
                     placeholder="Enter your business name"
-                    required
+                    className={errors.business_name ? 'border-red-500 focus:border-red-500' : ''}
+                    {...register('business_name')}
                   />
+                  {errors.business_name && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_name.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -266,11 +313,14 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                     Business Phone
                   </label>
                   <Input
-                    value={formData.business_phone}
-                    onChange={(e) => handleInputChange('business_phone', e.target.value)}
                     placeholder="+44 20 7946 0958"
                     type="tel"
+                    className={errors.business_phone ? 'border-red-500 focus:border-red-500' : ''}
+                    {...register('business_phone')}
                   />
+                  {errors.business_phone && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_phone.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -279,14 +329,16 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   WhatsApp Business Number *
                 </label>
                 <Input
-                  value={formData.business_whatsapp}
-                  onChange={(e) => handleInputChange('business_whatsapp', e.target.value)}
-                  placeholder="+44 7700 900123"
+                  placeholder="+447762474016"
                   type="tel"
-                  required
+                  className={errors.business_whatsapp ? 'border-red-500 focus:border-red-500' : ''}
+                  {...register('business_whatsapp')}
                 />
+                {errors.business_whatsapp && (
+                  <p className="text-sm text-red-600 mt-1">{errors.business_whatsapp.message}</p>
+                )}
                 <p className="text-xs text-gray-500 mt-1">
-                  Required for customer communication and order processing
+                  Required for customer communication and order processing. Enter your WhatsApp number starting with + (e.g., +447762474016)
                 </p>
               </div>
 
@@ -295,13 +347,16 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   Business Description *
                 </label>
                 <textarea
-                  value={formData.business_description}
-                  onChange={(e) => handleInputChange('business_description', e.target.value)}
                   placeholder="Tell us about your business..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none ${
+                    errors.business_description ? 'border-red-500 focus:border-red-500' : 'border-gray-300'
+                  }`}
                   rows={3}
-                  required
+                  {...register('business_description')}
                 />
+                {errors.business_description && (
+                  <p className="text-sm text-red-600 mt-1">{errors.business_description.message}</p>
+                )}
               </div>
 
               {/* Business Logo */}
@@ -355,11 +410,13 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                     City *
                   </label>
                   <Input
-                    value={formData.business_city}
-                    onChange={(e) => handleInputChange('business_city', e.target.value)}
                     placeholder="Enter city"
-                    required
+                    className={errors.business_city ? 'border-red-500 focus:border-red-500' : ''}
+                    {...register('business_city')}
                   />
+                  {errors.business_city && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_city.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -367,11 +424,13 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                     Country *
                   </label>
                   <Input
-                    value={formData.business_country}
-                    onChange={(e) => handleInputChange('business_country', e.target.value)}
                     placeholder="Enter country"
-                    required
+                    className={errors.business_country ? 'border-red-500 focus:border-red-500' : ''}
+                    {...register('business_country')}
                   />
+                  {errors.business_country && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_country.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -380,10 +439,13 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   Full Address
                 </label>
                 <Input
-                  value={formData.business_address}
-                  onChange={(e) => handleInputChange('business_address', e.target.value)}
                   placeholder="Street address, postal code, etc."
+                  className={errors.business_address ? 'border-red-500 focus:border-red-500' : ''}
+                  {...register('business_address')}
                 />
+                {errors.business_address && (
+                  <p className="text-sm text-red-600 mt-1">{errors.business_address.message}</p>
+                )}
               </div>
             </div>
 
@@ -400,11 +462,14 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                     Website
                   </label>
                   <Input
-                    value={formData.business_website}
-                    onChange={(e) => handleInputChange('business_website', e.target.value)}
                     placeholder="https://yourwebsite.com"
                     type="url"
+                    className={errors.business_website ? 'border-red-500 focus:border-red-500' : ''}
+                    {...register('business_website')}
                   />
+                  {errors.business_website && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_website.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -414,12 +479,14 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   <div className="relative">
                     <Instagram className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
-                      value={formData.business_instagram}
-                      onChange={(e) => handleInputChange('business_instagram', e.target.value)}
                       placeholder="@username"
-                      className="pl-10"
+                      className={`pl-10 ${errors.business_instagram ? 'border-red-500 focus:border-red-500' : ''}`}
+                      {...register('business_instagram')}
                     />
                   </div>
+                  {errors.business_instagram && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_instagram.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -429,12 +496,14 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   <div className="relative">
                     <Twitter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
-                      value={formData.business_twitter}
-                      onChange={(e) => handleInputChange('business_twitter', e.target.value)}
                       placeholder="@username"
-                      className="pl-10"
+                      className={`pl-10 ${errors.business_twitter ? 'border-red-500 focus:border-red-500' : ''}`}
+                      {...register('business_twitter')}
                     />
                   </div>
+                  {errors.business_twitter && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_twitter.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -444,12 +513,14 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
                   <div className="relative">
                     <Facebook className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
-                      value={formData.business_facebook}
-                      onChange={(e) => handleInputChange('business_facebook', e.target.value)}
                       placeholder="Page name or URL"
-                      className="pl-10"
+                      className={`pl-10 ${errors.business_facebook ? 'border-red-500 focus:border-red-500' : ''}`}
+                      {...register('business_facebook')}
                     />
                   </div>
+                  {errors.business_facebook && (
+                    <p className="text-sm text-red-600 mt-1">{errors.business_facebook.message}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -479,10 +550,10 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
               </Button>
               <Button
                 type="submit"
-                disabled={!isFormValid || isSubmitting}
+                disabled={isSubmitting || isFormSubmitting}
                 className="bg-purple-600 hover:bg-purple-700"
               >
-                {isSubmitting ? (
+                {isSubmitting || isFormSubmitting ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>Submitting...</span>
