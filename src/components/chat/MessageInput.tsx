@@ -33,7 +33,6 @@ export function MessageInput({
 }: MessageInputProps) {
   const [isTyping, setIsTyping] = useState(false);
   const [attachments, setAttachments] = useState<any[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
@@ -133,7 +132,6 @@ export function MessageInput({
         {/* Message Input */}
         <div className="flex-1 relative">
           <Input
-            ref={inputRef}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
             disabled={disabled}
