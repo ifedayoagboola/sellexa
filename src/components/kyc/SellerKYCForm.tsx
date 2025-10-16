@@ -36,13 +36,17 @@ interface KYCData {
 }
 
 interface SellerKYCFormProps {
-  onComplete: (success: boolean) => void;
+  onComplete: () => void;
   onCancel: () => void;
   initialData?: Partial<KYCData>;
 }
 
 export default function SellerKYCForm({ onComplete, onCancel, initialData }: SellerKYCFormProps) {
   const { toast } = useToast();
+  
+  // Debug log to verify initial data
+  console.log('SellerKYCForm initialData:', initialData);
+  
   const [formData, setFormData] = useState<KYCData>({
     business_name: initialData?.business_name || '',
     business_description: initialData?.business_description || '',
@@ -179,7 +183,7 @@ export default function SellerKYCForm({ onComplete, onCancel, initialData }: Sel
       
       setTimeout(() => {
         onCancel();
-        onComplete(true);
+        onComplete();
       }, 1500);
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
