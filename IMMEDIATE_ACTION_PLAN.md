@@ -24,7 +24,7 @@ This will apply all migration files from `supabase/migrations/` to your producti
 
 ### Option B: Manual Application (If Option A Fails)
 
-1. Go to Supabase Dashboard for **ethniqrootz-prod**: https://app.supabase.com/project/sxveqitmcfrhmagycahx/sql
+1. Go to Supabase Dashboard for **sellexa-prod**: https://app.supabase.com/project/sxveqitmcfrhmagycahx/sql
 2. Copy the SQL from each migration file in order:
    - `supabase/migrations/00000000000000_migration_tracking.sql`
    - `supabase/migrations/20241220_create_saves_table.sql`
@@ -73,7 +73,7 @@ npx supabase migration list --project-ref sxveqitmcfrhmagycahx
 
 The workflow file exists at: `.github/workflows/migrate.yml`
 
-This will automatically apply migrations to **ethniqrootz-prod** when you push to `main`.
+This will automatically apply migrations to **sellexa-prod** when you push to `main`.
 
 ---
 
@@ -143,7 +143,7 @@ npm run dev
 
 ### Check Database Tables:
 
-1. Go to **ethniqrootz-prod** dashboard: https://app.supabase.com/project/sxveqitmcfrhmagycahx/editor
+1. Go to **sellexa-prod** dashboard: https://app.supabase.com/project/sxveqitmcfrhmagycahx/editor
 2. Verify these tables exist:
    - `schema_migrations`
    - `saves`

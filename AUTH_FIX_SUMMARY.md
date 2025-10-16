@@ -4,7 +4,7 @@
 
 ### 1. ❌ Localhost Redirect After Email Verification
 
-**Problem:** Users clicking email verification links were redirected to `localhost` instead of `ethniqrootz.com/feed`
+**Problem:** Users clicking email verification links were redirected to `localhost` instead of `sellexa.app/feed`
 
 **Solution:**
 
@@ -35,12 +35,12 @@ https://app.supabase.com/project/sxveqitmcfrhmagycahx/auth/url-configuration
 
 ### Configure These Settings:
 
-1. **Site URL:** `https://ethniqrootz.com`
+1. **Site URL:** `https://sellexa.app`
 
 2. **Redirect URLs:** (add both)
    ```
-   https://ethniqrootz.com/auth/callback
-   https://ethniqrootz.com/**
+   https://sellexa.app/auth/callback
+   https://sellexa.app/**
    ```
 
 ---
@@ -50,7 +50,7 @@ https://app.supabase.com/project/sxveqitmcfrhmagycahx/auth/url-configuration
 Make sure your production environment has:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://ethniqrootz.com
+NEXT_PUBLIC_SITE_URL=https://sellexa.app
 NEXT_PUBLIC_SUPABASE_URL=https://sxveqitmcfrhmagycahx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
@@ -79,10 +79,10 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 1. Deploy the changes to production
 2. Configure Supabase dashboard (see above)
-3. Go to: `https://ethniqrootz.com/auth/signup`
+3. Go to: `https://sellexa.app/auth/signup`
 4. Create a test account with a new email
 5. Check email and click verification link
-6. **Expected:** Redirects to `https://ethniqrootz.com/feed` ✅
+6. **Expected:** Redirects to `https://sellexa.app/feed` ✅
 
 ---
 

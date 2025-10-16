@@ -13,8 +13,8 @@ export default function SplashPage() {
           <Link href="/feed" className="flex items-center">
             <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
               <Image
-                src="/ethniqrootz.png"
-                alt="EthniqRootz"
+                src="/sellexa.png"
+                alt="Sellexa"
                 fill
                 className="object-contain"
               />
@@ -30,10 +30,10 @@ export default function SplashPage() {
           <div className="text-center space-y-6">
             <div className="space-y-4">
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Welcome to EthniqRootz
+                Welcome to Sellexa
               </h1>
               <p className="text-lg sm:text-xl text-gray-600">
-                Where niche communities connect through authentic commerce
+                The digital home for diaspora commerce
               </p>
             </div>
             

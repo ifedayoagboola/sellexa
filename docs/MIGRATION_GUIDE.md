@@ -1,6 +1,6 @@
 # Database Migration Guide
 
-This guide explains how to manage database migrations in the EthniqRootz project.
+This guide explains how to manage database migrations in the Sellexa project.
 
 ## Overview
 

@@ -7,8 +7,8 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'EthniqRootz - Curated Authentic Commerce',
-  description: 'Where niche communities connect through authentic commerce - discover handpicked products from verified merchants worldwide',
+  title: 'Sellexa - The digital home for diaspora commerce',
+  description: 'The digital home for diaspora commerce - discover handpicked products from verified merchants worldwide',
   keywords: 'authentic commerce, niche marketplace, curated products, verified merchants, exclusive network, authentic products, premium marketplace',
   icons: {
     icon: '/favicon.ico',
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'EthniqRootz - Curated Authentic Commerce',
-    description: 'Where niche communities connect through authentic commerce - discover handpicked products from verified merchants worldwide',
+    title: 'Sellexa - The digital home for diaspora commerce',
+    description: 'The digital home for diaspora commerce - discover handpicked products from verified merchants worldwide',
     type: 'website',
   },
 };

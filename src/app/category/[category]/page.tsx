@@ -18,14 +18,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   
   if (!VALID_CATEGORIES.includes(categoryLower)) {
     return {
-      title: 'Category Not Found | EthniqRootz',
+      title: 'Category Not Found | Sellexa',
       description: 'The category you are looking for could not be found.',
     };
   }
 
   const categoryName = categoryLower.charAt(0).toUpperCase() + categoryLower.slice(1);
-  const title = `${categoryName} Products | Curated ${categoryName} | EthniqRootz`;
-  const description = `Discover authentic ${categoryName.toLowerCase()} products from our exclusive network of verified merchants. Shop curated ${categoryName.toLowerCase()} items on EthniqRootz - where niche communities connect through authentic commerce.`;
+  const title = `${categoryName} Products | Curated ${categoryName} | Sellexa`;
+  const description = `Discover authentic ${categoryName.toLowerCase()} products from our exclusive network of verified merchants. Shop curated ${categoryName.toLowerCase()} items on Sellexa - the digital home for diaspora commerce.`;
 
   return {
     title,
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       `curated ${categoryName.toLowerCase()}`,
       `${categoryName.toLowerCase()} products`,
       'authentic marketplace',
-      'EthniqRootz',
+      'Sellexa',
       'verified merchants',
       'niche commerce',
       'premium products',
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       title,
       description,
       type: 'website',
-      siteName: 'EthniqRootz',
+      siteName: 'Sellexa',
     },
     twitter: {
       card: 'summary_large_image',
@@ -116,7 +116,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": `${categoryName} Products`,
-    "description": `African ${categoryName.toLowerCase()} products available on EthniqRootz`,
+    "description": `African ${categoryName.toLowerCase()} products available on Sellexa`,
     "url": `/category/${categoryLower}`,
     "mainEntity": {
       "@type": "ItemList",
@@ -193,7 +193,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 No {categoryName.toLowerCase()} products found
               </h2>
               <p className="text-muted-foreground mb-8">
-                Be the first to list a {categoryName.toLowerCase()} product on EthniqRootz!
+                Be the first to list a {categoryName.toLowerCase()} product on Sellexa!
               </p>
               <a
                 href="/post"

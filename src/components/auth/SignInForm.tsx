@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useActionState } from 'react';
 import { signIn } from '@/lib/auth-actions';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -13,36 +13,27 @@ import Link from 'next/link';
 export default function SignInForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await signIn(formData);
-      if (result?.error) {
-        setError(result.error);
-      }
-    } catch (err) {
-      console.error('Sign in error:', err);
-      setError('An unexpected error occurred. Please check the console for details.');
-    } finally {
-      setIsLoading(false);
-    }
+  
+  const handleSignIn = async (prevState: any, formData: FormData) => {
+    const result = await signIn(formData);
+    return result;
   };
+  
+  const [state, formAction, isPending] = useActionState(handleSignIn, null);
 
   return (
-    <form action={handleSubmit} className="space-y-6">
+    <form 
+      action={formAction} 
+      className="space-y-6"
+    >
       {redirectTo && (
         <input type="hidden" name="redirectTo" value={redirectTo} />
       )}
       
-      {error && (
+      {state?.error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
       
@@ -86,10 +77,10 @@ export default function SignInForm() {
 
       <Button
         type="submit"
-        disabled={isLoading}
+        disabled={isPending}
         className="w-full bg-[#1aa1aa] hover:bg-[#158a8f] h-12 text-base font-medium"
       >
-        {isLoading ? 'Signing in...' : 'Sign in'}
+        {isPending ? 'Signing in...' : 'Sign in'}
       </Button>
 
       <div className="text-center">

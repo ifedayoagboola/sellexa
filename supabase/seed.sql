@@ -1,4 +1,4 @@
--- Seed data for EthniqRootz development environment
+-- Seed data for Sellexa development environment
 -- This file contains sample data for testing and development
 
 -- Insert sample categories (if not exists)

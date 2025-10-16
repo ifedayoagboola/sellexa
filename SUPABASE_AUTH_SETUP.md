@@ -19,7 +19,7 @@ Visit: https://app.supabase.com/project/sxveqitmcfrhmagycahx/auth/url-configurat
 ### 2. Configure Site URL
 
 **Setting:** Site URL  
-**Value:** `https://ethniqrootz.com`
+**Value:** `https://sellexa.app`
 
 This is the main URL that will be used in email templates and as the default redirect.
 
@@ -31,8 +31,8 @@ This is the main URL that will be used in email templates and as the default red
 **Add these URLs (one per line):**
 
 ```
-https://ethniqrootz.com/auth/callback
-https://ethniqrootz.com/**
+https://sellexa.app/auth/callback
+https://sellexa.app/**
 ```
 
 These URLs are allowed as redirect destinations after email verification.
@@ -45,7 +45,7 @@ If you want to use a different site URL for development vs production, add this 
 
 ```bash
 # Production
-NEXT_PUBLIC_SITE_URL=https://ethniqrootz.com
+NEXT_PUBLIC_SITE_URL=https://sellexa.app
 
 # Development (optional)
 # NEXT_PUBLIC_SITE_URL=http://localhost:3000
@@ -57,9 +57,9 @@ NEXT_PUBLIC_SITE_URL=https://ethniqrootz.com
 
 ### User Signup Flow:
 
-1. User fills out signup form on `ethniqrootz.com/auth/signup`
+1. User fills out signup form on `sellexa.app/auth/signup`
 2. Supabase sends verification email
-3. Email contains link to `https://ethniqrootz.com/auth/callback?code=...`
+3. Email contains link to `https://sellexa.app/auth/callback?code=...`
 4. Callback route exchanges code for session
 5. User is redirected to `/feed` ✅
 
@@ -74,11 +74,11 @@ NEXT_PUBLIC_SITE_URL=https://ethniqrootz.com
 
 To verify the setup is working:
 
-1. Go to production site: `https://ethniqrootz.com/auth/signup`
+1. Go to production site: `https://sellexa.app/auth/signup`
 2. Create a test account
 3. Check your email
 4. Click verification link
-5. Should redirect to `https://ethniqrootz.com/feed` (NOT localhost)
+5. Should redirect to `https://sellexa.app/feed` (NOT localhost)
 
 ---
 
@@ -92,13 +92,13 @@ To verify the setup is working:
 ## 🚨 Common Issues
 
 **Issue:** Still redirecting to localhost after email verification  
-**Fix:** Make sure Site URL in Supabase dashboard is set to `https://ethniqrootz.com`
+**Fix:** Make sure Site URL in Supabase dashboard is set to `https://sellexa.app`
 
 **Issue:** Getting "check your email" for existing accounts  
 **Fix:** Already fixed in the code (checks for empty identities array)
 
 **Issue:** Redirect URL not allowed error  
-**Fix:** Add `https://ethniqrootz.com/**` to Redirect URLs in Supabase dashboard
+**Fix:** Add `https://sellexa.app/**` to Redirect URLs in Supabase dashboard
 
 ---
 

@@ -62,7 +62,7 @@ function checkFileContent(filePath, patterns, description) {
 }
 
 function validateArchitecture() {
-  log('\n🚀 Validating EthniqRootz Save Architecture\n', 'bold');
+  log('\n🚀 Validating Sellexa Save Architecture\n', 'bold');
 
   let allValid = true;
 
