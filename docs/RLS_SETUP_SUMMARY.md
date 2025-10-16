@@ -2,7 +2,7 @@
 
 ## ✅ What Was Done
 
-I've implemented comprehensive Row Level Security (RLS) policies for your EthniqRootz database to protect user data and ensure proper access control.
+I've implemented comprehensive Row Level Security (RLS) policies for your Sellexa database to protect user data and ensure proper access control.
 
 ---
 

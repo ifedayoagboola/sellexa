@@ -114,18 +114,18 @@ export async function generateMetadata({ params }: SellerCataloguePageProps) {
   }
 
   return {
-    title: `${seller.name || seller.handle}'s Shop | EthniqRootz`,
-    description: `Shop ${seller.name || seller.handle}'s unique products on EthniqRootz. Discover amazing items from ${seller.city || 'our marketplace'}.`,
+    title: `${seller.name || seller.handle}'s Shop | Sellexa`,
+    description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa. Discover amazing items from ${seller.city || 'our marketplace'}.`,
     openGraph: {
       title: `${seller.name || seller.handle}'s Shop`,
-      description: `Shop ${seller.name || seller.handle}'s unique products on EthniqRootz`,
+      description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa`,
       images: seller.avatar_url ? [seller.avatar_url] : [],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: `${seller.name || seller.handle}'s Shop`,
-      description: `Shop ${seller.name || seller.handle}'s unique products on EthniqRootz`,
+      description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa`,
       images: seller.avatar_url ? [seller.avatar_url] : [],
     },
   };

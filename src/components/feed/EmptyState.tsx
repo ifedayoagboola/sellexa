@@ -11,7 +11,7 @@ export default function EmptyState() {
         No products found
       </h2>
       <p className="text-gray-600 mb-8 max-w-md mx-auto">
-        Be the first to list a product on EthniqRootz and showcase your authentic African products!
+        Be the first to list a product on Sellexa and showcase your authentic African products!
       </p>
       <Button asChild className="bg-gradient-to-r from-[#1aa1aa] to-teal-600 hover:from-[#158a8f] hover:to-teal-700">
         <a href="/post">

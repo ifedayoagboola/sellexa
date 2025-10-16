@@ -1,6 +1,6 @@
 # Database Migrations
 
-This directory contains all database migrations for the EthniqRootz project. Migrations are applied in chronological order based on their timestamp.
+This directory contains all database migrations for the Sellexa project. Migrations are applied in chronological order based on their timestamp.
 
 ## Migration Order
 

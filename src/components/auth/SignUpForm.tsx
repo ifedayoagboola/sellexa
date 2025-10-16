@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState } from 'react';
 import { signUp } from '@/lib/auth-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,31 +10,22 @@ import { User, Mail, Lock, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SignUpForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await signUp(formData);
-      if (result?.error) {
-        setError(result.error);
-      }
-    } catch (err) {
-      setError('An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSignUp = async (prevState: any, formData: FormData) => {
+    const result = await signUp(formData);
+    return result;
   };
+  
+  const [state, formAction, isPending] = useActionState(handleSignUp, null);
 
   return (
-    <form action={handleSubmit} className="space-y-6">
-      {error && (
+    <form 
+      action={formAction} 
+      className="space-y-6"
+    >
+      {state?.error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
       
@@ -114,10 +105,10 @@ export default function SignUpForm() {
 
       <Button
         type="submit"
-        disabled={isLoading}
+        disabled={isPending}
         className="w-full bg-[#1aa1aa] hover:bg-[#158a8f] h-12 text-base font-medium"
       >
-        {isLoading ? 'Creating account...' : 'Sign up'}
+        {isPending ? 'Creating account...' : 'Sign up'}
       </Button>
 
       <div className="text-center">

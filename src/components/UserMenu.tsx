@@ -15,10 +15,10 @@ interface UserMenuProps {
 
 export default function UserMenu({ user }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { displayName, actions } = useUser();
+  const { displayName } = useUser();
 
   const handleSignOut = async () => {
-    await actions.signOut();
+    await signOut();
   };
 
   return (

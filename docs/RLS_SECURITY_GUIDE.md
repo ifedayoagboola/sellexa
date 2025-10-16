@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-Row Level Security (RLS) is PostgreSQL's built-in security feature that controls which rows users can access in database tables. This guide explains how RLS is configured in EthniqRootz and how to verify it's working correctly.
+Row Level Security (RLS) is PostgreSQL's built-in security feature that controls which rows users can access in database tables. This guide explains how RLS is configured in Sellexa and how to verify it's working correctly.
 
 ---
 

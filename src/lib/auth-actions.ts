@@ -61,7 +61,7 @@ export async function signUp(formData: FormData) {
         email,
         password,
         options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ethniqrootz.com'}/auth/callback`,
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sellexa.app'}/auth/callback`,
             data: {
                 full_name: fullName,
             },

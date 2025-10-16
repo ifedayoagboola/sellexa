@@ -39,8 +39,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <Link href="/feed" className="flex items-center">
             <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
               <Image
-                src="/ethniqrootz.png"
-                alt="EthniqRootz"
+                src="/sellexa.png"
+                alt="Sellexa"
                 fill
                 className="object-contain"
               />
@@ -66,10 +66,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <Card className="border-0 shadow-lg">
             <CardHeader className="text-center space-y-2 pb-4">
               <CardTitle className="text-2xl font-bold text-gray-900">
-                Sign in to EthniqRootz
+                Sign in to Sellexa
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Join your niche community and discover curated authentic products
+                The digital home for diaspora commerce
               </CardDescription>
             </CardHeader>
             <CardContent>

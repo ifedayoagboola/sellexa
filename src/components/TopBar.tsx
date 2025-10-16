@@ -59,7 +59,7 @@ export default function TopBar({
 
   const handleSupportContact = () => {
     // Open email client with support email
-    window.location.href = 'mailto:support@ethniqrootz.com?subject=Support Request&body=Hi, I need help with...';
+    window.location.href = 'mailto:support@sellexa.app?subject=Support Request&body=Hi, I need help with...';
   };
 
   const handleNotificationsClick = () => {
@@ -87,7 +87,7 @@ export default function TopBar({
         <div className="block lg:hidden">
           {/* First Row: Logo + Icons */}
           <div className="flex items-center justify-between py-4">
-            {/* Seller Logo or EthniqRootz Logo */}
+            {/* Seller Logo or Sellexa Logo */}
             {sellerDisplay ? (
               <div className="flex items-center">
                 {sellerDisplay.sellerLogo ? (
@@ -116,8 +116,8 @@ export default function TopBar({
               <Link href="/feed" className="flex items-center">
                 <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
                   <Image
-                    src="/ethniqrootz.png"
-                    alt="EthniqRootz"
+                    src="/sellexa.png"
+                    alt="Sellexa"
                     fill
                     className="object-contain"
                   />
@@ -176,7 +176,7 @@ export default function TopBar({
         <div className="hidden lg:block">
           {/* First Row: Logo + Icons */}
           <div className="flex items-center justify-between py-4">
-            {/* Seller Logo or EthniqRootz Logo */}
+            {/* Seller Logo or Sellexa Logo */}
             {sellerDisplay ? (
               <div className="flex items-center">
                 {sellerDisplay.sellerLogo ? (
@@ -205,8 +205,8 @@ export default function TopBar({
               <Link href="/feed" className="flex items-center">
                 <div className="w-40 h-24 xl:w-48 xl:h-32 relative">
                   <Image
-                    src="/ethniqrootz.png"
-                    alt="EthniqRootz"
+                    src="/sellexa.png"
+                    alt="Sellexa"
                     fill
                     className="object-contain"
                   />

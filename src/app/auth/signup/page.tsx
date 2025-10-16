@@ -32,8 +32,8 @@ export default async function SignUpPage() {
           <Link href="/feed" className="flex items-center">
             <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
               <Image
-                src="/ethniqrootz.png"
-                alt="EthniqRootz"
+                src="/sellexa.png"
+                alt="Sellexa"
                 fill
                 className="object-contain"
               />
@@ -54,7 +54,7 @@ export default async function SignUpPage() {
                 Create your account
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Join an exclusive community of authentic commerce and start your entrepreneurial journey
+                The digital home for diaspora commerce - start your entrepreneurial journey
               </CardDescription>
             </CardHeader>
             <CardContent>

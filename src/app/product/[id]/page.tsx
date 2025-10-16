@@ -86,17 +86,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   };
 
   // Real data from database
-  const sellerName = kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'EthniqRootz';
+  const sellerName = kycData?.business_name || product.profiles?.name || product.profiles?.handle || 'Sellexa';
   const sellerHandle = product.profiles?.handle || 'unknown';
   
   // Seller WhatsApp number from business profile
   const sellerPhone = kycData?.business_whatsapp;
   
   // WhatsApp chat URL - only create if we have a valid WhatsApp number
-  const productUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ethniqrootz.com'}/product/${product.id}`;
-  const whatsappMessage = `🏪 *EthniqRootz Customer Inquiry*
+  const productUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sellexa.app'}/product/${product.id}`;
+  const whatsappMessage = `🏪 *Sellexa Customer Inquiry*
 
-Hi! I found your product on EthniqRootz and I'm interested in purchasing:
+Hi! I found your product on Sellexa and I'm interested in purchasing:
 
 📦 *Product:* ${product.title}
 💰 *Price:* £${(product.price_pence / 100).toFixed(2)}
@@ -110,7 +110,7 @@ I'd like to know more about:
 
 Looking forward to hearing from you!
 
-*Sent via EthniqRootz* 🛍️`;
+*Sent via Sellexa* 🛍️`;
   
   const whatsappUrl = sellerPhone ? `https://wa.me/${sellerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}` : null;
   

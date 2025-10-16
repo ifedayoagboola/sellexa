@@ -11,7 +11,7 @@ I've created professional, branded email templates for:
 All templates are:
 
 - 📱 Mobile-responsive
-- 🎨 Branded with EthniqRootz colors (#1aa1aa)
+- 🎨 Branded with Sellexa colors (#1aa1aa)
 - 🔒 Include security notices
 - ✉️ Professional and clean design
 
@@ -54,15 +54,15 @@ Update your `supabase/config.toml`:
 
 ```toml
 [auth.email.template.confirmation]
-subject = "Welcome to EthniqRootz - Confirm Your Email"
+subject = "Welcome to Sellexa - Confirm Your Email"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
-subject = "Reset Your EthniqRootz Password"
+subject = "Reset Your Sellexa Password"
 content_path = "./supabase/templates/recovery.html"
 
 [auth.email.template.magic_link]
-subject = "Sign in to EthniqRootz"
+subject = "Sign in to Sellexa"
 content_path = "./supabase/templates/magic_link.html"
 ```
 
@@ -79,7 +79,7 @@ npm run db:push:prod
 ### **Design Elements:**
 
 - Clean, modern layout with rounded corners
-- EthniqRootz brand color (#1aa1aa)
+- Sellexa brand color (#1aa1aa)
 - Large, clickable button CTAs
 - Alternative text link for accessibility
 - Security warning boxes
@@ -101,9 +101,9 @@ After setting up, test by:
 
 1. **Test Signup:**
 
-   - Create a new account on `https://ethniqrootz.com/auth/signup`
+   - Create a new account on `https://sellexa.app/auth/signup`
    - Check your email
-   - Should see the branded EthniqRootz template ✨
+   - Should see the branded Sellexa template ✨
 
 2. **Test Password Reset:**
    - Go to forgot password (if you have that page)
@@ -120,7 +120,7 @@ Replace `#1aa1aa` with your preferred color throughout the templates.
 
 ### **Change Support Email:**
 
-Update `support@ethniqrootz.com` to your actual support email.
+Update `support@sellexa.app` to your actual support email.
 
 ### **Add Logo Image:**
 
@@ -128,8 +128,8 @@ Add an `<img>` tag in the header section:
 
 ```html
 <img
-  src="https://ethniqrootz.com/ethniqrootz.png"
-  alt="EthniqRootz"
+  src="https://sellexa.app/ethniqrootz.png"
+  alt="Sellexa"
   style="max-width: 200px; height: auto;"
 />
 ```
@@ -163,7 +163,7 @@ supabase/templates/
 
 **Links going to localhost:**
 
-- Update Site URL in Supabase dashboard to `https://ethniqrootz.com`
+- Update Site URL in Supabase dashboard to `https://sellexa.app`
 - Update Redirect URLs as mentioned in AUTH_FIX_SUMMARY.md
 
 **Email not sending:**
@@ -188,7 +188,7 @@ After:
 
 ```
 ✨ Beautiful branded email with:
-- EthniqRootz logo
+- Sellexa logo
 - Welcome message
 - Large "Confirm Your Email" button
 - Security notices
@@ -198,4 +198,4 @@ After:
 ---
 
 _Created: October 11, 2025_  
-_EthniqRootz Custom Email Templates_
+_Sellexa Custom Email Templates_

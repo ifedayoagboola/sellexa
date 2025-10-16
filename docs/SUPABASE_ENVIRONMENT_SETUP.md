@@ -2,14 +2,14 @@
 
 ## 🏗️ Two-Project Architecture
 
-Your EthniqRootz application uses **TWO separate Supabase projects** for isolation and safety:
+Your Sellexa application uses **TWO separate Supabase projects** for isolation and safety:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                      DEVELOPMENT                                │
 │                                                                 │
 │  Git Branch:    develop                                         │
-│  Project Name:  ethniqrootz                                     │
+│  Project Name:  sellexa                                     │
 │  Project Ref:   kdoeomzqurcggvywqvdn                           │
 │  URL:           https://kdoeomzqurcggvywqvdn.supabase.co       │
 │  Command:       npm run db:push:dev                             │
@@ -23,7 +23,7 @@ Your EthniqRootz application uses **TWO separate Supabase projects** for isolati
 │                      PRODUCTION                                 │
 │                                                                 │
 │  Git Branch:    main                                            │
-│  Project Name:  ethniqrootz-prod                                │
+│  Project Name:  sellexa-prod                                │
 │  Project Ref:   sxveqitmcfrhmagycahx                           │
 │  URL:           https://sxveqitmcfrhmagycahx.supabase.co       │
 │  Command:       npm run db:push:prod                            │
@@ -101,7 +101,7 @@ git push origin main
 # 2. GitHub Actions automatically runs
 # .github/workflows/migrate.yml triggers
 
-# 3. Migrations applied to ethniqrootz-prod
+# 3. Migrations applied to sellexa-prod
 
 # 4. Verify
 npm run migrate:status
@@ -129,12 +129,12 @@ npx supabase migration list
 ### Apply Migrations Manually
 
 ```bash
-# Development (ethniqrootz)
+# Development (sellexa)
 npm run db:push:dev
 # OR
 npx supabase link --project-ref kdoeomzqurcggvywqvdn && npx supabase db push
 
-# Production (ethniqrootz-prod)
+# Production (sellexa-prod)
 npm run db:push:prod
 # OR
 npx supabase link --project-ref sxveqitmcfrhmagycahx && npx supabase db push

@@ -4,7 +4,7 @@
 
 **Original Issue:** The `develop` branch works perfectly with all database tables, but the `main` branch (production) was missing tables.
 
-**Root Cause:** Migrations were created and applied to the dev database (`ethniqrootz`) but never applied to the production database (`ethniqrootz-prod`) when merging to `main`.
+**Root Cause:** Migrations were created and applied to the dev database (`sellexa`) but never applied to the production database (`sellexa-prod`) when merging to `main`.
 
 ---
 
@@ -12,10 +12,10 @@
 
 You have **TWO separate Supabase projects**:
 
-| Environment | Project Name       | Project Ref            | Branch    | Command                |
-| ----------- | ------------------ | ---------------------- | --------- | ---------------------- |
-| Development | `ethniqrootz`      | `kdoeomzqurcggvywqvdn` | `develop` | `npm run db:push:dev`  |
-| Production  | `ethniqrootz-prod` | `sxveqitmcfrhmagycahx` | `main`    | `npm run db:push:prod` |
+| Environment | Project Name   | Project Ref            | Branch    | Command                |
+| ----------- | -------------- | ---------------------- | --------- | ---------------------- |
+| Development | `sellexa`      | `kdoeomzqurcggvywqvdn` | `develop` | `npm run db:push:dev`  |
+| Production  | `sellexa-prod` | `sxveqitmcfrhmagycahx` | `main`    | `npm run db:push:prod` |
 
 This is **best practice** for:
 
@@ -32,7 +32,7 @@ This is **best practice** for:
 Updated `.github/workflows/migrate.yml` to:
 
 - Use Supabase CLI for reliable migrations
-- Target the correct production project (`ethniqrootz-prod`)
+- Target the correct production project (`sellexa-prod`)
 - Only trigger on `main` branch pushes
 - Auto-apply migrations when migration files change
 - Include error handling and notifications
@@ -82,7 +82,7 @@ Created/updated these guides:
 ### Step 1: Fix Production Database NOW (5 minutes)
 
 ```bash
-# Apply all pending migrations to ethniqrootz-prod
+# Apply all pending migrations to sellexa-prod
 npm run db:push:prod
 ```
 
@@ -117,7 +117,7 @@ git push origin main
 
 # GitHub Actions will automatically:
 # 1. Detect migration file changes
-# 2. Apply them to ethniqrootz-prod
+# 2. Apply them to sellexa-prod
 # 3. Notify you of success/failure
 ```
 
@@ -138,7 +138,7 @@ npx supabase migration new my_feature_description
 
 # 3. Write SQL in: supabase/migrations/YYYYMMDDHHMMSS_my_feature_description.sql
 
-# 4. Apply to dev database (ethniqrootz)
+# 4. Apply to dev database (sellexa)
 npm run db:push:dev
 
 # 5. Test your application
@@ -157,7 +157,7 @@ git pull
 git merge develop
 git push origin main
 
-# 9. CI/CD automatically applies to ethniqrootz-prod ✨
+# 9. CI/CD automatically applies to sellexa-prod ✨
 ```
 
 ---
@@ -207,10 +207,10 @@ git push origin main
 ### Check Migration Status:
 
 ```bash
-# Development (ethniqrootz)
+# Development (sellexa)
 npx supabase migration list --project-ref kdoeomzqurcggvywqvdn
 
-# Production (ethniqrootz-prod)
+# Production (sellexa-prod)
 npx supabase migration list --project-ref sxveqitmcfrhmagycahx
 ```
 

@@ -87,7 +87,7 @@ function checkDatabaseSchema() {
 }
 
 function main() {
-  log('🚀 EthniqRootz Migration Status Checker', 'bold');
+  log('🚀 Sellexa Migration Status Checker', 'bold');
   log('=====================================\n', 'bold');
 
   const isSupabaseRunning = checkSupabaseStatus();

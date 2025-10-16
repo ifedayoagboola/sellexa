@@ -18,8 +18,8 @@ This guide establishes a workflow to keep databases synchronized across environm
 
 | Environment | Branch    | Supabase Project Name | Project Ref            | Command                |
 | ----------- | --------- | --------------------- | ---------------------- | ---------------------- |
-| Development | `develop` | `ethniqrootz`         | `kdoeomzqurcggvywqvdn` | `npm run db:push:dev`  |
-| Production  | `main`    | `ethniqrootz-prod`    | `sxveqitmcfrhmagycahx` | `npm run db:push:prod` |
+| Development | `develop` | `sellexa`             | `kdoeomzqurcggvywqvdn` | `npm run db:push:dev`  |
+| Production  | `main`    | `sellexa-prod`        | `sxveqitmcfrhmagycahx` | `npm run db:push:prod` |
 
 ---
 
@@ -238,11 +238,11 @@ npx supabase db remote --project-ref sxveqitmcfrhmagycahx
 ### Check Migration Status
 
 ```bash
-# Development (ethniqrootz)
+# Development (sellexa)
 npx supabase link --project-ref kdoeomzqurcggvywqvdn
 npx supabase migration list
 
-# Production (ethniqrootz-prod)
+# Production (sellexa-prod)
 npx supabase link --project-ref sxveqitmcfrhmagycahx
 npx supabase migration list
 
@@ -264,10 +264,10 @@ npm run db:types:prod  # Production
 ### Compare Environments
 
 ```bash
-# Get dev schema (ethniqrootz)
+# Get dev schema (sellexa)
 npx supabase db dump --project-ref kdoeomzqurcggvywqvdn --schema public > dev-schema.sql
 
-# Get prod schema (ethniqrootz-prod)
+# Get prod schema (sellexa-prod)
 npx supabase db dump --project-ref sxveqitmcfrhmagycahx --schema public > prod-schema.sql
 
 # Compare

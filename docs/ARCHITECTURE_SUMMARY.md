@@ -1,4 +1,4 @@
-# EthniqRootz Architecture Summary
+# Sellexa Architecture Summary
 
 ## 🎯 **Complete System Overhaul Completed**
 
