@@ -1,8 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Send, Image as ImageIcon, Smile, Paperclip } from 'lucide-react';
+
+// Validation schema
+const messageSchema = z.object({
+  message: z.string().min(1, 'Message cannot be empty').max(1000, 'Message is too long'),
+});
+
+type MessageFormData = z.infer<typeof messageSchema>;
 
 interface MessageInputProps {
   onSendMessage: (message: string, attachments?: any[]) => void;
@@ -21,11 +31,24 @@ export function MessageInput({
   placeholder = "Type a message...",
   className = '',
 }: MessageInputProps) {
-  const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [attachments, setAttachments] = useState<any[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch
+  } = useForm<MessageFormData>({
+    resolver: zodResolver(messageSchema),
+    defaultValues: {
+      message: ''
+    }
+  });
+
+  const message = watch('message');
 
   // Handle typing indicators
   useEffect(() => {
@@ -63,12 +86,11 @@ export function MessageInput({
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim() || disabled) return;
+  const onSubmit = (data: MessageFormData) => {
+    if (disabled) return;
 
-    onSendMessage(message.trim(), attachments.length > 0 ? attachments : undefined);
-    setMessage('');
+    onSendMessage(data.message.trim(), attachments.length > 0 ? attachments : undefined);
+    reset();
     setAttachments([]);
     
     // Stop typing
@@ -81,7 +103,7 @@ export function MessageInput({
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      handleSubmit(onSubmit)(e);
     }
   };
 
@@ -96,7 +118,7 @@ export function MessageInput({
 
   return (
     <Card className={`p-4 ${className}`}>
-      <form onSubmit={handleSubmit} className="flex space-x-2">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex space-x-2">
         {/* File Upload Input (Hidden) */}
         <input
           type="file"
@@ -110,13 +132,11 @@ export function MessageInput({
         {/* Message Input */}
         <div className="flex-1 relative">
           <Input
-            ref={inputRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
             disabled={disabled}
-            className="pr-12"
+            className={`pr-12 ${errors.message ? 'border-red-500 focus:border-red-500' : ''}`}
+            {...register('message')}
           />
           
           {/* Attachment Button */}

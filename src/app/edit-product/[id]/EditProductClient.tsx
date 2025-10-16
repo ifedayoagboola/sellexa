@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
@@ -10,6 +13,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { parseTags } from '@/lib/posts';
+
+// Validation schema (same as PostPageClient)
+const postSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  description: z.string().optional(),
+  price: z.string().min(1, 'Price is required').refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num > 0;
+  }, 'Price must be a valid number greater than 0'),
+  category: z.enum(['FOOD', 'FASHION', 'HAIR', 'HOME', 'CULTURE', 'OTHER']),
+  status: z.enum(['AVAILABLE', 'RESTOCKING', 'SOLD']),
+  city: z.string().optional(),
+  postcode: z.string().optional(),
+  tags: z.string().optional(),
+});
+
+type EditFormData = z.infer<typeof postSchema> & {
+  images: File[];
+};
 
 interface EditProductClientProps {
   user: any;
@@ -21,20 +43,42 @@ export default function EditProductClient({ user, product }: EditProductClientPr
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState<PostFormData>({
-    title: product.title || '',
-    description: product.description || '',
-    price: product.price_pence ? (product.price_pence / 100).toString() : '',
-    category: product.category || 'FOOD',
-    status: product.status || 'AVAILABLE',
-    city: product.city || '',
-    postcode: product.postcode || '',
-    tags: Array.isArray(product.tags) ? product.tags.join(' ') : (product.tags || ''),
-    images: []
+  // Helper function to construct image URL (same as other components)
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return null;
+    
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return supabaseUrl ? `${supabaseUrl}/storage/v1/object/public/product-images/${imagePath}` : null;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    watch
+  } = useForm<EditFormData>({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: product.title || '',
+      description: product.description || '',
+      price: product.price_pence ? (product.price_pence / 100).toString() : '',
+      category: product.category || 'FOOD',
+      status: product.status || 'AVAILABLE',
+      city: product.city || '',
+      postcode: product.postcode || '',
+      tags: Array.isArray(product.tags) ? product.tags.join(' ') : (product.tags || ''),
+      images: []
+    }
   });
 
   const [imageReplacements, setImageReplacements] = useState<{ [key: number]: File }>({});
   const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
+  const [images, setImages] = useState<File[]>([]);
 
   const categories = [
     { value: 'FOOD', label: 'Food' },
@@ -51,21 +95,9 @@ export default function EditProductClient({ user, product }: EditProductClientPr
     { value: 'SOLD', label: 'Sold' }
   ];
 
-  const handleInputChange = (field: keyof PostFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (error) setError(null);
-  };
-
-  const handleCategoryChange = (category: 'FOOD' | 'FASHION' | 'HAIR' | 'HOME' | 'CULTURE' | 'OTHER') => {
-    setFormData(prev => ({ ...prev, category }));
-  };
-
-  const handleStatusChange = (status: 'AVAILABLE' | 'RESTOCKING' | 'SOLD') => {
-    setFormData(prev => ({ ...prev, status }));
-  };
-
-  const handleImagesChange = (images: File[]) => {
-    setFormData(prev => ({ ...prev, images }));
+  const handleImagesChange = (newImages: File[]) => {
+    setImages(newImages);
+    setValue('images', newImages);
   };
 
   const handleReplaceImage = (index: number, file: File | null) => {
@@ -88,19 +120,7 @@ export default function EditProductClient({ user, product }: EditProductClientPr
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.title.trim()) {
-      setError('Please enter a title');
-      return;
-    }
-    if (!formData.price || parseFloat(formData.price) <= 0) {
-      setError('Please enter a valid price');
-      return;
-    }
-
+  const onSubmit = async (data: EditFormData) => {
     setIsLoading(true);
     setError(null);
 
@@ -108,18 +128,18 @@ export default function EditProductClient({ user, product }: EditProductClientPr
       // Import Supabase client dynamically
       const { supabase } = await import('@/integrations/supabase/client');
       // Convert price to pence
-      const pricePence = Math.round(parseFloat(formData.price) * 100);
+      const pricePence = Math.round(parseFloat(data.price) * 100);
 
       // Prepare update data
       const updateData: any = {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
+        title: data.title.trim(),
+        description: data.description?.trim() || '',
         price_pence: pricePence,
-        category: formData.category,
-        status: formData.status,
-        city: formData.city.trim(),
-        postcode: formData.postcode.trim(),
-        tags: parseTags(formData.tags || ''),
+        category: data.category,
+        status: data.status,
+        city: data.city?.trim() || '',
+        postcode: data.postcode?.trim() || '',
+        tags: parseTags(data.tags || ''),
         updated_at: new Date().toISOString()
       };
 
@@ -163,7 +183,7 @@ export default function EditProductClient({ user, product }: EditProductClientPr
       }
 
       // Add new images
-      for (const image of formData.images) {
+      for (const image of images) {
         const fileExt = image.name.split('.').pop();
         const fileName = `${product.id}_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `products/${fileName}`;
@@ -239,7 +259,7 @@ export default function EditProductClient({ user, product }: EditProductClientPr
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Image Management */}
             <div className="space-y-4">
               <Label htmlFor="images" className="text-sm font-medium text-gray-700">
@@ -268,10 +288,19 @@ export default function EditProductClient({ user, product }: EditProductClientPr
                               />
                             ) : (
                               <img
-                                src={image}
+                                src={getImageUrl(image) || ''}
                                 alt={`Current ${index + 1}`}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                }}
                               />
+                            )}
+                            {!hasReplacement && (
+                              <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm hidden">
+                                Image unavailable
+                              </div>
                             )}
                             
                             {isMarkedForDeletion && (
@@ -326,11 +355,11 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               )}
 
               {/* Add New Images */}
-              {formData.images.length > 0 && (
+              {images.length > 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-gray-600">New images to add:</p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {formData.images.map((image: File, index: number) => (
+                    {images.map((image: File, index: number) => (
                       <div key={index} className="aspect-square rounded-lg overflow-hidden bg-gray-100 relative">
                         <img
                           src={URL.createObjectURL(image)}
@@ -345,7 +374,7 @@ export default function EditProductClient({ user, product }: EditProductClientPr
 
               {/* Image Upload Component */}
               <ImageUpload
-                images={formData.images}
+                images={images}
                 onImagesChange={handleImagesChange}
                 maxImages={5 - (product.images?.length || 0) + imagesToDelete.length}
               />
@@ -359,11 +388,13 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               <Input
                 id="title"
                 type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
                 placeholder="What are you selling?"
-                required
+                className={errors.title ? 'border-red-500 focus:border-red-500' : ''}
+                {...register('title')}
               />
+              {errors.title && (
+                <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
+              )}
             </div>
 
             {/* Price */}
@@ -378,12 +409,14 @@ export default function EditProductClient({ user, product }: EditProductClientPr
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.price}
-                  onChange={(e) => handleInputChange('price', e.target.value)}
                   placeholder="0.00"
-                  required
+                  className={errors.price ? 'border-red-500 focus:border-red-500' : ''}
+                  {...register('price')}
                 />
               </div>
+              {errors.price && (
+                <p className="text-sm text-red-600 mt-1">{errors.price.message}</p>
+              )}
             </div>
 
             {/* Category */}
@@ -396,9 +429,9 @@ export default function EditProductClient({ user, product }: EditProductClientPr
                   <button
                     key={category.value}
                     type="button"
-                    onClick={() => handleCategoryChange(category.value as any)}
+                    onClick={() => setValue('category', category.value as any)}
                     className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                      formData.category === category.value
+                      watch('category') === category.value
                         ? 'bg-[#1aa1aa] text-white'
                         : 'border border-gray-300 hover:bg-gray-50'
                     }`}
@@ -414,13 +447,13 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               <Label htmlFor="status" className="text-sm font-medium text-gray-700">
                 Status *
               </Label>
-              <select
-                id="status"
-                value={formData.status}
-                onChange={(e) => handleStatusChange(e.target.value as any)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                required
-              >
+            <select
+              id="status"
+              className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
+                errors.status ? 'border-red-500 focus-visible:ring-red-500' : 'border-input focus-visible:ring-ring'
+              }`}
+              {...register('status')}
+            >
                 {statusOptions.map((status) => (
                   <option key={status.value} value={status.value}>
                     {status.label}
@@ -438,9 +471,9 @@ export default function EditProductClient({ user, product }: EditProductClientPr
                 <Input
                   id="city"
                   type="text"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
                   placeholder="London"
+                  className={errors.city ? 'border-red-500 focus:border-red-500' : ''}
+                  {...register('city')}
                 />
               </div>
               <div className="space-y-2">
@@ -450,9 +483,9 @@ export default function EditProductClient({ user, product }: EditProductClientPr
                 <Input
                   id="postcode"
                   type="text"
-                  value={formData.postcode}
-                  onChange={(e) => handleInputChange('postcode', e.target.value)}
                   placeholder="SW1A 1AA"
+                  className={errors.postcode ? 'border-red-500 focus:border-red-500' : ''}
+                  {...register('postcode')}
                 />
               </div>
             </div>
@@ -462,14 +495,15 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               <Label htmlFor="description" className="text-sm font-medium text-gray-700">
                 Description
               </Label>
-              <textarea
-                id="description"
-                rows={4}
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                placeholder="Tell us more about your product..."
-              />
+            <textarea
+              id="description"
+              rows={4}
+              className={`flex min-h-[80px] w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
+                errors.description ? 'border-red-500 focus-visible:ring-red-500' : 'border-input focus-visible:ring-ring'
+              }`}
+              placeholder="Tell us more about your product..."
+              {...register('description')}
+            />
             </div>
 
             {/* Tags */}
@@ -477,13 +511,13 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               <Label htmlFor="tags" className="text-sm font-medium text-gray-700">
                 Tags (optional)
               </Label>
-              <Input
-                id="tags"
-                type="text"
-                value={formData.tags}
-                onChange={(e) => handleInputChange('tags', e.target.value)}
-                placeholder="#garri #authentic #fresh"
-              />
+            <Input
+              id="tags"
+              type="text"
+              placeholder="#garri #authentic #fresh"
+              className={errors.tags ? 'border-red-500 focus:border-red-500' : ''}
+              {...register('tags')}
+            />
               <p className="text-xs text-gray-500">
                 Separate tags with spaces or commas. Include # for hashtags.
               </p>
@@ -502,10 +536,10 @@ export default function EditProductClient({ user, product }: EditProductClientPr
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isSubmitting}
                 className="flex-1 bg-[#1aa1aa] hover:bg-[#158a8f]"
               >
-                {isLoading ? 'Updating...' : 'Update Product'}
+                {isLoading || isSubmitting ? 'Updating...' : 'Update Product'}
               </Button>
             </div>
           </form>
