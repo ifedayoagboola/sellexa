@@ -6,6 +6,7 @@ import { useState } from 'react';
 export const dynamic = 'force-dynamic';
 import { useRouter } from 'next/navigation';
 import Navigation from '@/components/Navigation';
+import SellerKYCForm from '@/components/kyc/SellerKYCForm';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -127,23 +128,16 @@ export default function KYCPage() {
         </div>
       </div>
 
-      {/* Coming Soon Modal */}
+      {/* KYC Form Modal */}
       {showKYCForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">KYC Form Coming Soon!</h3>
-            <p className="text-gray-600 mb-6">
-              We're working on implementing the seller verification form. 
-              Please check back later or contact support for assistance.
-            </p>
-            <Button
-              onClick={() => setShowKYCForm(false)}
-              className="w-full"
-            >
-              Got it!
-            </Button>
-          </div>
-        </div>
+        <SellerKYCForm
+          onComplete={() => {
+            setShowKYCForm(false);
+            // Optionally redirect to a success page or refresh
+            router.push('/profile');
+          }}
+          onCancel={() => setShowKYCForm(false)}
+        />
       )}
     </div>
   );
