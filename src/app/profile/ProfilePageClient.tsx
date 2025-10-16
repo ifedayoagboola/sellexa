@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import Navigation from '@/components/Navigation';
+import SellerKYCForm from '@/components/kyc/SellerKYCForm';
 import { Button } from '@/components/ui/button';
 import { 
   Dialog, 
@@ -43,12 +44,13 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
   const [showSavedModal, setShowSavedModal] = useState(false);
   const [showDashboardModal, setShowDashboardModal] = useState(false);
   const [showProductManager, setShowProductManager] = useState(false);
+  const [showKYCForm, setShowKYCForm] = useState(false);
   const [productToDelete, setProductToDelete] = useState<any>(null);
 
   const handleEditProfile = () => {
     if (profile?.kyc_status === 'verified') {
-      // For verified sellers, go to KYC form to update business info
-      router.push('/kyc');
+      // For verified sellers, open KYC form to update business info
+      setShowKYCForm(true);
     } else {
       // TODO: Implement general profile edit functionality
       alert('Edit profile functionality coming soon!');
@@ -653,6 +655,31 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* KYC Form Modal */}
+      {showKYCForm && (
+        <SellerKYCForm
+          onComplete={() => {
+            setShowKYCForm(false);
+            // Refresh the page to show updated data
+            window.location.reload();
+          }}
+          onCancel={() => setShowKYCForm(false)}
+          initialData={{
+            business_name: profile?.business_name || '',
+            business_description: profile?.business_description || '',
+            business_address: profile?.business_address || '',
+            business_city: profile?.business_city || '',
+            business_country: profile?.business_country || '',
+            business_phone: profile?.business_phone || '',
+            business_whatsapp: profile?.business_whatsapp || '',
+            business_website: profile?.business_website || '',
+            business_instagram: profile?.business_instagram || '',
+            business_twitter: profile?.business_twitter || '',
+            business_facebook: profile?.business_facebook || '',
+          }}
+        />
+      )}
       
       <Navigation />
     </div>
