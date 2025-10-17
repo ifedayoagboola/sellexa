@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signOut } from '@/lib/auth-actions';
 import { useUser } from '@/stores/userStore';
+import Link from 'next/link';
 
 interface UserMenuProps {
   user: {
@@ -49,14 +50,38 @@ export default function UserMenu({ user }: UserMenuProps) {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg z-20">
+          <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-md shadow-lg z-20">
             <div className="py-1">
               <div className="px-4 py-2 text-sm text-muted-foreground border-b border-border">
                 {user.email}
               </div>
+              <div className="px-4 py-2 text-xs text-muted-foreground border-b border-border">
+                Legal & Support
+              </div>
+              <Link
+                href="/legal/privacy"
+                className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
+                onClick={() => setIsOpen(false)}
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/legal/terms"
+                className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
+                onClick={() => setIsOpen(false)}
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/legal/cookies"
+                className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
+                onClick={() => setIsOpen(false)}
+              >
+                Cookie Policy
+              </Link>
               <button
                 onClick={handleSignOut}
-                className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
+                className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted border-t border-border mt-1"
               >
                 Sign out
               </button>
