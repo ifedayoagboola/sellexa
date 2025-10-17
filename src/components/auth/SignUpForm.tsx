@@ -54,8 +54,11 @@ export default function SignUpForm() {
         setError(result.error);
       }
       // If no error, the signUp function will redirect
-    } catch (err) {
-      // This catch block handles redirects and other errors
+    } catch (err: any) {
+      // Ignore NEXT_REDIRECT errors (expected for successful redirects)
+      if (err?.message?.includes('NEXT_REDIRECT')) {
+        return; // Don't show error toast for successful redirects
+      }
       console.error('Sign up error:', err);
     } finally {
       setIsSubmitting(false);
