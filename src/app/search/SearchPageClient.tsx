@@ -40,10 +40,10 @@ export default function SearchPageClient({ user }: SearchPageClientProps) {
       initialSaveCount={0}
       initialIsSaved={false}
     >
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-20 overflow-x-hidden">
       <TopBar showSearch={false} />
       
-      <div className="max-w-7xl mx-auto px-4 py-6 pt-48">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-6 pt-40">
         {/* Search Bar */}
         <div className="mb-6">
           <SearchBar 
