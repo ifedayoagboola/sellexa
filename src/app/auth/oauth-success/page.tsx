@@ -12,7 +12,6 @@ export default function OAuthSuccessPage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Wait a moment for session to be established
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         const { data: { user }, error } = await supabase.auth.getUser();
@@ -21,7 +20,6 @@ export default function OAuthSuccessPage() {
           setError('Authentication failed. Please try again.');
           setTimeout(() => router.push('/auth/login'), 3000);
         } else if (user) {
-          // Redirect to feed page
           window.location.href = '/feed';
         } else {
           setError('No user found. Please try again.');
