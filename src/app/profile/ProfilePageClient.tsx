@@ -154,10 +154,10 @@ export default function ProfilePageClient({ user, profile, products }: ProfilePa
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20 overflow-x-hidden">
       <TopBar />
       
-      <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-8 pt-40 lg:pt-44">
         {/* Profile Header */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">

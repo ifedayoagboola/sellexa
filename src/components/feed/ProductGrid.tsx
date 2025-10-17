@@ -13,7 +13,7 @@ export default function ProductGrid({ products, variant = 'mobile' }: ProductGri
   const gridClasses = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4';
 
   return (
-    <div className={gridClasses}>
+    <div className={`${gridClasses} w-full`}>
       {products.slice(0, 6).map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

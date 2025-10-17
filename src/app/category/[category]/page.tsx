@@ -153,8 +153,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         initialSaveCount={saveDataResults[0]?.saveCount || 0}
         initialIsSaved={saveDataResults[0]?.isSaved || false}
       >
-        <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="min-h-screen bg-background overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-8">
           {/* Breadcrumb */}
           <nav className="mb-8">
             <ol className="flex items-center space-x-2 text-sm text-muted-foreground">

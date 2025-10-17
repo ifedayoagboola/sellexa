@@ -86,12 +86,12 @@ export default function TopBar({
         {/* Mobile and Tablet Layout (up to and including 1024px) */}
         <div className="block lg:hidden">
           {/* First Row: Logo + Icons */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-3">
             {/* Seller Logo or Sellexa Logo */}
             {sellerDisplay ? (
-              <div className="flex items-center">
+              <div className="flex items-center flex-shrink-0">
                 {sellerDisplay.sellerLogo ? (
-                  <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
+                  <div className="w-24 h-16 sm:w-32 sm:h-20 relative">
                     <Image
                       src={sellerDisplay.sellerLogo}
                       alt={sellerDisplay.sellerName}
@@ -113,8 +113,8 @@ export default function TopBar({
                 )}
               </div>
             ) : (
-              <Link href="/feed" className="flex items-center">
-                <div className="w-32 h-20 sm:w-40 sm:h-24 relative">
+              <Link href="/feed" className="flex items-center flex-shrink-0">
+                <div className="w-24 h-16 sm:w-32 sm:h-20 relative">
                   <Image
                     src="/sellexa.png"
                     alt="Sellexa"
@@ -126,7 +126,7 @@ export default function TopBar({
             )}
             
             {/* Right Icons */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
               {showSupport && (
                 <button
                   onClick={handleSupportContact}
@@ -174,13 +174,12 @@ export default function TopBar({
 
         {/* Desktop Layout (1025px and above) */}
         <div className="hidden lg:block">
-          {/* First Row: Logo + Icons */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-3">
             {/* Seller Logo or Sellexa Logo */}
             {sellerDisplay ? (
-              <div className="flex items-center">
+              <div className="flex items-center flex-shrink-0">
                 {sellerDisplay.sellerLogo ? (
-                  <div className="w-40 h-24 xl:w-48 xl:h-32 relative">
+                  <div className="w-32 h-20 xl:w-40 xl:h-24 relative">
                     <Image
                       src={sellerDisplay.sellerLogo}
                       alt={sellerDisplay.sellerName}
@@ -202,8 +201,8 @@ export default function TopBar({
                 )}
               </div>
             ) : (
-              <Link href="/feed" className="flex items-center">
-                <div className="w-40 h-24 xl:w-48 xl:h-32 relative">
+              <Link href="/feed" className="flex items-center flex-shrink-0">
+                <div className="w-32 h-20 xl:w-40 xl:h-24 relative">
                   <Image
                     src="/sellexa.png"
                     alt="Sellexa"
@@ -214,8 +213,19 @@ export default function TopBar({
               </Link>
             )}
             
+            {/* Search Bar */}
+            {showSearch && (
+              <div className="mx-6 w-80 xl:w-96">
+                <SearchBar 
+                  placeholder="Search products..."
+                  className="w-full"
+                  showSuggestions={false}
+                />
+              </div>
+            )}
+            
             {/* Right Icons */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 flex-shrink-0">
               {showSupport && (
                 <button
                   onClick={handleSupportContact}
@@ -248,17 +258,6 @@ export default function TopBar({
               )}
             </div>
           </div>
-          
-          {/* Second Row: Search Bar */}
-          {showSearch && (
-            <div className="w-full pb-4">
-              <SearchBar 
-                placeholder="Search products..."
-                className="w-full max-w-md mx-auto"
-                showSuggestions={false}
-              />
-            </div>
-          )}
         </div>
       </div>
 

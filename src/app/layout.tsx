@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import GlobalLoader from '@/components/GlobalLoader';
+import CookieConsentBanner from '@/components/CookieConsentBanner';
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -32,6 +39,7 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning={true}>
         {children}
         <GlobalLoader />
+        <CookieConsentBanner />
         <Toaster />
       </body>
     </html>

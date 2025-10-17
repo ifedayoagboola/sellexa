@@ -1,6 +1,6 @@
 import { createClient } from '@/integrations/supabase/server';
 import { notFound } from 'next/navigation';
-import SellerCatalogueClient from './SellerCatalogueClient';
+import CulturalStorefrontClient from './CulturalStorefrontClient';
 
 interface SellerCataloguePageProps {
   params: Promise<{
@@ -86,7 +86,7 @@ export default async function SellerCataloguePage({ params }: SellerCataloguePag
   const productCount = stats?.length || 0;
 
   return (
-    <SellerCatalogueClient 
+    <CulturalStorefrontClient 
       seller={seller}
       products={products || []}
       productCount={productCount}
@@ -103,7 +103,7 @@ export async function generateMetadata({ params }: SellerCataloguePageProps) {
   
   const { data: seller } = await supabase
     .from('profiles')
-    .select('handle, name, avatar_url, city')
+    .select('id, handle, name, avatar_url, city')
     .eq('handle', handle)
     .single();
 
@@ -113,20 +113,31 @@ export async function generateMetadata({ params }: SellerCataloguePageProps) {
     };
   }
 
+  // Get seller's KYC data for business information
+  const { data: kycData } = await supabase
+    .from('profiles')
+    .select('business_name, business_logo_url')
+    .eq('id', seller.id)
+    .single();
+
+  // Get business name for metadata
+  const businessName = kycData?.business_name || seller.name || seller.handle;
+  const businessLogo = kycData?.business_logo_url || seller.avatar_url;
+
   return {
-    title: `${seller.name || seller.handle}'s Shop | Sellexa`,
-    description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa. Discover amazing items from ${seller.city || 'our marketplace'}.`,
+    title: `${businessName}'s Cultural Storefront | Sellexa`,
+    description: `Discover authentic cultural products and stories from ${businessName}'s cultural storefront. Shop with confidence and connect with our heritage.`,
     openGraph: {
-      title: `${seller.name || seller.handle}'s Shop`,
-      description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa`,
-      images: seller.avatar_url ? [seller.avatar_url] : [],
+      title: `${businessName}'s Cultural Storefront`,
+      description: `Discover authentic cultural products and stories from ${businessName}'s cultural storefront.`,
+      images: businessLogo ? [businessLogo] : [],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${seller.name || seller.handle}'s Shop`,
-      description: `Shop ${seller.name || seller.handle}'s unique products on Sellexa`,
-      images: seller.avatar_url ? [seller.avatar_url] : [],
+      title: `${businessName}'s Cultural Storefront`,
+      description: `Discover authentic cultural products and stories from ${businessName}'s cultural storefront.`,
+      images: businessLogo ? [businessLogo] : [],
     },
   };
 }

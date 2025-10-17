@@ -86,10 +86,10 @@ export default function FeedPageClient({ initialProducts }: FeedPageClientProps)
 
   return (
     <StoresProvider initialUser={user} initialProducts={initialProducts}>
-      <div className="min-h-screen bg-white pb-20">
+      <div className="min-h-screen bg-white pb-20 overflow-x-hidden">
         <TopBar />
         
-        <div className="max-w-7xl mx-auto px-4 py-8 pt-48 lg:pt-56">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-8 pt-40 lg:pt-44">
           {/* Responsive Layout */}
           <PageHeader variant="mobile" />
           <FeedContent initialProducts={initialProducts} />

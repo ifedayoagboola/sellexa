@@ -180,7 +180,7 @@ Looking forward to hearing from you!
       initialSaveCount={saveData.saveCount}
       initialIsSaved={saveData.isSaved}
     >
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white overflow-x-hidden">
         {/* TopBar */}
         <TopBar showSearch={false} showUserMenu={!!user} />
         
@@ -188,7 +188,7 @@ Looking forward to hearing from you!
         <div className="block lg:hidden pt-28 md:pt-40">
           {/* Brand Header */}
           <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-4">
               <BrandHeader
                 seller={sellerData}
                 rating={4.0}
@@ -199,7 +199,7 @@ Looking forward to hearing from you!
 
           {/* Product Images */}
           <div className="bg-slate-50">
-            <div className="max-w-7xl mx-auto px-4 py-6">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-6">
               <MobileProductImages />
             </div>
           </div>
@@ -238,7 +238,7 @@ Looking forward to hearing from you!
 
         {/* Desktop Layout - Ecommerce Style */}
         <div className="hidden lg:block pt-32 pb-8">
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column - Product Images */}
               <DesktopProductGallery 
@@ -327,7 +327,7 @@ Looking forward to hearing from you!
 
         {/* Fixed Bottom Buy Button - Mobile & Tablet */}
         <div className="fixed bottom-20 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-40 lg:hidden">
-          <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-3">
             <ProductActions 
               whatsappUrl={whatsappUrl}
               hasPaymentIntegration={hasPaymentIntegration}
