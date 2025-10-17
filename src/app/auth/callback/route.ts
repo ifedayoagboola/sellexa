@@ -28,7 +28,9 @@ export async function GET(request: Request) {
         } else {
             // OAuth flow (Google, etc.) - redirect to intended destination
             const destination = redirectTo || '/feed';
-            return NextResponse.redirect(`${origin}${destination}`);
+            console.log('OAuth callback - redirecting to:', destination);
+            // Temporary: Always redirect to feed for testing
+            return NextResponse.redirect(`${origin}/feed`);
         }
     }
 
