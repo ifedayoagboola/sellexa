@@ -14,24 +14,21 @@ export async function GET(request: Request) {
 
         if (error) {
             console.error('Auth callback error:', error);
-            // If verification fails, redirect to login with error message
             return NextResponse.redirect(`${origin}/auth/login?error=verification_failed&message=${encodeURIComponent(error.message)}`);
         }
 
         // Handle different auth flows
         if (type === 'recovery') {
-            // Password reset flow - redirect to reset password page
             return NextResponse.redirect(`${origin}/auth/reset-password`);
         } else if (type === 'signup' || type === 'email_change') {
-            // Email confirmation flow - redirect to login with success message
             return NextResponse.redirect(`${origin}/auth/login?message=Email confirmed successfully. Please sign in.`);
         } else {
-            // OAuth flow (Google, etc.) - redirect to OAuth success page
-            return NextResponse.redirect(`${origin}/auth/oauth-success`);
+            // OAuth flow - redirect to intended destination or feed
+            const finalRedirectTo = redirectTo || '/feed';
+            return NextResponse.redirect(`${origin}${finalRedirectTo}`);
         }
     }
 
-    // If no code, redirect to login
     return NextResponse.redirect(`${origin}/auth/login?error=no_code`);
 }
 

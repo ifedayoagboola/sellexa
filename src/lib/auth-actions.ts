@@ -102,6 +102,10 @@ export async function signInWithGoogle(formData: FormData) {
         provider: 'google',
         options: {
             redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback?redirectTo=${encodeURIComponent(finalRedirectTo)}`,
+            queryParams: {
+                access_type: 'offline',
+                prompt: 'consent',
+            },
         },
     });
 
@@ -134,6 +138,7 @@ export async function resetPassword(formData: FormData) {
 
     return { success: true };
 }
+
 
 
 export async function signOut() {
