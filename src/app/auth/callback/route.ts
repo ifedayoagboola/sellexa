@@ -20,17 +20,14 @@ export async function GET(request: Request) {
 
         // Handle different auth flows
         if (type === 'recovery') {
-            // Password reset flow - redirect to reset password page with session established
+            // Password reset flow - redirect to reset password page
             return NextResponse.redirect(`${origin}/auth/reset-password`);
         } else if (type === 'signup' || type === 'email_change') {
             // Email confirmation flow - redirect to login with success message
             return NextResponse.redirect(`${origin}/auth/login?message=Email confirmed successfully. Please sign in.`);
         } else {
-            // OAuth flow (Google, etc.) - redirect to intended destination
-            const destination = redirectTo || '/feed';
-            console.log('OAuth callback - redirecting to:', destination);
-            // Temporary: Always redirect to feed for testing
-            return NextResponse.redirect(`${origin}/feed`);
+            // OAuth flow (Google, etc.) - redirect to OAuth success page
+            return NextResponse.redirect(`${origin}/auth/oauth-success`);
         }
     }
 
