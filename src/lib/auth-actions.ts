@@ -96,11 +96,14 @@ export async function signUp(formData: FormData) {
 export async function signInWithGoogle(formData: FormData) {
     const supabase = await createClient();
     const redirectTo = formData.get('redirectTo') as string;
+    const finalRedirectTo = redirectTo || '/feed';
+
+    console.log('Google OAuth - redirectTo:', redirectTo, 'finalRedirectTo:', finalRedirectTo);
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback?redirectTo=${encodeURIComponent(redirectTo || '/feed')}`,
+            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback?redirectTo=${encodeURIComponent(finalRedirectTo)}`,
         },
     });
 
