@@ -23,7 +23,7 @@ export default async function SignUpPage() {
       <div className="bg-white border-b border-gray-200 px-4 py-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Button variant="ghost" asChild className="text-gray-600 hover:text-gray-900">
-            <Link href="/splash" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <ArrowLeft className="h-4 w-4" />
               <span>Back</span>
             </Link>
