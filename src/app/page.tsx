@@ -1,5 +1,6 @@
 import { createClient } from '@/integrations/supabase/server';
 import { redirect } from 'next/navigation';
+import { LandingPage } from '@/components/landing/LandingPage';
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -10,6 +11,6 @@ export default async function HomePage() {
   if (user) {
     redirect('/feed');
   } else {
-    redirect('/splash');
+    return <LandingPage />;
   }
 }
