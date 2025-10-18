@@ -24,7 +24,7 @@ const vendors = [
     specialty: 'Indian Spices & Masalas',
     rating: 5.0,
     products: 52,
-    image: 'https://images.unsplash.com/photo-1660760418951-e7dfc134ea7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGljZSUyMG1hcmtldCUyMHZlbmRvciUyMGJ1c2luZXNzfGVufDF8fHx8MTc2MDc5ODg3OXww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: '/indian-spicesinbags.jpeg',
     verified: true,
     story: 'Grew beyond WhatsApp',
     handle: 'priyas-spice-corner',

@@ -22,14 +22,14 @@ const categories = [
   {
     name: 'Spices & Ingredients',
     count: '1,200+ items',
-    image: 'https://images.unsplash.com/photo-1757802261994-3c31584daafd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGljZXMlMjBqYXJzJTIwbWFya2V0JTIwZGlzcGxheXxlbnwxfHx8fDE3NjA3OTg4Nzd8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: '/indian-spicesinbags.jpeg',
     gradient: 'from-[#159fa9]/90 to-[#0d7580]/90',
     category: 'Food',
   },
   {
     name: 'Saris & Indian Textiles',
     count: '730+ items',
-    image: 'https://images.unsplash.com/photo-1648396004864-f74eb58e8d90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBzYXJpJTIwc2hvcCUyMGNvbG9yZnVsfGVufDF8fHx8MTc2MDc5ODg3OXww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: '/indianart.jpeg',
     gradient: 'from-[#159fa9]/90 to-[#0d7580]/90',
     category: 'Clothing',
   },

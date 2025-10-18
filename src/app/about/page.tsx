@@ -52,8 +52,8 @@ export default function AboutPage() {
               </div>
               <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-xl">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=800&h=600&fit=crop"
-                  alt="Community marketplace"
+                  src="/indianart.jpeg"
+                  alt="Indian cultural art and textiles"
                   width={800}
                   height={600}
                   className="w-full h-full object-cover"
