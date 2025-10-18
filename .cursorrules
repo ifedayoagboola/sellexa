@@ -1,0 +1,198 @@
+# Sellexa Coding Standards & Best Practices
+
+## Core Principles
+
+- **Simplicity**: Keep code simple and straightforward. Avoid over-engineering.
+- **Readability**: Code should be self-documenting. Use clear variable and function names.
+- **Scalability**: Write modular, reusable code that can grow with the project.
+- **Consistency**: Follow established patterns throughout the codebase.
+- **Clean Code**: Remove unused imports, variables, functions, and files.
+
+## Code Style
+
+### TypeScript/React
+
+- Use functional components with TypeScript
+- Use named exports for components (not default exports)
+- Prefer `const` over `let`, avoid `var`
+- Use arrow functions for consistency
+- Always type props interfaces
+- Use destructuring for props and state
+
+### Naming Conventions
+
+- Components: PascalCase (e.g., `UserProfile`, `ProductCard`)
+- Files: PascalCase for components (e.g., `UserProfile.tsx`)
+- Functions: camelCase (e.g., `handleSubmit`, `fetchUserData`)
+- Constants: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
+- CSS classes: Use Tailwind utility classes
+
+### File Organization
+
+```
+src/
+├── app/                    # Next.js app router pages
+├── components/             # Reusable components
+│   ├── ui/                # Base UI components (buttons, cards, etc.)
+│   ├── auth/              # Authentication components
+│   ├── landing/           # Landing page sections
+│   └── [feature]/         # Feature-specific components
+├── lib/                   # Utility functions and helpers
+├── hooks/                 # Custom React hooks
+├── stores/                # State management (Zustand)
+└── integrations/          # Third-party integrations (Supabase, etc.)
+```
+
+## Design System
+
+### Typography Scale (Consistent across all pages)
+
+- **Hero H1**: `text-4xl sm:text-5xl lg:text-5xl font-bold`
+- **Section H2**: `text-3xl lg:text-4xl font-bold`
+- **Section H3**: `text-xl font-semibold`
+- **Body Large**: `text-lg`
+- **Body Regular**: `text-base`
+- **Body Small**: `text-sm`
+- **Caption**: `text-xs`
+
+### Color Palette
+
+- **Primary Brand**: `#159fa9` (teal)
+- **Primary Dark**: `#128a93`
+- **Primary Light**: `#159fa9/10`, `#159fa9/20`, `#159fa9/30`
+- **Text Primary**: `text-gray-900`
+- **Text Secondary**: `text-gray-600`
+- **Background**: `bg-white`, `bg-gray-50`
+- **Borders**: `border-gray-200`, `border-gray-300`
+
+### Spacing
+
+- **Sections**: `py-20 lg:py-28`
+- **Container**: `max-w-7xl mx-auto px-4 md:px-8 lg:px-16`
+- **Gaps**: Use `gap-4`, `gap-6`, `gap-8` consistently
+- **Margins**: Use `mb-4`, `mb-6`, `mb-8`, `mb-12`, `mb-16` for vertical spacing
+
+### Components
+
+- Use `rounded-2xl` or `rounded-3xl` for modern look
+- Add hover states to interactive elements
+- Use `transition-all duration-300` for smooth transitions
+- Add `shadow-lg` or `shadow-xl` for depth
+- Use gradients sparingly: `bg-gradient-to-r from-[#159fa9] to-[#0d7580]`
+
+## Best Practices
+
+### React Components
+
+```typescript
+// ✅ Good
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: "primary" | "secondary";
+}
+
+export function Button({ label, onClick, variant = "primary" }: ButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 rounded-lg ${
+        variant === "primary" ? "bg-[#159fa9]" : "bg-gray-200"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+// ❌ Bad
+export default function button(props: any) {
+  return <button onClick={props.onClick}>{props.label}</button>;
+}
+```
+
+### State Management
+
+- Use Zustand for global state
+- Use `useState` for local component state
+- Keep state as close to where it's used as possible
+- Avoid prop drilling - use context or global state
+
+### API Calls
+
+- Use server actions for mutations
+- Use Supabase client for queries
+- Always handle errors gracefully
+- Show loading states for async operations
+
+### Imports
+
+- Group imports: React → Next.js → Third-party → Local
+- Remove unused imports
+- Use absolute imports with `@/` prefix
+
+```typescript
+// ✅ Good
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+// ❌ Bad
+import { Button } from "../../components/ui/button";
+import { supabase } from "../../../integrations/supabase/client";
+```
+
+## Code Review Checklist
+
+Before committing, ensure:
+
+- [ ] No unused imports, variables, or functions
+- [ ] No console.logs (except in error handling)
+- [ ] Consistent typography sizes (H1, H2, body text)
+- [ ] Consistent spacing (padding, margins, gaps)
+- [ ] All interactive elements have hover states
+- [ ] Responsive design works on mobile, tablet, desktop
+- [ ] TypeScript types are properly defined
+- [ ] Error handling is in place
+- [ ] Loading states are shown for async operations
+- [ ] Accessibility: proper semantic HTML, ARIA labels where needed
+- [ ] Brand colors used consistently
+- [ ] No hardcoded values - use constants or config
+
+## Performance
+
+- Use Next.js Image component for images
+- Lazy load components when appropriate
+- Avoid unnecessary re-renders (use React.memo if needed)
+- Keep bundle size small - avoid large dependencies
+
+## Security
+
+- Never expose API keys in client code
+- Use environment variables for sensitive data
+- Validate user input
+- Use Supabase RLS for database security
+- Sanitize user-generated content
+
+## Git Workflow
+
+- Write clear, descriptive commit messages
+- Keep commits focused and atomic
+- Use feature branches
+- Test before pushing
+- Don't commit node_modules, .env, or build artifacts
+
+## Documentation
+
+- Add JSDoc comments for complex functions
+- Keep README.md up to date
+- Document API endpoints and database schema
+- Add inline comments for non-obvious code logic
+
+## When in Doubt
+
+- Keep it simple
+- Follow existing patterns in the codebase
+- Ask for clarification rather than guessing
+- Prioritize readability over cleverness
